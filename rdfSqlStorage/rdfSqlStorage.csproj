@@ -8,8 +8,8 @@
     <ProjectGuid>{EDDD8591-F4D5-4EAF-BF56-A093F8253A16}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VDS.RDF.Utilities.Data.Sql.Migrate</RootNamespace>
-    <AssemblyName>rdfSqlMigrate</AssemblyName>
+    <RootNamespace>VDS.RDF.Utilities.Data.Sql.Clients.Cmd</RootNamespace>
+    <AssemblyName>rdfSqlStorage</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ManagementAction.cs" />
+    <Compile Include="Migrate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

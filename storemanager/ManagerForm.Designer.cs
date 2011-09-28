@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.Utilities.StoreManager
 {
-    partial class fclsManager
+    partial class ManagerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,12 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fclsManager));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManagerForm));
             this.mnuStrip = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuNewSQLStoreManager = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuNewGenericStoreManager = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuNewConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenConnection = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,11 +53,11 @@
             this.mnuCloseAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArrangeIcons = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
-            this.mnuNewConnection = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowStartPage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,9 +79,6 @@
             // mnuFile
             // 
             this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuNewSQLStoreManager,
-            this.mnuNewGenericStoreManager,
-            this.mnuSeparator1,
             this.mnuNewConnection,
             this.mnuSaveConnection,
             this.mnuAddFavourite,
@@ -98,24 +93,12 @@
             this.mnuFile.Size = new System.Drawing.Size(37, 20);
             this.mnuFile.Text = "&File";
             // 
-            // mnuNewSQLStoreManager
+            // mnuNewConnection
             // 
-            this.mnuNewSQLStoreManager.Name = "mnuNewSQLStoreManager";
-            this.mnuNewSQLStoreManager.Size = new System.Drawing.Size(232, 22);
-            this.mnuNewSQLStoreManager.Text = "New SQL Store Manager";
-            this.mnuNewSQLStoreManager.Click += new System.EventHandler(this.mnuNewSQLStoreManager_Click);
-            // 
-            // mnuNewGenericStoreManager
-            // 
-            this.mnuNewGenericStoreManager.Name = "mnuNewGenericStoreManager";
-            this.mnuNewGenericStoreManager.Size = new System.Drawing.Size(232, 22);
-            this.mnuNewGenericStoreManager.Text = "New Generic Store Manager";
-            this.mnuNewGenericStoreManager.Click += new System.EventHandler(this.mnuNewGenericStoreManager_Click);
-            // 
-            // mnuSeparator1
-            // 
-            this.mnuSeparator1.Name = "mnuSeparator1";
-            this.mnuSeparator1.Size = new System.Drawing.Size(229, 6);
+            this.mnuNewConnection.Name = "mnuNewConnection";
+            this.mnuNewConnection.Size = new System.Drawing.Size(232, 22);
+            this.mnuNewConnection.Text = "New Connection";
+            this.mnuNewConnection.Click += new System.EventHandler(this.mnuNewConnection_Click);
             // 
             // mnuSaveConnection
             // 
@@ -200,7 +183,8 @@
             // mnuOptions
             // 
             this.mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuUseUtf8Bom});
+            this.mnuUseUtf8Bom,
+            this.mnuShowStartPage});
             this.mnuOptions.Name = "mnuOptions";
             this.mnuOptions.Size = new System.Drawing.Size(61, 20);
             this.mnuOptions.Text = "&Options";
@@ -265,17 +249,17 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
+            this.mnuAbout});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
-            // aboutToolStripMenuItem
+            // mnuAbout
             // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.Size = new System.Drawing.Size(107, 22);
+            this.mnuAbout.Text = "&About";
+            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // stsBar
             // 
@@ -295,12 +279,15 @@
             // 
             this.ofdConnection.Title = "Open Connection";
             // 
-            // mnuNewConnection
+            // mnuShowStartPage
             // 
-            this.mnuNewConnection.Name = "mnuNewConnection";
-            this.mnuNewConnection.Size = new System.Drawing.Size(232, 22);
-            this.mnuNewConnection.Text = "New Connection";
-            this.mnuNewConnection.Click += new System.EventHandler(this.mnuNewConnection_Click);
+            this.mnuShowStartPage.Checked = true;
+            this.mnuShowStartPage.CheckOnClick = true;
+            this.mnuShowStartPage.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuShowStartPage.Name = "mnuShowStartPage";
+            this.mnuShowStartPage.Size = new System.Drawing.Size(217, 22);
+            this.mnuShowStartPage.Text = "Show Start Page";
+            this.mnuShowStartPage.Click += new System.EventHandler(this.mnuShowStartPage_Click);
             // 
             // fclsManager
             // 
@@ -328,7 +315,6 @@
 
         private System.Windows.Forms.MenuStrip mnuStrip;
         private System.Windows.Forms.StatusStrip stsBar;
-        private System.Windows.Forms.ToolStripSeparator mnuSeparator1;
         private System.Windows.Forms.ToolStripMenuItem mnuTileHorizontal;
         private System.Windows.Forms.ToolStripMenuItem mnuFile;
         private System.Windows.Forms.ToolStripMenuItem mnuExit;
@@ -337,8 +323,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuTileVertical;
         private System.Windows.Forms.ToolStripMenuItem mnuCloseAll;
         private System.Windows.Forms.ToolStripMenuItem mnuArrangeIcons;
-        private System.Windows.Forms.ToolStripMenuItem mnuNewSQLStoreManager;
-        private System.Windows.Forms.ToolStripMenuItem mnuNewGenericStoreManager;
         private System.Windows.Forms.ToolStripSeparator mnuSeparator2;
         private System.Windows.Forms.ToolStripMenuItem mnuSaveConnection;
         private System.Windows.Forms.ToolStripMenuItem mnuOpenConnection;
@@ -355,8 +339,9 @@
         private System.Windows.Forms.ToolStripMenuItem mnuOptions;
         private System.Windows.Forms.ToolStripMenuItem mnuUseUtf8Bom;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuNewConnection;
+        private System.Windows.Forms.ToolStripMenuItem mnuShowStartPage;
     }
 }
 

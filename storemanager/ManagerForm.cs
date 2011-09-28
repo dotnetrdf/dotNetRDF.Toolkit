@@ -45,17 +45,17 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public partial class fclsManager : Form
+    public partial class ManagerForm : Form
     {
-        private IGraph _recentConnections = new Graph();
+        private IGraph _recentConnections = new QueryableGraph();
         private String _recentConnectionsFile;
 
-        private IGraph _faveConnections = new Graph();
+        private IGraph _faveConnections = new QueryableGraph();
         private String _faveConnectionsFile;
 
         public const int MaxRecentConnections = 9;
 
-        public fclsManager()
+        public ManagerForm()
         {
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
@@ -66,6 +66,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.mnuUseUtf8Bom.Checked = false;
                 Options.UseBomForUtf8 = false;
             }
+            this.mnuShowStartPage.Checked = Properties.Settings.Default.ShowStartPage;
 
             //Check whether we have a Recent and Favourites Connections Graph
             try
@@ -105,7 +106,11 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void fclsManager_Load(object sender, EventArgs e)
         {
-            
+            if (Properties.Settings.Default.ShowStartPage)
+            {
+                StartPage start = new StartPage(this._recentConnections, this._faveConnections);
+                start.ShowDialog();
+            }
         }
 
         private void mnuStrip_MenuActivate(object sender, System.EventArgs e)
@@ -120,11 +125,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     this.mnuSaveConnection.Enabled = true;
                     this.mnuAddFavourite.Enabled = true;
-                }
-                else if (this.ActiveMdiChild is fclsSQLStoreManager)
-                {
-                    this.mnuSaveConnection.Enabled = true;
-                    this.mnuAddFavourite.Enabled = false;
                 }
                 else
                 {
@@ -176,43 +176,16 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void mnuNewSQLStoreManager_Click(object sender, EventArgs e)
-        {
-            fclsSQLStoreManager storeManager = new fclsSQLStoreManager();
-            storeManager.MdiParent = this;
-            storeManager.Show();
-        }
-
-        private void mnuNewGenericStoreManager_Click(object sender, EventArgs e)
-        {
-            fclsGenericStoreConnection connector = new fclsGenericStoreConnection();
-            if (connector.ShowDialog() == DialogResult.OK)
-            {
-                IGenericIOManager manager = connector.Manager;
-                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
-                storeManager.MdiParent = this;
-                storeManager.Show();
-
-                //Add to Recent Connections
-                this.AddRecentConnection(manager);
-            }
-        }
-
         private void mnuSaveConnection_Click(object sender, EventArgs e)
         {
             if (this.ActiveMdiChild != null)
             {
-                if (this.ActiveMdiChild is fclsGenericStoreManager || this.ActiveMdiChild is fclsSQLStoreManager)
+                if (this.ActiveMdiChild is fclsGenericStoreManager)
                 {
                     Object manager;
                     if (this.ActiveMdiChild is fclsGenericStoreManager)
                     {
                         manager = ((fclsGenericStoreManager)this.ActiveMdiChild).Manager;
-                    }
-                    else if (this.ActiveMdiChild is fclsSQLStoreManager)
-                    {
-                        manager = ((fclsSQLStoreManager)this.ActiveMdiChild).Manager;
-                        if (manager == null) return;
                     }
                     else
                     {
@@ -463,7 +436,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void AddRecentConnection(IGenericIOManager manager)
+        public void AddRecentConnection(IGenericIOManager manager)
         {
             INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
 
@@ -504,7 +477,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }            
         }
 
-        private void AddFavouriteConnection(IGenericIOManager manager)
+        public void AddFavouriteConnection(IGenericIOManager manager)
         {
             INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
 
@@ -620,7 +593,7 @@ namespace VDS.RDF.Utilities.StoreManager
             Properties.Settings.Default.Save();
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuAbout_Click(object sender, EventArgs e)
         {
             fclsAbout about = new fclsAbout();
             about.ShowDialog();
@@ -640,6 +613,12 @@ namespace VDS.RDF.Utilities.StoreManager
                 //Add to Recent Connections
                 this.AddRecentConnection(manager);
             }
+        }
+
+        private void mnuShowStartPage_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

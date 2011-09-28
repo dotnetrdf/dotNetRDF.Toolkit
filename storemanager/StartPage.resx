@@ -117,13 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblInfo.Text" xml:space="preserve">
-    <value>Store Manager is part of the dotNetRDF Toolkit for Windows.  It provides a GUI for working with a variety of different RDF stores that are supported by dotNetRDF.
-
-This software is still in Beta and may be buggy, please report any issues to the mailing list at dotnetrdf-bugs
-@lists.sourceforge.net</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnNewConnection.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKYSURBVDhPhVNLSFtREH3golDoptuuuu2mdC8IXQQs
+        JQShqSAI2WUhuMhGCKgkRkSFKChUaJQQVIIao/GTj1oxgguJmqhBMZH4i3JFE0yiqTE5nbngon1CH1zm
+        ct/MmZlzZhQAytLS0qtQKPQtGAx6/H5/fHFxsbSwsPB7bm4u4vP53DMzM5rp6ekq9v33cPAHCo7u7Ozg
+        6uoKuVwO5XIZT09PuLm5QSqVwtraGqampsKTk5PvVACU9dfJyQkqlQr9e/krlUrY3t6G2+12qgACgYAo
+        Fov/BRBCYHx8XKgAqF/x8PCAy8tLZDIZ3N/fgzM+Pj4im83i+PgY4XAY6XQao6OjaoD5+XnBQdfX19I5
+        Ho9jf38f0WhUBhJHWF1dxcXFBVwulxqAmBaFQgG3t7cyy+npqbTMSyQSkQTy6e3tRVdXF5P0lxLK7Oys
+        yOfz4B45KJlM4uzsTFYzNjYGu90OqhIej4eVgM1m+9za2ppqbm7+wWCK1+sVLB1zwMGHh4dSuqOjI/T3
+        92NzcxNUJVjm3d1dCbKxsYGmpibU1ta+VghZ3N3dydIPDg5k/4lEQt5JNglA5MFkMsFsNkuA9fV1vg/L
+        Cmg4xDPbe3t7iMViMnt3dzeWl5dxfn6OlpYW2VJfX5/o6Ogo8H1iYgJGoxEKZRH8wG1w4DNAW1ubdOK2
+        enp6ZFaywmq1Zlkh5kar1UKh4fhCJea3trbk6DKhrAqTSvsgFWDb2dlZsVgsOW6BpW1oaPhZU1PzVkpC
+        +r53Op2OkZGRLFmZmYDBVaysrMDhcMgKOHBoaAi0O6ivr0d1dXWVarvI4c3g4OAnUuBjY2PjcF1dHQwG
+        w9eBgQG0t7dDp9N9J/bLlD0gSXxpRV960+v10Gg0qkH6A2n3Fudvt69nAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAcAEBAAAAEAIABoBAAAdgAAABYWAAABACAAEAgAAN4EAAAYGAAAAQAgAIgJAADuDAAAICAAAAEA

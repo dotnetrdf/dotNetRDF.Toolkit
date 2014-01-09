@@ -24,53 +24,56 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using VDS.RDF.Utilities.StoreManager.Connections;
+using System.IO;
 using VDS.RDF.Utilities.StoreManager.Forms;
+using VDS.RDF.Utilities.StoreManager.Tasks;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
-    /// <summary>
-    /// Information for doing copy/move via drag/drop
-    /// </summary>
-    class CopyMoveDragInfo
+    public partial class TaskErrorTraceForm<T> 
+        : CrossThreadForm where T : class
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public TaskErrorTraceForm(ITask<T> task, String subtitle)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            InitializeComponent();
+
+            this.Text = String.Format(this.Text, task.Name, subtitle);
+            this.ShowErrorTrace(task);
+
+            task.StateChanged += () => this.ShowErrorTrace(task);
+
+            this.btnClose.Focus();
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
+        private void btnClose_Click(object sender, EventArgs e)
         {
-            get;
-            private set;
+            this.Close();
         }
 
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
+        private void ShowErrorTrace(ITask<T> task)
         {
-            get;
-            private set;
-        }
+            StringWriter writer = new StringWriter();
+            if (task.Error == null)
+            {
+                writer.Write("No Error(s)");
+            }
+            else
+            {
+                Exception ex = task.Error;
+                while (ex != null)
+                {
+                    writer.WriteLine(ex.Message);
+                    writer.WriteLine(ex.StackTrace);
 
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
-        {
-            get;
-            private set;
+                    if (ex.InnerException != null)
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine("Inner Exception:");
+                    }
+                    ex = ex.InnerException;
+                }
+            }
+            CrossThreadSetText(this.txtErrorTrace, writer.ToString());
         }
     }
 }

@@ -3,7 +3,7 @@ dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
 
-Copyright (c) 2009-2012 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
+Copyright (c) 2009-2013 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,54 +23,34 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
+using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
-using VDS.RDF.Utilities.StoreManager.Forms;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
-    /// <summary>
-    /// Information for doing copy/move via drag/drop
-    /// </summary>
-    class CopyMoveDragInfo
+    public partial class ManageConnectionsForm : Form
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public ManageConnectionsForm()
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            InitializeComponent();
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
+        public IConnectionsGraph ActiveConnections
         {
-            get;
-            private set;
+            get { return this.lvwActive.DataSource; }
+            set { this.lvwActive.DataSource = value; }
         }
 
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
+        public IConnectionsGraph RecentConnections
         {
-            get;
-            private set;
+            get { return this.lvwRecent.DataSource; }
+            set { this.lvwRecent.DataSource = value; }
         }
 
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
+        public IConnectionsGraph FavouriteConnections
         {
-            get;
-            private set;
+            get { return this.lvwFavourite.DataSource; }
+            set { this.lvwFavourite.DataSource = value; }
         }
     }
 }

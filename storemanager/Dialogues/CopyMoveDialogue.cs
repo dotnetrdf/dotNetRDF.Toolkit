@@ -24,53 +24,51 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Windows.Forms;
 using VDS.RDF.Utilities.StoreManager.Connections;
-using VDS.RDF.Utilities.StoreManager.Forms;
+using VDS.RDF.Utilities.StoreManager.Tasks;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
-    /// <summary>
-    /// Information for doing copy/move via drag/drop
-    /// </summary>
-    class CopyMoveDragInfo
+    partial class CopyMoveDialogue : Form
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public CopyMoveDialogue(CopyMoveDragInfo info, Connection target)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            InitializeComponent();
+
+            this.lblConfirm.Text = String.Format(this.lblConfirm.Text, info.SourceUri, info.Source, target);
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
+        public bool IsCopy
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
+        public bool IsMove
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
+        private void btnCopy_Click(object sender, EventArgs e)
         {
-            get;
-            private set;
+            this.IsCopy = true;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnMove_Click(object sender, EventArgs e)
+        {
+            this.IsMove = true;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }

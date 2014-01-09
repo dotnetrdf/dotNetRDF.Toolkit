@@ -24,53 +24,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using VDS.RDF.Utilities.StoreManager.Connections;
-using VDS.RDF.Utilities.StoreManager.Forms;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Forms
 {
-    /// <summary>
-    /// Information for doing copy/move via drag/drop
-    /// </summary>
-    class CopyMoveDragInfo
+    public partial class InvalidTemplateForm : Form
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public InvalidTemplateForm(List<String> errors)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            InitializeComponent();
+
+            this.lstErrors.DataSource = errors;
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
-        {
-            get;
-            private set;
+            this.Close();
         }
     }
 }

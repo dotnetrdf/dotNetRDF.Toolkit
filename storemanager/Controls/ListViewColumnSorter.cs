@@ -24,53 +24,38 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using VDS.RDF.Utilities.StoreManager.Connections;
-using VDS.RDF.Utilities.StoreManager.Forms;
+using System.Collections;
+using System.Windows.Forms;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Controls
 {
     /// <summary>
-    /// Information for doing copy/move via drag/drop
+    /// A column sorter for list views
     /// </summary>
-    class CopyMoveDragInfo
+    public class ListViewColumnSorter : IComparer
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        private readonly int _column;
+        private readonly int _modifier = 1;
+
+        public ListViewColumnSorter(int column, SortOrder order)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            this._column = column;
+            if (order == SortOrder.Descending)
+            {
+                this._modifier = -1;
+            }
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
-        {
-            get;
-            private set;
-        }
 
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
+        public int Compare(object x, object y)
         {
-            get;
-            private set;
-        }
+            if (!(x is ListViewItem) || !(y is ListViewItem)) return 0;
+            ListViewItem a = (ListViewItem) x;
+            ListViewItem b = (ListViewItem) y;
 
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
-        {
-            get;
-            private set;
+            int numA, numB;
+            if (Int32.TryParse(a.SubItems[this._column].Text, out numA) && Int32.TryParse(b.SubItems[this._column].Text, out numB)) return this._modifier*numA.CompareTo(numB);
+            return this._modifier*String.Compare(a.SubItems[this._column].Text, b.SubItems[this._column].Text, StringComparison.CurrentCulture);
         }
     }
 }

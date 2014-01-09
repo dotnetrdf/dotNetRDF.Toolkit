@@ -24,53 +24,49 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using VDS.RDF.Utilities.StoreManager.Connections;
-using VDS.RDF.Utilities.StoreManager.Forms;
+using System.Windows.Forms;
+using VDS.RDF.Utilities.StoreManager.Properties;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
-    /// <summary>
-    /// Information for doing copy/move via drag/drop
-    /// </summary>
-    class CopyMoveDragInfo
+    public partial class CopyMoveRenameGraphForm : Form
     {
-        /// <summary>
-        /// Creates a new Copy/Move infor
-        /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public CopyMoveRenameGraphForm(String task)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            InitializeComponent();
+            this.Text = String.Format(this.Text, task);
         }
 
-        /// <summary>
-        /// Drag Source Form
-        /// </summary>
-        public StoreManagerForm Form
+        public Uri Uri
         {
             get;
             private set;
         }
 
-        /// <summary>
-        /// Drag source connection
-        /// </summary>
-        public Connection Source
+        private void btnOK_Click(object sender, EventArgs e)
         {
-            get;
-            private set;
+            try
+            {
+                this.Uri = new Uri(this.txtUri.Text);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (UriFormatException uriEx)
+            {
+                MessageBox.Show(string.Format(Resources.InvalidUri_Text, uriEx.Message), Resources.InvalidUri_Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            get;
-            private set;
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        private void CopyMoveRenameGraphForm_Load(object sender, EventArgs e)
+        {
+            this.txtUri.SelectAll();
+            this.txtUri.Focus();
         }
     }
 }

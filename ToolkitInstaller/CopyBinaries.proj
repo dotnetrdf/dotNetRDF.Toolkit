@@ -7,41 +7,41 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.dll" Exclude="Dummy" />
-        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.exe" />
-        <RdfConvert Include="..\..\Utilities\rdfConvert\bin\$(Configuration)\*.exe.config" />
-        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.dll" />
-        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.exe" />
-        <RdfEditor  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\*.exe.config" />
-        <RdfEditorSyntax  Include="..\..\Utilities\rdfEditor.Wpf\bin\$(Configuration)\Syntax\*.xshd" />
-        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.dll" />
-        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.exe" />
-        <RdfOptStats Include="..\..\Utilities\rdfOptStats\bin\$(Configuration)\*.exe.config" />
-        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.dll" />
-        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.exe" />
-        <RdfQuery    Include="..\..\Utilities\rdfQuery\bin\$(Configuration)\*.exe.config" />
-        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.dll" />
-        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.exe" />
-        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.exe.config" />
-        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.ttl" />
-        <RdfServer   Include="..\..\Utilities\rdfServer\bin\$(Configuration)\*.html" />
-        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.dll" />
-        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.exe" />
-        <RdfWebDeploy Include="..\..\Utilities\rdfWebDeploy\bin\$(Configuration)\*.exe.config" />
-        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.dll" />
-        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.exe" />
-        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.exe.config" />
-        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.ico" />
-        <SparqlGui    Include="..\..\Utilities\SparqlGUI\bin\$(Configuration)\*.rq" />
-        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe" />
-        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.exe.config" />
-        <Soh          Include="..\..\Utilities\soh\bin\$(Configuration)\*.dll" />
-        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.dll" />
-        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe" />
-        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.exe.config" />
-        <StoreManager Include="..\..\Utilities\storemanager\bin\$(Configuration)\*.ico" />
-        <StoreManagerPlugins Include="..\..\Utilities\storemanager\bin\$(Configuration)\plugins\*.txt" />
-        <ReadMe Include="..\..\Acknowledgments.txt;..\..\License.txt;..\..\Utilities\ReadMe.txt;..\..\Utilities\ChangeLog.txt" />
+        <RdfConvert Include="..\Toolkit\rdfConvert\bin\$(Configuration)\*.dll" Exclude="Dummy" />
+        <RdfConvert Include="..\Toolkit\rdfConvert\bin\$(Configuration)\*.exe" />
+        <RdfConvert Include="..\Toolkit\rdfConvert\bin\$(Configuration)\*.exe.config" />
+        <RdfEditor  Include="..\Toolkit\rdfEditor.Wpf\bin\$(Configuration)\*.dll" />
+        <RdfEditor  Include="..\Toolkit\rdfEditor.Wpf\bin\$(Configuration)\*.exe" />
+        <RdfEditor  Include="..\Toolkit\rdfEditor.Wpf\bin\$(Configuration)\*.exe.config" />
+        <RdfEditorSyntax  Include="..\Toolkit\rdfEditor.Wpf\bin\$(Configuration)\Syntax\*.xshd" />
+        <RdfOptStats Include="..\Toolkit\rdfOptStats\bin\$(Configuration)\*.dll" />
+        <RdfOptStats Include="..\Toolkit\rdfOptStats\bin\$(Configuration)\*.exe" />
+        <RdfOptStats Include="..\Toolkit\rdfOptStats\bin\$(Configuration)\*.exe.config" />
+        <RdfQuery    Include="..\Toolkit\rdfQuery\bin\$(Configuration)\*.dll" />
+        <RdfQuery    Include="..\Toolkit\rdfQuery\bin\$(Configuration)\*.exe" />
+        <RdfQuery    Include="..\Toolkit\rdfQuery\bin\$(Configuration)\*.exe.config" />
+        <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.dll" />
+        <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.exe" />
+        <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.exe.config" />
+        <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.ttl" />
+        <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.html" />
+        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.dll" />
+        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.exe" />
+        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.exe.config" />
+        <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.dll" />
+        <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.exe" />
+        <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.exe.config" />
+        <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.ico" />
+        <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.rq" />
+        <Soh          Include="..\Toolkit\soh\bin\$(Configuration)\*.exe" />
+        <Soh          Include="..\Toolkit\soh\bin\$(Configuration)\*.exe.config" />
+        <Soh          Include="..\Toolkit\soh\bin\$(Configuration)\*.dll" />
+        <StoreManager Include="..\Toolkit\storemanager\bin\$(Configuration)\*.dll" />
+        <StoreManager Include="..\Toolkit\storemanager\bin\$(Configuration)\*.exe" />
+        <StoreManager Include="..\Toolkit\storemanager\bin\$(Configuration)\*.exe.config" />
+        <StoreManager Include="..\Toolkit\storemanager\bin\$(Configuration)\*.ico" />
+        <StoreManagerPlugins Include="..\Toolkit\storemanager\bin\$(Configuration)\plugins\*.txt" />
+        <ReadMe Include="..\Acknowledgments.txt;..\LICENSE;..\ReadMe.txt;..\ChangeLog.txt" />
     </ItemGroup>
     
     <Target Name="CleanTmp">

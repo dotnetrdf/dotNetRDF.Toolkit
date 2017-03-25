@@ -8,5 +8,5 @@ before_build:
 configuration: Release
 
 artifacts:
-  - ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi
-  - ToolkitInstaller\bin\Release\setup.exe
+  - path: ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi
+  - path: ToolkitInstaller\bin\Release\setup.exe

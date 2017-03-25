@@ -6,3 +6,7 @@ before_build:
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
 
 configuration: Release
+
+artifacts:
+  - ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi
+  - ToolkitInstaller\bin\Release\setup.exe

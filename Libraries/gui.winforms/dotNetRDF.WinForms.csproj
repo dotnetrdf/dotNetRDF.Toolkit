@@ -59,6 +59,9 @@
     <Reference Include="dotNetRDF, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
       <HintPath>..\..\packages\dotNetRDF.2.0.0-pre0007\lib\net40\dotNetRDF.dll</HintPath>
     </Reference>
+    <Reference Include="dotNetRDF.Data.DataTables, Version=0.0.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.Data.DataTables.2.0.0-pre0007\lib\net40-client\dotNetRDF.Data.DataTables.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HtmlAgilityPack.1.4.9.5\lib\Net40\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>

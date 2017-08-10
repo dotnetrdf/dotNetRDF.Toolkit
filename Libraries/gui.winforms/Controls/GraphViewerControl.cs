@@ -39,6 +39,7 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using VDS.RDF.Data.DataTables;
 using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;

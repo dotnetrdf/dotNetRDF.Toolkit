@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
+using VDS.RDF.Data.DataTables;
 using VDS.RDF.GUI.WinForms.Forms;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -130,7 +131,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             }
             else
             {
-                this.dgvResults.DataSource = (DataTable) this._results;
+                this.dgvResults.DataSource = _results.ToDataTable();
             }
         }
 

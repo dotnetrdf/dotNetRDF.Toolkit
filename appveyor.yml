@@ -10,3 +10,14 @@ configuration: Release
 artifacts:
   - path: ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi
   - path: ToolkitInstaller\bin\Release\setup.exe
+  - path: ToolkitInstaller\packages
+
+deploy:
+  - provider: GitHub
+    description: 'dotNetRDF.Toolkit $(GitVersion_SemVer)'
+    auth_token:
+      secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
+    on:
+      branch: master
+      appveyor_repo_tag: true 
+    artifact: ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi, ToolkitInstaller\bin\Release\setup.exe

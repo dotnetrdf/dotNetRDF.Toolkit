@@ -8,9 +8,12 @@ before_build:
 configuration: Release
 
 artifacts:
-  - path: ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi
-  - path: ToolkitInstaller\bin\Release\setup.exe
+  - path: ToolkitInstaller\bin\Release
+    name: dotNetRDFToolkitInstaller.zip
+    type: zip
   - path: ToolkitInstaller\packages
+    name: dotNetRdfToolkit-noInstaller.zip
+    type: zip
 
 deploy:
   - provider: GitHub
@@ -19,4 +22,4 @@ deploy:
       secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
     on:
       appveyor_repo_tag: true 
-    artifact: ToolkitInstaller\bin\Release\dotNetRdf-Toolkit.msi, ToolkitInstaller\bin\Release\setup.exe
+    artifact: dotNetRDFToolkitInstaller.zip, dotNetRdfToolkit-noInstaller.zip

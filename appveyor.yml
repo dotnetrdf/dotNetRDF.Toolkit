@@ -9,10 +9,10 @@ configuration: Release
 
 artifacts:
   - path: ToolkitInstaller\bin\Release
-    name: dotNetRDFToolkitInstaller-$(GitVersion_SemVer).zip
+    name: dotNetRDFToolkitInstaller-$(GitVersion_SemVer)
     type: zip
   - path: ToolkitInstaller\packages
-    name: dotNetRdfToolkit-noInstaller-$(GitVersion_SemVer).zip
+    name: dotNetRdfToolkit-noInstaller-$(GitVersion_SemVer)
     type: zip
 
 deploy:
@@ -22,4 +22,4 @@ deploy:
       secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
     on:
       appveyor_repo_tag: true 
-    artifact: dotNetRDFToolkitInstaller-$(GitVersion_SemVer).zip, dotNetRdfToolkit-noInstaller-$(GitVersion_SemVer).zip
+    artifact: dotNetRDFToolkitInstaller-$(GitVersion_SemVer), dotNetRdfToolkit-noInstaller-$(GitVersion_SemVer)

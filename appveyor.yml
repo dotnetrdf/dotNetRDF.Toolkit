@@ -8,10 +8,10 @@ before_build:
 configuration: Release
 
 artifacts:
-  - path: ToolkitInstaller\bin\Release
+  - path: %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\bin\Release
     name: dotNetRDFToolkitInstaller-$(GitVersion_SemVer)
     type: zip
-  - path: ToolkitInstaller\packages
+  - path: %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages
     name: dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer)
     type: zip
 

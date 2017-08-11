@@ -5,15 +5,15 @@ before_build:
   - nuget restore
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
 
+after_build:
+  - cmd: 7z a dotNetRDFToolkitInstaller-%GitVersion_SemVer%.zip %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\bin\Release\*.*
+  - cmd: 7z a dotNetRDFToolkit-noInstaller-%GitVersion_SemVer% %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages
+  
 configuration: Release
 
 artifacts:
-  - path: %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\bin\Release
-    name: dotNetRDFToolkitInstaller-$(GitVersion_SemVer)
-    type: zip
-  - path: %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages
-    name: dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer)
-    type: zip
+  - path: dotNetRDFToolkitInstaller-$(GitVersion_SemVer).zip
+  - path: dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer).zip
 
 deploy:
   - provider: GitHub
@@ -22,4 +22,4 @@ deploy:
       secure: j1Qanb5R8lGcUc4Drk5Pjk1ra9domw0vA1pbILJBWPQ1r3XAIETCd9L8N6GN2NZbE/aYCEdHjr4VTjfNQB1bKTKcZ4Unux/XuyAwFrzjZHg=
     on:
       appveyor_repo_tag: true 
-    artifact: dotNetRDFToolkitInstaller-$(GitVersion_SemVer), dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer)
+    artifact: dotNetRDFToolkitInstaller-$(GitVersion_SemVer).zip, dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer).zip

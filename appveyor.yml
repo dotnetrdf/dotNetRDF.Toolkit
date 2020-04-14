@@ -20,7 +20,7 @@ deploy:
   - provider: GitHub
     description: 'dotNetRDF.Toolkit $(GitVersion_SemVer)'
     auth_token:
-      secure: 7hlVQxfpVlMXbhJlg6sUIj6QAnvuDyjhEd300V0KOO5HpcQXEx7RE2yO5KMUoyUr
+      secure: KMC9yx8cu4fyzvtDnRIcmtowLKx9hpAwJhIyz6E4LYj79Rp1BiA7QXuyUZo7xUzm
     on:
       appveyor_repo_tag: true 
     artifact: dotNetRDFToolkitInstaller-$(GitVersion_SemVer).zip, dotNetRDFToolkit-noInstaller-$(GitVersion_SemVer).zip

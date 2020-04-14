@@ -25,9 +25,6 @@
         <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.exe.config" />
         <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.ttl" />
         <RdfServer   Include="..\Toolkit\rdfServer\bin\$(Configuration)\*.html" />
-        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.dll" />
-        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.exe" />
-        <RdfWebDeploy Include="..\Toolkit\rdfWebDeploy\bin\$(Configuration)\*.exe.config" />
         <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.dll" />
         <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.exe" />
         <SparqlGui    Include="..\Toolkit\SparqlGUI\bin\$(Configuration)\*.exe.config" />
@@ -56,7 +53,6 @@
         <Copy SourceFiles="@(RdfOptStats)" DestinationFolder="$(PackageDir)\rdfOptStats" />
         <Copy SourceFiles="@(RdfQuery)" DestinationFolder="$(PackageDir)\rdfQuery" />
         <Copy SourceFiles="@(RdfServer)" DestinationFolder="$(PackageDir)\rdfServer" />
-        <Copy SourceFiles="@(RdfWebDeploy)" DestinationFolder="$(PackageDir)\rdfWebDeploy" />
         <Copy SourceFiles="@(Soh)" DestinationFolder="$(PackageDir)\soh" />
         <Copy SourceFiles="@(SparqlGui)" DestinationFolder="$(PackageDir)\sparqlGui" />
         <Copy SourceFiles="@(StoreManager)" DestinationFolder="$(PackageDir)\storeManager" />

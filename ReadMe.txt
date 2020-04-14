@@ -3,8 +3,7 @@ dotNetRDF Toolkit for Windows
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-dotNetRDF Project 2009-15
-dotnetrdf-develop@lists.sf.net
+dotNetRDF Project 2009-2020
 
 Usage
 -----
@@ -16,7 +15,6 @@ This Toolkit provides the following command line utilities:
 - rdfOptStats - A tool for generating statistics on RDF for use with the new optional Weighted Optimiser
 - rdfQuery - A tool for querying RDF data using SPARQL
 - rdfServer - A tool for running a lightweight HTTP server to experimental with SPARQL
-- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications
 - soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP
 
 This Toolkit provides the following GUI tools:
@@ -25,7 +23,7 @@ This Toolkit provides the following GUI tools:
 - SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine
 - StoreManager - A GUI for performing basic management and query tasks on various Triple Stores
 
-You can find the documentation at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki/UserGuide/Tools
+You can find the documentation at https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide-Tools
 
 License
 -------

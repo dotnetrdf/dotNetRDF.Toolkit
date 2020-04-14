@@ -16,7 +16,7 @@
 
     <!-- Available Features for Installation -->
     <Feature Id="ProductFeature" Title="dotNetRDF Toolkit" Level="1" TypicalDefault="install" InstallDefault="local"
-             Display="expand">
+             Display="expand" ConfigurableDirectory="INSTALLFOLDER">
       <Feature Id="InfoFeature" Title="Information" Display="hidden" Level="1" TypicalDefault="install"
                InstallDefault="local">
         <ComponentGroupRef Id="infoComponent" />
@@ -107,17 +107,12 @@
                  InstallDefault="followParent" Description="A command line tool for running a basic SPARQL server">
           <ComponentGroupRef Id="rdfServerComponent" Primary="no" />
         </Feature>
-        <Feature Id="rdfWebDeployFeature" Title="rdfWebDeploy" Level="1000" TypicalDefault="advertise"
-                 InstallDefault="followParent"
-                 Description="A command line tool that helps deploying dotNetRDF's ASP.Net support into your web applications">
-          <ComponentGroupRef Id="rdfWebDeployComponent" />
-        </Feature>
         <Feature Id="sohFeature" Title="soh" Level="1" TypicalDefault="install" InstallDefault="followParent"
                  Description="A command line tool for interacting with remote SPARQL servers that support the SPARQL Graph Store Protocol">
           <ComponentGroupRef Id="sohComponent" />
         </Feature>
       </Feature>
-      <Component Id="shorcutsComponent" Directory="ShortcutsFolder" Guid="{C29B8F02-C463-4A4E-8E2A-E176629E6B19}">
+      <Component Id="shortcutsComponent" Directory="ShortcutsFolder" Guid="{C29B8F02-C463-4A4E-8E2A-E176629E6B19}">
         <RemoveFolder Id="shortcutsComponentUninstall" Directory="ShortcutsFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\dotNetRDF\Toolkit" Name="installed" Type="integer" Value="1"
                        KeyPath="yes" />
@@ -142,7 +137,6 @@
             <Directory Id="rdfOptStatsFolder" Name="rdfOptStats" />
             <Directory Id="rdfQueryFolder" Name="rdfQuery" />
             <Directory Id="rdfServerFolder" Name="rdfServer" />
-            <Directory Id="rdfWebDeployFolder" Name="rdfWebDeploy" />
             <Directory Id="sohFolder" Name="sohFolder" />
             <Directory Id="sparqlGuiFolder" Name="sparqlGuiFolder" />
             <Directory Id="storeManagerFolder" Name="storeManager" />
@@ -181,9 +175,6 @@
     <ComponentGroup Id="rdfServerComponent" Directory="rdfServerFolder">
       <ComponentGroupRef Id="rdfServerComponentGroup" />
     </ComponentGroup>
-    <ComponentGroup Id="rdfWebDeployComponent" Directory="rdfWebDeployFolder">
-      <ComponentGroupRef Id="rdfWebDeployComponentGroup" />
-    </ComponentGroup>
     <ComponentGroup Id="sohComponent" Directory="sohFolder">
       <ComponentGroupRef Id="sohComponentGroup" />
     </ComponentGroup>
@@ -205,4 +196,5 @@
       </Component>
     </DirectoryRef>
   </Fragment>
+
 </Wix>

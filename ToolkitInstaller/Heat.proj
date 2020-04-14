@@ -96,20 +96,6 @@
 
     <HeatDirectory
       ToolPath="$(WixToolPath)"
-      OutputFile="rdfWebDeploy.wxs"
-      Directory="$(PackageDir)\rdfWebDeploy"
-      ComponentGroupName="rdfWebDeployComponentGroup"
-      GenerateGuidsNow="true"
-      SuppressCom="true"
-      SuppressRegistry="true"
-      SuppressRootDirectory="true"
-      SuppressUniqueIds="true"
-      DirectoryRefId="rdfWebDeployFolder"
-      Transforms="StableIds.xsl"
-      PreprocessorVariable="var.rdfWebDeployFiles" />
-
-    <HeatDirectory
-      ToolPath="$(WixToolPath)"
       OutputFile="soh.wxs"
       Directory="$(PackageDir)\soh"
       ComponentGroupName="sohComponentGroup"

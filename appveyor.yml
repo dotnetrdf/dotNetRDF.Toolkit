@@ -1,5 +1,5 @@
 install:
-  - choco install gitversion.portable -pre -y
+  - choco install gitversion.portable -y
 
 before_build:
   - nuget restore
@@ -7,7 +7,8 @@ before_build:
 
 after_build:
   - cmd: 7z a dotNetRDFToolkitInstaller-%GitVersion_SemVer%.zip %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\bin\Release\*.*
-  - cmd: 7z a dotNetRDFToolkit-noInstaller-%GitVersion_SemVer%.zip %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages
+  - cmd: 7z a dotNetRDFToolkit-noInstaller-%GitVersion_SemVer%.zip %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages -xr!info
+  - cmd: 7z a dotNetRDFToolkit-noInstaller-$GitVersion_SemVer%.zip %APPVEYOR_BUILD_FOLDER%\ToolkitInstaller\packages\info\*.*
   
 configuration: Release
 

@@ -98,12 +98,13 @@ namespace VDS.RDF.Utilities.Query
                         case RdfQueryMode.Local:
                             if (this._explain)
                             {
-                                ExplainQueryProcessor processor = new ExplainQueryProcessor(this._store, this._level);
+                                var processor = new ExplainQueryProcessor(this._store, this._level);
                                 results = processor.ProcessQuery(q);
                             }
                             else
                             {
-                                results = this._store.ExecuteQuery(q);
+                                var processor = new LeviathanQueryProcessor(_store);
+                                results = processor.ProcessQuery(q);
                             }
                             break;
                         case RdfQueryMode.Remote:
@@ -318,8 +319,8 @@ namespace VDS.RDF.Utilities.Query
                         else
                         {
                             //File Extension
-                            this._graphWriter = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(format));
-                            this._resultsWriter = MimeTypesHelper.GetSparqlWriter(MimeTypesHelper.GetMimeType(format));
+                            this._graphWriter = MimeTypesHelper.GetWriterByFileExtension(format);
+                            this._resultsWriter = MimeTypesHelper.GetSparqlWriterByFileExtension(format);
                         }
                     }
                     catch (RdfException)

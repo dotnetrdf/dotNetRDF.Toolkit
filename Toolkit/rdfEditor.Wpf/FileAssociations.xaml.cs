@@ -197,7 +197,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     info.Create();
                     try
                     {
-                        info.ContentType = MimeTypesHelper.GetMimeType(info.Extension);
+                        info.ContentType = MimeTypesHelper.GetDefinitionsByFileExtension(info.Extension).Select(m=>m.CanonicalMimeType).FirstOrDefault();
                     }
                     catch
                     {
@@ -215,7 +215,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 {
                     try
                     {
-                        String mimeType = MimeTypesHelper.GetMimeType(info.Extension);
+                        var mimeType = MimeTypesHelper.GetDefinitionsByFileExtension(info.Extension).Select(x=>x.CanonicalMimeType).FirstOrDefault();
                         info.ContentType = mimeType;
                     } 
                     catch

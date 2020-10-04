@@ -179,7 +179,9 @@ namespace VDS.RDF.Utilities.Query
             }
             try
             {
-                Object results = this._store.ExecuteQuery(q);
+                //Object results = this._store.ExecuteQuery(q);
+                var processor = new LeviathanQueryProcessor(_store);
+                var results = processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
                     this._resultsWriter.Save((SparqlResultSet)results, Console.Out);

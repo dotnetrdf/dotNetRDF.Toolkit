@@ -296,7 +296,7 @@ namespace VDS.RDF.Utilities.Convert
                     {
                         try
                         {
-                            foreach (String mimeType in MimeTypesHelper.GetMimeTypes(format))
+                            foreach (var mimeType in MimeTypesHelper.GetDefinitionsByFileExtension(format).SelectMany(d=>d.MimeTypes).Distinct())
                             {
                                 this._outFormats.Add(mimeType);
                             }
@@ -394,7 +394,7 @@ namespace VDS.RDF.Utilities.Convert
                 if (this._inputs.Count == 1 && !this._outputFilename.Equals(String.Empty))
                 {
                     //If only 1 input and an output filename can detect the output format from that filename
-                    this._outFormats.AddRange(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._outputFilename)));
+                    this._outFormats.AddRange(MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._outputFilename)).SelectMany(d=>d.MimeTypes));
                 }
                 else
                 {

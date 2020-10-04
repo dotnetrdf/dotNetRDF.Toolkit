@@ -787,8 +787,9 @@ namespace VDS.RDF.Utilities.Sparql
             {
                 //Create and ensure index ready for use
                 this._ftIndex = new RAMDirectory();
-                IndexWriter writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
-                writer.Close();
+                
+                var writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
+                writer.Dispose();
 
                 //Create Indexer and wrap dataset
                 this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), new DefaultIndexSchema());

@@ -316,7 +316,7 @@ namespace VDS.RDF.Utilities.Query
                 else if (arg.Equals("-v") || arg.Equals("--version"))
                 {
                     Console.WriteLine("dotNetRDF Version " + Assembly.GetAssembly(typeof(Triple)).GetName().Version.ToString());
-                    Console.WriteLine("Copyright Rob Vesse 2009-10");
+                    Console.WriteLine("rdfQuery Version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString());
                     Console.WriteLine("http://www.dotnetrdf.org");
                     return false;
                 }

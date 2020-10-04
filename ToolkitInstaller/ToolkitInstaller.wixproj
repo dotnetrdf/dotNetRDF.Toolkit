@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>3.10</ProductVersion>
+    <ProductVersion>3.11</ProductVersion>
     <ProjectGuid>5bf10fa7-95b7-42b4-8f17-65ae02aa65fe</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>dotNetRdf-Toolkit</OutputName>

@@ -30,7 +30,7 @@
         <Label Grid.Column="1" Grid.Row="3" Name="lblRdfVersion">0.0.0.0</Label>
         
         <TextBlock Grid.Row="4" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is based upon the free and open source AvalonEdit component which was developed by Daniel Grunwald as part of the SharpDevelop project</TextBlock>
-        
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4" Margin="0,6,0,0">rdfEditor is currently Alpha so please be aware this software may be buggy - please report all bugs to <Hyperlink>dotnetrdf-bugreports@lists.sourceforge.net</Hyperlink></TextBlock>
+
+        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4" Margin="0,6,0,0">rdfEditor is currently Alpha so please be aware this software may be buggy - please report all bugs to <Hyperlink>https://github.com/dotnetrdf/dotNetRDF.Toolkit/issues</Hyperlink></TextBlock>
     </Grid>
 </Window>

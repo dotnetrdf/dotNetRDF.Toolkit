@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("rdfServer")]
-[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2012")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2012-2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

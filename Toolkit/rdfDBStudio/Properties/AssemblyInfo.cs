@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("rdfDBStudio")]
-[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2012")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2010-2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

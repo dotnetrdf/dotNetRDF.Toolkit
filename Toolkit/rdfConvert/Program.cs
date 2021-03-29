@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 //REQ: Add command line arguments to import custom parsers and serializers
@@ -45,6 +46,9 @@ namespace VDS.RDF.Utilities.Convert
 
             //Set Console Output Encoding to UTF-8
             Console.OutputEncoding = Encoding.UTF8;
+
+            // Set use of TLS 1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             if (args.Length >= 1 && args[0].Equals("-rapper"))
             {
                 RapperConvert rapper = new RapperConvert();

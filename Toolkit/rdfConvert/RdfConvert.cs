@@ -189,21 +189,34 @@ namespace VDS.RDF.Utilities.Convert
                 catch (RdfParseException parseEx)
                 {
                     Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a RDF Parse Exception");
-                    Console.Error.WriteLine(parseEx.Message);
+                    WriteNestedException(parseEx);
                     if (this._debug) this.DebugErrors(parseEx);
                 }
                 catch (RdfException rdfEx)
                 {
                     Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a RDF Exception");
-                    Console.Error.WriteLine(rdfEx.Message);
+                    WriteNestedException(rdfEx);
                     if (this._debug) this.DebugErrors(rdfEx);
                 }
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a Unexpected Exception");
-                    Console.Error.WriteLine(ex.Message);
+                    WriteNestedException(ex);
                     if (this._debug) this.DebugErrors(ex);
                 }
+            }
+        }
+
+        private void WriteNestedException(Exception ex, int level = 0)
+        {
+            if (level > 0)
+            {
+                Console.Error.Write(new string(' ', level * 2));
+            }
+            Console.Error.WriteLine(ex.Message);
+            if (ex.InnerException != null)
+            {
+                WriteNestedException(ex.InnerException, level + 1);
             }
         }
 

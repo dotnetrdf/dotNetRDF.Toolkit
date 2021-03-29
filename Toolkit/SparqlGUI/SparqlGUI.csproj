@@ -58,14 +58,14 @@
     </CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotNetRDF, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\dotNetRDF.2.6.0\lib\net40\dotNetRDF.dll</HintPath>
+    <Reference Include="dotNetRDF, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.2.7.0\lib\net40\dotNetRDF.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Query.FullText, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\dotNetRDF.Query.FullText.2.6.0\lib\net40\dotNetRDF.Query.FullText.dll</HintPath>
+    <Reference Include="dotNetRDF.Query.FullText, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.Query.FullText.2.7.0\lib\net40\dotNetRDF.Query.FullText.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.11.24\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.31.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.11.31\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>

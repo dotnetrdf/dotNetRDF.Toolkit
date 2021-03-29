@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("GraphBenchmarker")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2011")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2011-2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

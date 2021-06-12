@@ -56,14 +56,14 @@
     <CodeAnalysisRuleSet />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotNetRDF, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\dotNetRDF.2.7.0\lib\net40\dotNetRDF.dll</HintPath>
+    <Reference Include="dotNetRDF, Version=2.7.1.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.2.7.1\lib\net40\dotNetRDF.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Data.Virtuoso, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\dotNetRDF.Data.Virtuoso.2.7.0\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
+    <Reference Include="dotNetRDF.Data.Virtuoso, Version=2.7.1.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.Data.Virtuoso.2.7.1\lib\net40\dotNetRDF.Data.Virtuoso.dll</HintPath>
     </Reference>
-    <Reference Include="dotNetRDF.Query.FullText, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\dotNetRDF.Query.FullText.2.7.0\lib\net40\dotNetRDF.Query.FullText.dll</HintPath>
+    <Reference Include="dotNetRDF.Query.FullText, Version=2.7.1.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRDF.Query.FullText.2.7.1\lib\net40\dotNetRDF.Query.FullText.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.31.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HtmlAgilityPack.1.11.31\lib\Net40\HtmlAgilityPack.dll</HintPath>

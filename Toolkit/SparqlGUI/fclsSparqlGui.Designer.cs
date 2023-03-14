@@ -358,7 +358,6 @@ namespace VDS.RDF.Utilities.Sparql
             this.chkParallelEval.Text = "Enable Parallel Query Evaluation";
             this.ttpTips.SetToolTip(this.chkParallelEval, "Enables/Disables whether we can use parallel query evaluation");
             this.chkParallelEval.UseVisualStyleBackColor = true;
-            this.chkParallelEval.CheckedChanged += new System.EventHandler(this.chkParallelEval_CheckedChanged);
             // 
             // chkUnsafeOptimisation
             // 

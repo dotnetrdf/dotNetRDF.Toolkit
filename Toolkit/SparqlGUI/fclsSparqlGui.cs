@@ -61,6 +61,7 @@ namespace VDS.RDF.Utilities.Sparql
         private bool _noDataWarning = true, _logExplain = false;
         private String _logfile;
         private long _tripleCount = 0;
+        private SparqlQuerySyntax _querySyntax = SparqlQuerySyntax.Sparql_1_1;
 
         //Full Text Indexing stuff
         private Lucene.Net.Store.Directory _ftIndex;
@@ -194,7 +195,7 @@ namespace VDS.RDF.Utilities.Sparql
                 }
 
                 this._dataset.Flush();
-                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
+                this.stsGraphs.Text = this._dataset.GraphNames.Count() + " Graphs";
                 this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "File Import Done");
             }
@@ -248,7 +249,7 @@ namespace VDS.RDF.Utilities.Sparql
                 }
 
                 this._dataset.Flush();
-                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
+                this.stsGraphs.Text = this._dataset.GraphNames.Count() + " Graphs";
                 this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "URI Import Done");
             }
@@ -268,7 +269,7 @@ namespace VDS.RDF.Utilities.Sparql
         {
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = new SparqlQueryParser(_querySyntax);
                 SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
                 query.Timeout = (long)this.numTimeout.Value;
                 query.PartialResultsOnTimeout = this.chkPartialResults.Checked;
@@ -375,7 +376,7 @@ namespace VDS.RDF.Utilities.Sparql
         {
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = new SparqlQueryParser(_querySyntax);
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
                 SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
@@ -400,17 +401,17 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void radSparql10_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparql10.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_0;
+            if (this.radSparql10.Checked) _querySyntax = SparqlQuerySyntax.Sparql_1_0;
         }
 
         private void radSparql11_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparql11.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
+            if (this.radSparql11.Checked) _querySyntax = SparqlQuerySyntax.Sparql_1_1;
         }
 
         private void radSparqlExtended_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparqlExtended.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Extended;
+            if (this.radSparqlExtended.Checked) _querySyntax = SparqlQuerySyntax.Extended;
         }
 
         private void chkWebDemand_CheckedChanged(object sender, EventArgs e)
@@ -772,6 +773,7 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void EnableFullTextIndex()
         {
+            LeviathanQueryOptions processorOptions = new LeviathanQueryOptions();
             if (this._dataset is FullTextIndexedDataset)
             {
                 //Nothing to do
@@ -787,12 +789,14 @@ namespace VDS.RDF.Utilities.Sparql
             {
                 //Create and ensure index ready for use
                 this._ftIndex = new RAMDirectory();
-                
-                var writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
+
+                var writer =
+                    new IndexWriter(this._ftIndex, new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48)));
+
                 writer.Dispose();
 
                 //Create Indexer and wrap dataset
-                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), new DefaultIndexSchema());
+                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48), new DefaultIndexSchema());
                 if (this._dataset is WebDemandDataset)
                 {
                     //Web Demand needs to go around Full Text as we want to index on demand loaded content
@@ -804,11 +808,10 @@ namespace VDS.RDF.Utilities.Sparql
                 }
 
                 //Create and Register Optimizer
-                this._ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.Version.LUCENE_29, this._ftIndex);
+                this._ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.LuceneVersion.LUCENE_48, this._ftIndex);
                 this._ftOptimiser = new FullTextOptimiser(this._ftSearcher);
-                SparqlOptimiser.AddOptimiser(this._ftOptimiser);
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            this._processor = new LeviathanQueryProcessor(this._dataset, this.GetProcessorOptions());
         }
 
         private void DisableFullTextIndex()
@@ -825,7 +828,6 @@ namespace VDS.RDF.Utilities.Sparql
             }
             else if (this._dataset is FullTextIndexedDataset)
             {
-                SparqlOptimiser.RemoveOptimiser(this._ftOptimiser);
                 this._ftOptimiser = null;
                 this._ftSearcher.Dispose();
                 this._ftSearcher = null;
@@ -835,7 +837,7 @@ namespace VDS.RDF.Utilities.Sparql
                 this._ftIndex.Dispose();
                 this._ftIndex = null;
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            this._processor = new LeviathanQueryProcessor(this._dataset, this.GetProcessorOptions());
         }
 
         private void EnableWebDemand()
@@ -865,14 +867,25 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void chkUnsafeOptimisation_CheckedChanged(object sender, EventArgs e)
         {
-            Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
+            // TODO: This option no longer has any effect
+            // Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
         }
 
-        private void chkParallelEval_CheckedChanged(object sender, EventArgs e)
+        private LeviathanQueryOptions GetProcessorOptions()
         {
-            Options.UsePLinqEvaluation = this.chkParallelEval.Checked;
+            LeviathanQueryOptions options = new LeviathanQueryOptions();
+            options.UsePLinqEvaluation = this.chkParallelEval.Checked;
+            options.AlgebraOptimisation = this.chkAlgebraOptimisation.Checked;
+            if (this._ftOptimiser != null)
+            {
+                var optimisers = options.AlgebraOptimisers.ToList();
+                if (!optimisers.OfType<FullTextOptimiser>().Any()) { 
+                    optimisers.Add(this._ftOptimiser);
+                    options.AlgebraOptimisers = optimisers;
+                }
+            }
+            return options;
         }
-
 
         private void chkDefaultUnionGraph_CheckedChanged(object sender, EventArgs e)
         {

@@ -109,14 +109,16 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            SparqlQueryConnectionDefinition definition = new SparqlQueryConnectionDefinition();
-            definition.EndpointUri = EndpointUri;
-            definition.DefaultGraphUri = DefaultGraphUri;
-            definition.LoadMode = LoadMode;
-            definition.SkipLocalParsing = SkipLocalParsing;
-            definition.ProxyPassword = ProxyPassword;
-            definition.ProxyUsername = ProxyUsername;
-            definition.ProxyServer = ProxyServer;
+            SparqlQueryConnectionDefinition definition = new SparqlQueryConnectionDefinition
+            {
+                EndpointUri = EndpointUri,
+                DefaultGraphUri = DefaultGraphUri,
+                LoadMode = LoadMode,
+                SkipLocalParsing = SkipLocalParsing,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 

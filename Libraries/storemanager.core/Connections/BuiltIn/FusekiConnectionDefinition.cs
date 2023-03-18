@@ -73,11 +73,13 @@ DefaultValue("http://localhost:3030/dataset/data")]
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            FusekiConnectionDefinition definition = new FusekiConnectionDefinition();
-            definition.Server = Server;
-            definition.ProxyPassword = ProxyPassword;
-            definition.ProxyUsername = ProxyUsername;
-            definition.ProxyServer = ProxyServer;
+            FusekiConnectionDefinition definition = new FusekiConnectionDefinition
+            {
+                Server = Server,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 

@@ -75,20 +75,22 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
 
             TripleStore store = new TripleStore();
-            List<Uri> graphUris = ListGraphs().ToList();
+            List<IRefNode> graphUris = ListGraphs().ToList();
 
             if (writer is TriXWriter)
             {
                 //For TriX must load all into memory and then write out all at once
 
                 // Make sure we always include the default graph in the export
-                if (!graphUris.Contains(null)) graphUris.Add(null);
-
-                foreach (Uri u in graphUris)
+                if (!graphUris.Contains(null))
                 {
-                    Graph g = new Graph();
-                    _manager.LoadGraph(g, u);
-                    g.BaseUri = u;
+                    graphUris.Add(null);
+                }
+
+                foreach (IRefNode u in graphUris)
+                {
+                    Graph g = new Graph(u);
+                    _manager.LoadGraph(g, u?.ToString());
                     store.Add(g);
                     Information = "Loading into memory prior to export, loaded " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) so far...";
                     if (HasBeenCancelled)
@@ -112,31 +114,29 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 if (!graphUris.Contains(null)) graphUris.Add(null);
 
                 // Write each graph out
-                foreach (Uri u in graphUris)
+                foreach (IRefNode u in graphUris)
                 {
                     using (FileStream stream = new FileStream(_file, FileMode.Append))
                     {
                         if (writer is IFormatterBasedWriter)
                         {
                             //Stream via a WriteThroughHandler
-                            Information = "Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default");
+                            Information = "Stream Exporting Graph " + (u != null ? u.ToString() : "Default");
                             IRdfHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
                             if (u != null) handler = new GraphUriRewriteHandler(handler, u);
                             ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
-                            _manager.LoadGraph(progHandler, u);
+                            _manager.LoadGraph(progHandler, u.ToString());
                             graphCount++;
                             tripleCount = progHandler.TripleCount;
 
-                            Information = "Finished Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                            Information = "Finished Stream Exporting Graph " + (u != null ? u.ToString() : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                         }
                         else
                         {
                             //Load Graph into memory
-                            Graph g = new Graph();
-                            g.BaseUri = u;
-                            Information = "Loading Graph " + (u != null ? u.AbsoluteUri : "Default");
-                            _manager.LoadGraph(g, u);
-                            g.BaseUri = u;
+                            Graph g = new Graph(u);
+                            Information = "Loading Graph " + (u != null ? u.ToString() : "Default");
+                            _manager.LoadGraph(g, u?.ToString());
 
                             if (HasBeenCancelled)
                             {
@@ -171,15 +171,15 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             return new TaskResult(true);
         }
 
-        private IEnumerable<Uri> ListGraphs()
+        private IEnumerable<IRefNode> ListGraphs()
         {
             if (_manager.ListGraphsSupported)
             {
-                return _manager.ListGraphs();
+                return _manager.ListGraphNames().Select(u => new UriNode(new Uri(u)));
             }
             if (!(_manager is IQueryableStorage)) throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
 
-            List<Uri> uris = new List<Uri>();
+            var uris = new List<IRefNode>();
             object results = ((IQueryableStorage)_manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
             if (!(results is SparqlResultSet)) throw new RdfStorageException("Store failed to list graphs so unable to do a Graph by Graph export");
             SparqlResultSet rset = (SparqlResultSet)results;
@@ -187,7 +187,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
                 {
-                    uris.Add(((IUriNode)res["g"]).Uri);
+                    uris.Add((IUriNode)res["g"]);
                 }
             }
             return uris;

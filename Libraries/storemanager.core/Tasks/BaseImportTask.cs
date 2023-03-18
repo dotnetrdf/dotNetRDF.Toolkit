@@ -61,18 +61,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             if (_batchSize <= 0) _batchSize = 100;
 
             _progress = new ImportProgressHandler(_counter);
-            _progress.Progress += new ImportProgressEventHandler(_progress_Progress);
+            _progress.Progress += new ImportProgressEventHandler(ReportProgress);
         }
 
         /// <summary>
         /// Progress reporter event handler
         /// </summary>
-        void _progress_Progress()
+        void ReportProgress()
         {
-            StringBuilder output = new StringBuilder();
             int readTriples = _counter.TripleCount;
-            int importedTriples = (readTriples / _batchSize) * _batchSize;
-            Information = "Read " + readTriples + " Triple(s), Imported " + importedTriples + " Triple(s) in " + _counter.GraphCount + " Graph(s) so far...";
+            int importedTriples = readTriples / _batchSize * _batchSize;
+            Information = $"Read {readTriples} Triple(s), Imported {importedTriples} Triple(s) in {_counter.GraphCount} Graph(s) so far...";
         }
         
         /// <summary>

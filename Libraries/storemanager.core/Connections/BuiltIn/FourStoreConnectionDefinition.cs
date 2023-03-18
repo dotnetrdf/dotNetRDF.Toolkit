@@ -75,12 +75,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            FourStoreConnectionDefinition definition = new FourStoreConnectionDefinition();
-            definition.Server = Server;
-            definition.EnableUpdates = EnableUpdates;
-            definition.ProxyPassword = ProxyPassword;
-            definition.ProxyUsername = ProxyUsername;
-            definition.ProxyServer = ProxyServer;
+            FourStoreConnectionDefinition definition = new FourStoreConnectionDefinition
+            {
+                Server = Server,
+                EnableUpdates = EnableUpdates,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 

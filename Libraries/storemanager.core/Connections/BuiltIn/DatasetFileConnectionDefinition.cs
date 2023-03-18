@@ -78,9 +78,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            DatasetFileConnectionDefinition definition = new DatasetFileConnectionDefinition();
-            definition.File = File;
-            definition.Async = Async;
+            DatasetFileConnectionDefinition definition = new DatasetFileConnectionDefinition
+            {
+                File = File,
+                Async = Async
+            };
             return definition;
         }
 

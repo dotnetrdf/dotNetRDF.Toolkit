@@ -98,6 +98,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
+            var loader = new Loader();
             Information = "Importing from URI " + _u.AbsoluteUri;
             try
             {

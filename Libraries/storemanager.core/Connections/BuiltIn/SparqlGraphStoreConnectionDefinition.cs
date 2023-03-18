@@ -74,11 +74,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            SparqlGraphStoreConnectionDefinition definition = new SparqlGraphStoreConnectionDefinition();
-            definition.Server = Server;
-            definition.ProxyPassword = ProxyPassword;
-            definition.ProxyUsername = ProxyUsername;
-            definition.ProxyServer = ProxyServer;
+            SparqlGraphStoreConnectionDefinition definition = new SparqlGraphStoreConnectionDefinition
+            {
+                Server = Server,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 

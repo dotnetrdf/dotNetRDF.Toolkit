@@ -47,7 +47,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private readonly IQueryableStorage _storage;
         private readonly SparqlQueryParser _parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
-        private readonly INodeFactory _nodeFactory = new NodeFactory();
+        private readonly INodeFactory _nodeFactory = new NodeFactory(new NodeFactoryOptions());
         private readonly int _minValuesPerPredicateLimit;
         private int _nextTempID = 0, _nextTempColumnID = -1;
 

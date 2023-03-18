@@ -119,15 +119,17 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            ReadWriteSparqlConnectionDefinition definition = new ReadWriteSparqlConnectionDefinition();
-            definition.QueryEndpointUri = QueryEndpointUri;
-            definition.QueryDefaultGraphUri = QueryDefaultGraphUri;
-            definition.UpdateEndpointUri = UpdateEndpointUri;
-            definition.LoadMode = LoadMode;
-            definition.SkipLocalParsing = SkipLocalParsing;
-            definition.ProxyPassword = ProxyPassword;
-            definition.ProxyUsername = ProxyUsername;
-            definition.ProxyServer = ProxyServer;
+            ReadWriteSparqlConnectionDefinition definition = new ReadWriteSparqlConnectionDefinition
+            {
+                QueryEndpointUri = QueryEndpointUri,
+                QueryDefaultGraphUri = QueryDefaultGraphUri,
+                UpdateEndpointUri = UpdateEndpointUri,
+                LoadMode = LoadMode,
+                SkipLocalParsing = SkipLocalParsing,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 

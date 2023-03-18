@@ -78,17 +78,17 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         protected FindAndReplace()
         {
-            this.UseRegex = false;
-            this.MatchCase = false;
-            this.MatchWholeWord = false;
-            this.SearchUp = false;
-            this.Scope = FindAndReplaceScope.CurrentDocument;
+            UseRegex = false;
+            MatchCase = false;
+            MatchWholeWord = false;
+            SearchUp = false;
+            Scope = FindAndReplaceScope.CurrentDocument;
 
-            this.FindText = String.Empty;
-            this.ReplaceText = String.Empty;
+            FindText = string.Empty;
+            ReplaceText = string.Empty;
 
-            this.RecentFindTexts = new BindingList<string>();
-            this.RecentReplaceTexts = new BindingList<string>();
+            RecentFindTexts = new BindingList<string>();
+            RecentReplaceTexts = new BindingList<string>();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace VDS.RDF.Utilities.Editor
         /// Shows a message
         /// </summary>
         /// <param name="message">Message</param>
-        protected abstract void ShowMessage(String message);
+        protected abstract void ShowMessage(string message);
 
         /// <summary>
         /// Gets/Sets the scope
@@ -111,19 +111,19 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the find text
         /// </summary>
-        public String FindText { get; set; }
+        public string FindText { get; set; }
 
         /// <summary>
         /// Gets/Sets the replace text
         /// </summary>
-        public String ReplaceText { get; set; }
+        public string ReplaceText { get; set; }
 
         /// <summary>
         /// Gets whether the replace text has capture groups
         /// </summary>
         public bool HasCaptureGroups
         {
-            get { return !String.IsNullOrEmpty(this.ReplaceText) && this._currentMatch != null && this._hasCaptureGroups.IsMatch(this.ReplaceText); }
+            get { return !string.IsNullOrEmpty(ReplaceText) && _currentMatch != null && _hasCaptureGroups.IsMatch(ReplaceText); }
         }
 
         /// <summary>
@@ -149,12 +149,12 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets recent find text
         /// </summary>
-        public BindingList<String> RecentFindTexts { get; set; }
+        public BindingList<string> RecentFindTexts { get; set; }
 
         /// <summary>
         /// Gets/Sets recent replace text
         /// </summary>
-        public BindingList<String> RecentReplaceTexts { get; set; }
+        public BindingList<string> RecentReplaceTexts { get; set; }
 
         /// <summary>
         /// Finds the first occurrence of the currently configured search in the given text editor
@@ -163,14 +163,14 @@ namespace VDS.RDF.Utilities.Editor
         public void Find(ITextEditorAdaptor<T> editor)
         {
             bool fromStart = (editor.CaretOffset == 0);
-            if (!this.FindNext(editor) && !fromStart)
+            if (!FindNext(editor) && !fromStart)
             {
-                if (this.ShouldRestartSearchFromStart())
+                if (ShouldRestartSearchFromStart())
                 {
                     editor.CaretOffset = 0;
                     editor.SelectionStart = 0;
                     editor.SelectionLength = 0;
-                    this.FindNext(editor);
+                    FindNext(editor);
                 }
             }
         }
@@ -182,13 +182,13 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if a match if found, false otherwise</returns>
         public bool FindNext(ITextEditorAdaptor<T> editor)
         {
-            if (this.Scope == FindAndReplaceScope.CurrentDocument || editor.SelectionLength == 0)
+            if (Scope == FindAndReplaceScope.CurrentDocument || editor.SelectionLength == 0)
             {
-                return this.FindNext(editor, -1, editor.Text.Length);
+                return FindNext(editor, -1, editor.Text.Length);
             }
             else
             {
-                return this.FindNext(editor, Math.Max(0, editor.SelectionStart - 1), editor.SelectionStart + editor.SelectionLength);
+                return FindNext(editor, Math.Max(0, editor.SelectionStart - 1), editor.SelectionStart + editor.SelectionLength);
             }
         }
 
@@ -201,19 +201,19 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns></returns>
         public bool FindNext(ITextEditorAdaptor<T> editor, int minPos, int maxPos)
         {
-            if (String.IsNullOrEmpty(this.FindText))
+            if (string.IsNullOrEmpty(FindText))
             {
-                this.ShowMessage("No Find Text specified");
+                ShowMessage("No Find Text specified");
                 return false;
             }
-            String find = this.FindText;
+            string find = FindText;
 
             //Validate Regex
             Regex regex = null;
-            RegexOptions regexOps = this.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
+            RegexOptions regexOps = MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase;
             regexOps |= RegexOptions.Multiline;
             regexOps |= RegexOptions.CultureInvariant;
-            if (this.UseRegex)
+            if (UseRegex)
             {
                 try
                 {
@@ -221,42 +221,42 @@ namespace VDS.RDF.Utilities.Editor
                 }
                 catch (Exception ex)
                 {
-                    this.ShowMessage("Regular Expression is malformed - " + ex.Message);
+                    ShowMessage("Regular Expression is malformed - " + ex.Message);
                     return false;
                 }
             }
             else
             {
-                this._currentMatch = null;
+                _currentMatch = null;
             }
 
             //Add Search Text to Combo Box for later reuse
-            if (!this.RecentFindTexts.Contains(find))
+            if (!RecentFindTexts.Contains(find))
             {
-                this.RecentFindTexts.Add(find);
+                RecentFindTexts.Add(find);
             }
 
             int start = editor.CaretOffset;
             int pos;
             int length = find.Length;
-            StringComparison compareMode = this.MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+            StringComparison compareMode = MatchCase ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
-            if (this.SearchUp)
+            if (SearchUp)
             {
                 //Search portion of Document prior to current position
-                if (this.UseRegex)
+                if (UseRegex)
                 {
                     MatchCollection ms = regex.Matches(editor.Text.Substring(0, start));
                     if (ms.Count == 0)
                     {
-                        this._currentMatch = null;
+                        _currentMatch = null;
                         pos = -1;
                     }
                     else
                     {
-                        this._currentMatch = ms[ms.Count - 1];
-                        pos = this._currentMatch.Index;
-                        length = this._currentMatch.Length;
+                        _currentMatch = ms[ms.Count - 1];
+                        pos = _currentMatch.Index;
+                        length = _currentMatch.Length;
                     }
                 }
                 else
@@ -268,17 +268,17 @@ namespace VDS.RDF.Utilities.Editor
             {
                 //Search position of Document subsequent to current position (incl. any selected text)
                 start += editor.SelectionLength;
-                if (this.UseRegex)
+                if (UseRegex)
                 {
-                    this._currentMatch = regex.Match(editor.Text.Substring(start));
-                    if (!this._currentMatch.Success)
+                    _currentMatch = regex.Match(editor.Text.Substring(start));
+                    if (!_currentMatch.Success)
                     {
                         pos = -1;
                     }
                     else
                     {
-                        pos = start + this._currentMatch.Index;
-                        length = this._currentMatch.Length;
+                        pos = start + _currentMatch.Index;
+                        length = _currentMatch.Length;
                     }
                 }
                 else
@@ -297,30 +297,30 @@ namespace VDS.RDF.Utilities.Editor
             }
 
             //If Matching on whole word ensure that their are boundaries before and after the match
-            if (this.MatchWholeWord)
+            if (MatchWholeWord)
             {
                 //Check boundary before
                 if (pos > 0)
                 {
                     char c = editor.Text[pos - 1];
-                    if (Char.IsLetterOrDigit(c))
+                    if (char.IsLetterOrDigit(c))
                     {
                         //Not a boundary so adjust start position and recurse
                         editor.CaretOffset = pos + length;
-                        if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
-                        return this.FindNext(editor);
+                        if (!SearchUp) editor.CaretOffset -= editor.SelectionLength;
+                        return FindNext(editor);
                     }
                 }
                 //Check boundary after
                 if (pos + length < editor.Text.Length - 1)
                 {
                     char c = editor.Text[pos + length];
-                    if (Char.IsLetterOrDigit(c))
+                    if (char.IsLetterOrDigit(c))
                     {
                         //Not a boundary so adjust start position and recurse
                         editor.CaretOffset = pos + length - 1;
-                        if (!this.SearchUp) editor.CaretOffset -= editor.SelectionLength;
-                        return this.FindNext(editor);
+                        if (!SearchUp) editor.CaretOffset -= editor.SelectionLength;
+                        return FindNext(editor);
                     }
                 }
             }
@@ -337,43 +337,43 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="editor">Text Editor</param>
         public void Replace(ITextEditorAdaptor<T> editor)
         {
-            if (String.IsNullOrEmpty(this.ReplaceText))
+            if (string.IsNullOrEmpty(ReplaceText))
             {
-                this.ShowMessage("No Replace Text specified");
+                ShowMessage("No Replace Text specified");
             }
 
             //Check whether the relevant Text is already selected
             bool alreadySelected = false;
-            if (!String.IsNullOrEmpty(this.FindText))
+            if (!string.IsNullOrEmpty(FindText))
             {
-                if (this.UseRegex && this._currentMatch != null)
+                if (UseRegex && _currentMatch != null)
                 {
                     alreadySelected = true;
                 }
-                else if (this.FindText.Equals(editor.GetText(editor.SelectionStart, editor.SelectionLength)))
+                else if (FindText.Equals(editor.GetText(editor.SelectionStart, editor.SelectionLength)))
                 {
                     alreadySelected = true;
                 }
             }
 
             bool fromStart = (editor.CaretOffset == 0);
-            if (alreadySelected || this.FindNext(editor))
+            if (alreadySelected || FindNext(editor))
             {
-                if (this.UseRegex && this.HasCaptureGroups)
+                if (UseRegex && HasCaptureGroups)
                 {
                     // Using capture groups
-                    String replace = this.ReplaceText;
+                    string replace = ReplaceText;
                     StringBuilder builder = new StringBuilder();
                     int start = 0;
-                    foreach (Match m in this._hasCaptureGroups.Matches(replace))
+                    foreach (Match m in _hasCaptureGroups.Matches(replace))
                     {
                         // Append preceding verbatim text
                         // +1 is necessary because 
                         builder.Append(replace.Substring(start, m.Index + 1));
                         start = m.Index + m.Length;
 
-                        int captureGrop = Int32.Parse(m.Groups[1].Value);
-                        builder.Append(this._currentMatch.Groups[captureGrop].Value);
+                        int captureGrop = int.Parse(m.Groups[1].Value);
+                        builder.Append(_currentMatch.Groups[captureGrop].Value);
                     }
                     // Append remaining verbatim text
                     builder.Append(replace.Substring(start));
@@ -385,35 +385,35 @@ namespace VDS.RDF.Utilities.Editor
                 else
                 {
                     // Simple text replacement
-                    editor.Replace(editor.SelectionStart, editor.SelectionLength, this.ReplaceText);
-                    editor.SelectionLength = this.ReplaceText.Length;
+                    editor.Replace(editor.SelectionStart, editor.SelectionLength, ReplaceText);
+                    editor.SelectionLength = ReplaceText.Length;
                     editor.CaretOffset = editor.SelectionStart;
                 }
             }
             else if (!fromStart)
             {
-                if (!this.ShouldRestartSearchFromStart()) return;
+                if (!ShouldRestartSearchFromStart()) return;
                 editor.CaretOffset = 0;
                 editor.SelectionStart = 0;
                 editor.SelectionLength = 0;
 
-                if (this.FindNext(editor))
+                if (FindNext(editor))
                 {
-                    if (this.UseRegex && this.HasCaptureGroups)
+                    if (UseRegex && HasCaptureGroups)
                     {
                         // Using capture groups
-                        String replace = this.ReplaceText;
+                        string replace = ReplaceText;
                         StringBuilder builder = new StringBuilder();
                         int start = 0;
-                        foreach (Match m in this._hasCaptureGroups.Matches(replace))
+                        foreach (Match m in _hasCaptureGroups.Matches(replace))
                         {
                             // Append preceding verbatim text
                             // +1 is necessary because 
                             builder.Append(replace.Substring(start, m.Index + 1));
                             start = m.Index + m.Length;
 
-                            int captureGrop = Int32.Parse(m.Groups[1].Value);
-                            builder.Append(this._currentMatch.Groups[captureGrop].Value);
+                            int captureGrop = int.Parse(m.Groups[1].Value);
+                            builder.Append(_currentMatch.Groups[captureGrop].Value);
                         }
                         // Append remaining verbatim text
                         builder.Append(replace.Substring(start));
@@ -425,8 +425,8 @@ namespace VDS.RDF.Utilities.Editor
                     else
                     {
                         // Simple text replacement
-                        editor.Replace(editor.SelectionStart, editor.SelectionLength, this.ReplaceText);
-                        editor.SelectionLength = this.ReplaceText.Length;
+                        editor.Replace(editor.SelectionStart, editor.SelectionLength, ReplaceText);
+                        editor.SelectionLength = ReplaceText.Length;
                         editor.CaretOffset = editor.SelectionStart;
                     }
                 }
@@ -439,14 +439,14 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="editor">Text Editor</param>
         public void ReplaceAll(ITextEditorAdaptor<T> editor)
         {
-            if (String.IsNullOrEmpty(this.ReplaceText))
+            if (string.IsNullOrEmpty(ReplaceText))
             {
-                this.ShowMessage("No Replace Text specified");
+                ShowMessage("No Replace Text specified");
             }
 
             int origPos = editor.CaretOffset;
 
-            if (this.Scope != FindAndReplaceScope.Selection)
+            if (Scope != FindAndReplaceScope.Selection)
             {
                 // Always clear any existing selection if replacing over the entire document
                 editor.SelectionStart = 0;
@@ -456,7 +456,7 @@ namespace VDS.RDF.Utilities.Editor
             //Replace All works over the entire document unless there was already a selection present
             int minPos, maxPos;
             bool restoreSelection = false;
-            if (editor.SelectionLength > 0 && this.Scope == FindAndReplaceScope.Selection)
+            if (editor.SelectionLength > 0 && Scope == FindAndReplaceScope.Selection)
             {
                 restoreSelection = true;
                 minPos = editor.SelectionStart - 1;
@@ -475,26 +475,26 @@ namespace VDS.RDF.Utilities.Editor
             try
             {
                 editor.BeginUpdate();
-                String replace = this.ReplaceText;
-                while (this.FindNext(editor, minPos, maxPos))
+                string replace = ReplaceText;
+                while (FindNext(editor, minPos, maxPos))
                 {
                     int diff;
 
                     // Do replacement
-                    if (this.UseRegex && this.HasCaptureGroups)
+                    if (UseRegex && HasCaptureGroups)
                     {
                         // Using capture groups
                         StringBuilder builder = new StringBuilder();
                         int start = 0;
-                        foreach (Match m in this._hasCaptureGroups.Matches(replace))
+                        foreach (Match m in _hasCaptureGroups.Matches(replace))
                         {
                             // Append preceding verbatim text
                             // +1 is necessary because 
                             builder.Append(replace.Substring(start, m.Index + 1));
                             start = m.Index + m.Length;
 
-                            int captureGrop = Int32.Parse(m.Groups[1].Value);
-                            builder.Append(this._currentMatch.Groups[captureGrop].Value);
+                            int captureGrop = int.Parse(m.Groups[1].Value);
+                            builder.Append(_currentMatch.Groups[captureGrop].Value);
                         }
                         // Append remaining verbatim text
                         builder.Append(replace.Substring(start));

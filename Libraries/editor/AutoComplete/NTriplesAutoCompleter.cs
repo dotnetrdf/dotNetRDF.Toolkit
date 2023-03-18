@@ -45,7 +45,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <summary>
         /// Regular Expression Pattern for valid blank node identifiers
         /// </summary>
-        protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
+        protected string BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
 
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
         private BlankNodeMapper _bnodemap = new BlankNodeMapper();
@@ -65,7 +65,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         protected override void DetectStateInternal()
         {
             //Look for Blank Nodes
-            this.DetectBlankNodes();
+            DetectBlankNodes();
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         protected virtual void DetectBlankNodes()
         {
-            this._bnodes.Clear();
+            _bnodes.Clear();
 
-            foreach (Match m in Regex.Matches(this._editor.Text, BlankNodePattern))
+            foreach (Match m in Regex.Matches(_editor.Text, BlankNodePattern))
             {
-                String id = m.Value;
-                if (this._bnodes.Add(new BlankNodeData(id)))
+                string id = m.Value;
+                if (_bnodes.Add(new BlankNodeData(id)))
                 {
-                    this._bnodemap.CheckID(ref id);
+                    _bnodemap.CheckID(ref id);
                 }                
             }
         }
@@ -93,16 +93,16 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Start literal completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartLiteralCompletion(String newText)
+        protected virtual void StartLiteralCompletion(string newText)
         {
-            if (this.TemporaryState == AutoCompleteState.Literal || this.TemporaryState == AutoCompleteState.LongLiteral)
+            if (TemporaryState == AutoCompleteState.Literal || TemporaryState == AutoCompleteState.LongLiteral)
             {
-                this.TemporaryState = AutoCompleteState.None;
-                this.State = AutoCompleteState.None;
+                TemporaryState = AutoCompleteState.None;
+                State = AutoCompleteState.None;
             }
             else
             {
-                this.State = AutoCompleteState.Literal;
+                State = AutoCompleteState.Literal;
             }
         }
 
@@ -110,28 +110,28 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Start comment completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartCommentCompletion(String newText)
+        protected virtual void StartCommentCompletion(string newText)
         {
-            this.State = AutoCompleteState.Comment;
+            State = AutoCompleteState.Comment;
         }
 
         /// <summary>
         /// Start URI completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartUriCompletion(String newText)
+        protected virtual void StartUriCompletion(string newText)
         {
-            this.State = AutoCompleteState.Uri;
+            State = AutoCompleteState.Uri;
         }
 
         /// <summary>
         /// Start BNode completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartBNodeCompletion(String newText)
+        protected virtual void StartBNodeCompletion(string newText)
         {
-            this.State = AutoCompleteState.BNode;
-            this._editor.Suggest(new NewBlankNodeData(this._bnodemap.GetNextID()).AsEnumerable<ICompletionData>().Concat(this._bnodes));
+            State = AutoCompleteState.BNode;
+            _editor.Suggest(new NewBlankNodeData(_bnodemap.GetNextID()).AsEnumerable<ICompletionData>().Concat(_bnodes));
         }
 
         #endregion
@@ -142,12 +142,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try to auto-complete
         /// </summary>
         /// <param name="newText">New Text</param>
-        public override void TryAutoComplete(String newText)
+        public override void TryAutoComplete(string newText)
         {
             //Don't do anything if auto-complete not currently active
-            if (this.State == AutoCompleteState.Disabled || this.State == AutoCompleteState.Inserted) return;
+            if (State == AutoCompleteState.Disabled || State == AutoCompleteState.Inserted) return;
 
-            if (this.State == AutoCompleteState.None)
+            if (State == AutoCompleteState.None)
             {
                 if (newText.Length == 1)
                 {
@@ -170,11 +170,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     }
                     else if (c == '.' || c == ',' || c == ';')
                     {
-                        this.State = AutoCompleteState.None;
+                        State = AutoCompleteState.None;
                     }
                 }
 
-                if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
+                if (State == AutoCompleteState.None || State == AutoCompleteState.Disabled) return;
             }
             else
             {
@@ -183,17 +183,17 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 {
 
                     //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
-                    if (this.Length < 0)
+                    if (Length < 0)
                     {
-                        this._editor.EndSuggestion();
-                        this.State = AutoCompleteState.None;
-                        this.TryAutoComplete(newText);
+                        _editor.EndSuggestion();
+                        State = AutoCompleteState.None;
+                        TryAutoComplete(newText);
                         return;
                     }
 
                     if (newText.Length > 0)
                     {
-                        switch (this.State)
+                        switch (State)
                         {
                             case AutoCompleteState.BNode:
                                 TryBNodeCompletion(newText);
@@ -220,8 +220,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 catch
                 {
                     //If any kind of error occurs abort auto-completion
-                    this.State = AutoCompleteState.None;
-                    this._editor.EndSuggestion();
+                    State = AutoCompleteState.None;
+                    _editor.EndSuggestion();
                 }
             }
         }
@@ -230,38 +230,38 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try literal completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryLiteralCompletion(String newText)
+        protected virtual void TryLiteralCompletion(string newText)
         {
-            if (this.IsNewLine(newText))
+            if (IsNewLine(newText))
             {
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
 
             if (newText == "\"")
             {
-                if (this.CurrentText.Length == 2)
+                if (CurrentText.Length == 2)
                 {
                     //Possibly end of the Literal, have to wait and see
                 }
                 else
                 {
                     //Is this an escaped "?
-                    if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\\""))
+                    if (!CurrentText.Substring(CurrentText.Length - 2, 2).Equals("\\\""))
                     {
                         //Not escaped so terminates the literal
-                        this.LastCompletion = AutoCompleteState.Literal;
-                        this._editor.EndSuggestion();
+                        LastCompletion = AutoCompleteState.Literal;
+                        _editor.EndSuggestion();
                     }
                 }
             }
-            else if (this.CurrentText.Length == 3)
+            else if (CurrentText.Length == 3)
             {
-                char last = this.CurrentText[this.CurrentText.Length - 1];
-                if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
+                char last = CurrentText[CurrentText.Length - 1];
+                if (char.IsWhiteSpace(last) || char.IsPunctuation(last))
                 {
-                    this.LastCompletion = AutoCompleteState.Literal;
-                    this._editor.EndSuggestion();
+                    LastCompletion = AutoCompleteState.Literal;
+                    _editor.EndSuggestion();
                 }
             }
         }
@@ -270,15 +270,15 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try URI completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryUriCompletion(String newText)
+        protected virtual void TryUriCompletion(string newText)
         {
             if (newText == ">")
             {
-                if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\>"))
+                if (!CurrentText.Substring(CurrentText.Length - 2, 2).Equals("\\>"))
                 {
                     //End of a URI so exit auto-complete
-                    this.LastCompletion = AutoCompleteState.Uri;
-                    this._editor.EndSuggestion();
+                    LastCompletion = AutoCompleteState.Uri;
+                    _editor.EndSuggestion();
                 }
             }
         }
@@ -287,29 +287,29 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try Blank Node completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryBNodeCompletion(String newText)
+        protected virtual void TryBNodeCompletion(string newText)
         {
-            if (this.IsNewLine(newText))
+            if (IsNewLine(newText))
             {
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
 
             char c = newText[0];
-            if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-' && c != ':'))
+            if (char.IsWhiteSpace(c) || (char.IsPunctuation(c) && c != '_' && c != '-' && c != ':'))
             {
-                this.LastCompletion = AutoCompleteState.BNode;
-                this.DetectBlankNodes();
-                this._editor.EndSuggestion();
+                LastCompletion = AutoCompleteState.BNode;
+                DetectBlankNodes();
+                _editor.EndSuggestion();
                 return;
             }
 
-            if (!this.IsValidPartialBlankNodeID(this.CurrentText.ToString()))
+            if (!IsValidPartialBlankNodeID(CurrentText.ToString()))
             {
                 //Not a BNode ID so close the window
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
-                this.DetectBlankNodes();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
+                DetectBlankNodes();
             }
         }
 
@@ -317,12 +317,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try comment completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryCommentCompletion(String newText)
+        protected virtual void TryCommentCompletion(string newText)
         {
-            if (this.IsNewLine(newText))
+            if (IsNewLine(newText))
             {
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
         }
 
@@ -335,9 +335,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="value">Value</param>
         /// <returns></returns>
-        protected virtual bool IsValidPartialBlankNodeID(String value)
+        protected virtual bool IsValidPartialBlankNodeID(string value)
         {
-            if (value.Equals(String.Empty))
+            if (value.Equals(string.Empty))
             {
                 //Can't be empty
                 return false;
@@ -350,7 +350,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             {
                 value = value.Substring(2);
                 char[] cs = value.ToCharArray();
-                if (Char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
+                if (char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
                 {
                     //Can't start with a Digit, Hyphen or Underscore
                     return false;
@@ -372,7 +372,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="text">Value</param>
         /// <returns></returns>
-        protected bool IsNewLine(String text)
+        protected bool IsNewLine(string text)
         {
             return text.Equals("\n") || text.Equals("\r") || text.Equals("\r\n") || text.Equals("\n\r");
         }

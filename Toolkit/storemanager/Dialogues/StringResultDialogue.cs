@@ -32,30 +32,30 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
     {
         private readonly Control _targetControl;
 
-        public StringResultDialogue(String title, String result, Control control, String controlDescription)
+        public StringResultDialogue(string title, string result, Control control, string controlDescription)
         {
             InitializeComponent();
-            this.Text = String.Format(this.Text, title);
-            this.txtResult.Text = result;
-            this._targetControl = control;
-            this.btnCopyToControl.Text = String.Format(this.btnCopyToControl.Text, controlDescription);
-            this.btnCopyToControl.Enabled = this._targetControl != null;
+            Text = string.Format(Text, title);
+            txtResult.Text = result;
+            _targetControl = control;
+            btnCopyToControl.Text = string.Format(btnCopyToControl.Text, controlDescription);
+            btnCopyToControl.Enabled = _targetControl != null;
         }
 
-        public StringResultDialogue(String title, String result)
+        public StringResultDialogue(string title, string result)
             : this(title, result, null, "Editor") { }
 
         private void btnCopyToControl_Click(object sender, EventArgs e)
         {
-            if (this._targetControl == null) return;
-            this._targetControl.Text = this.txtResult.Text;
-            this.Close();
+            if (_targetControl == null) return;
+            _targetControl.Text = txtResult.Text;
+            Close();
         }
 
         private void btnCopyToClipboard_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(this.txtResult.Text, TextDataFormat.Text);
-            this.Close();
+            Clipboard.SetText(txtResult.Text, TextDataFormat.Text);
+            Close();
         }
     }
 }

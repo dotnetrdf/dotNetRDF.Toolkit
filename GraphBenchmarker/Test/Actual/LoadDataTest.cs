@@ -8,18 +8,18 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
 {
     public class LoadDataTest : SingleRunTest
     {
-        private String _data;
+        private string _data;
 
-        public LoadDataTest(String data)
+        public LoadDataTest(string data)
             : base("Load Data", "Loads the Test Data into the Graph")
         {
-            this._data = data;
+            _data = data;
         }
 
         public override TestResult Run(TestCase testCase)
         {
             DateTime start = DateTime.Now;
-            FileLoader.Load(testCase.Instance, this._data);
+            FileLoader.Load(testCase.Instance, _data);
             TimeSpan elapsed = DateTime.Now - start;
 
             return new TestResult(elapsed, testCase.Instance.Triples.Count, "Triples/Second", TestMetricType.Speed);

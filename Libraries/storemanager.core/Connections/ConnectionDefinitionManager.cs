@@ -74,12 +74,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Scanning looks for files with a <em>.dll</em> extension, loads them and then searches for types implementing the <see cref="IConnectionDefinition">IConnectionDefinition</see> interface
         /// </para>
         /// </remarks>
-        public static void ScanPlugins(String dir)
+        public static void ScanPlugins(string dir)
         {
             //Then find types in Plugin assemblies
             if (Directory.Exists(dir))
             {
-                foreach (String file in Directory.GetFiles(dir))
+                foreach (string file in Directory.GetFiles(dir))
                 {
                     switch (Path.GetExtension(file))
                     {

@@ -39,11 +39,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="form">Drag Source</param>
         /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        public CopyMoveDragInfo(StoreManagerForm form, string sourceUri)
         {
-            this.Form = form;
-            this.Source = form.Connection;
-            this.SourceUri = sourceUri;
+            Form = form;
+            Source = form.Connection;
+            SourceUri = sourceUri;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets the Source Graph URI
         /// </summary>
-        public String SourceUri
+        public string SourceUri
         {
             get;
             private set;

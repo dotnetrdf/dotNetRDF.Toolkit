@@ -31,10 +31,10 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
     public partial class CopyMoveRenameGraphForm : Form
     {
-        public CopyMoveRenameGraphForm(String task)
+        public CopyMoveRenameGraphForm(string task)
         {
             InitializeComponent();
-            this.Text = String.Format(this.Text, task);
+            Text = string.Format(Text, task);
         }
 
         public Uri Uri
@@ -47,9 +47,9 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         {
             try
             {
-                this.Uri = new Uri(this.txtUri.Text);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                Uri = new Uri(txtUri.Text);
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (UriFormatException uriEx)
             {
@@ -59,14 +59,14 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void CopyMoveRenameGraphForm_Load(object sender, EventArgs e)
         {
-            this.txtUri.SelectAll();
-            this.txtUri.Focus();
+            txtUri.SelectAll();
+            txtUri.Focus();
         }
     }
 }

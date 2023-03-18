@@ -49,10 +49,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             InitializeComponent();
 
-            this.lblEditorVersion.Content = Assembly.GetExecutingAssembly().GetName().Version;
-            this.lblEditorCoreVersion.Content = Assembly.GetAssembly(typeof(GlobalOptions)).GetName().Version;
-            this.lblEditorCoreWpfVersion.Content = Assembly.GetAssembly(typeof(WpfEditorAdaptor)).GetName().Version;
-            this.lblRdfVersion.Content = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
+            lblEditorVersion.Content = Assembly.GetExecutingAssembly().GetName().Version;
+            lblEditorCoreVersion.Content = Assembly.GetAssembly(typeof(GlobalOptions)).GetName().Version;
+            lblEditorCoreWpfVersion.Content = Assembly.GetAssembly(typeof(WpfEditorAdaptor)).GetName().Version;
+            lblRdfVersion.Content = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
         }
     }
 }

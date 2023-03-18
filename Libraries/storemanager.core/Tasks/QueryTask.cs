@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// Task for running queries
     /// </summary>
     public class QueryTask
-        : NonCancellableTask<Object>
+        : NonCancellableTask<object>
     {
         private readonly IQueryableStorage _storage;
         protected readonly SparqlQueryParser _parser = new SparqlQueryParser();
@@ -48,12 +48,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="storage">Storage Provider</param>
         /// <param name="query">Query</param>
-        public QueryTask(IQueryableStorage storage, String query)
+        public QueryTask(IQueryableStorage storage, string query)
             : base("SPARQL Query")
         {
-            this._storage = storage;
-            this._processor = new GenericQueryProcessor(storage);
-            this.QueryString = query;
+            _storage = storage;
+            _processor = new GenericQueryProcessor(storage);
+            QueryString = query;
         }
 
         /// <summary>
@@ -62,11 +62,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="storage">Storage Provider</param>
         /// <param name="query">Query</param>
         /// <param name="pageSize">Page Size</param>
-        public QueryTask(IQueryableStorage storage, String query, int pageSize)
+        public QueryTask(IQueryableStorage storage, string query, int pageSize)
             : this(storage, query)
         {
-            this._usePaging = true;
-            this._pageSize = pageSize;
+            _usePaging = true;
+            _pageSize = pageSize;
         }
 
         /// <summary>
@@ -78,27 +78,27 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             try
             {
                 //Firstly try and parse the Query
-                this.Query = this._parser.ParseFromString(this.QueryString);
+                Query = _parser.ParseFromString(QueryString);
             }
             catch
             {
-                this.Information = "Query is not valid SPARQL 1.0/1.1 - will attempt to evaluate it but underlying store may reject the originalQuery...";
+                Information = "Query is not valid SPARQL 1.0/1.1 - will attempt to evaluate it but underlying store may reject the originalQuery...";
             }
 
             // Successfuly parsed originalQuery
-            if (this.Query != null)
+            if (Query != null)
             {
                 //Then apply it to the Manager using the GenericQueryProcessor
                 try
                 {
                     //Check that paging can be used if it was enabled
-                    if (this._usePaging)
+                    if (_usePaging)
                     {
-                        if (this.Query.Limit >= 0 || this.Query.Offset > 0)
+                        if (Query.Limit >= 0 || Query.Offset > 0)
                         {
                             throw new RdfQueryException("Cannot apply originalQuery paging when the SPARQL Query already contains an explicit LIMIT and/or OFFSET clause");
                         }
-                        else if (this.Query.QueryType == SparqlQueryType.Ask)
+                        else if (Query.QueryType == SparqlQueryType.Ask)
                         {
                             throw new RdfQueryException("Cannot apply originalQuery paging to an ASK Query");
                         }
@@ -107,10 +107,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     int offset = 0;
                     TimeSpan totalTime = TimeSpan.Zero;
 
-                    switch (this.Query.QueryType)
+                    switch (Query.QueryType)
                     {
                         case SparqlQueryType.Ask:
-                            SparqlResultSet blnResult = this._processor.ProcessQuery(this.Query) as SparqlResultSet;
+                            SparqlResultSet blnResult = _processor.ProcessQuery(Query) as SparqlResultSet;
                             if (blnResult == null) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK originalQuery as was expected");
                             return blnResult;
 
@@ -118,30 +118,30 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         case SparqlQueryType.Describe:
                         case SparqlQueryType.DescribeAll:
                             Graph g = new Graph();
-                            g.NamespaceMap.Import(this.Query.NamespaceMap);
+                            g.NamespaceMap.Import(Query.NamespaceMap);
 
                             do
                             {
-                                if (this._usePaging)
+                                if (_usePaging)
                                 {
-                                    this.Query.Limit = this._pageSize;
-                                    this.Query.Offset = offset;
+                                    Query.Limit = _pageSize;
+                                    Query.Offset = offset;
                                 }
-                                Object result = this._processor.ProcessQuery(this.Query);
-                                totalTime += this.Query.QueryExecutionTime.HasValue ? this.Query.QueryExecutionTime.Value : TimeSpan.Zero;
+                                object result = _processor.ProcessQuery(Query);
+                                totalTime += Query.QueryExecutionTime.HasValue ? Query.QueryExecutionTime.Value : TimeSpan.Zero;
 
                                 if (!(result is IGraph)) throw new RdfQueryException("SPARQL Query did not return a RDF Graph as expected");
                                 IGraph temp = (IGraph) result;
 
                                 //If no further results can halt
                                 if (temp.Triples.Count == 0) break;
-                                offset += this._pageSize;
+                                offset += _pageSize;
 
                                 //Merge the partial result into the final result
                                 g.Merge(temp);
-                            } while (this._usePaging);
+                            } while (_usePaging);
 
-                            this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
+                            Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
                             return g;
 
                         case SparqlQueryType.Select:
@@ -158,31 +158,31 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
                                 do
                                 {
-                                    if (this._usePaging)
+                                    if (_usePaging)
                                     {
-                                        this.Query.Limit = this._pageSize;
-                                        this.Query.Offset = offset;
+                                        Query.Limit = _pageSize;
+                                        Query.Offset = offset;
                                     }
-                                    Object result = this._processor.ProcessQuery(this.Query);
-                                    totalTime += this.Query.QueryExecutionTime.HasValue ? this.Query.QueryExecutionTime.Value : TimeSpan.Zero;
+                                    object result = _processor.ProcessQuery(Query);
+                                    totalTime += Query.QueryExecutionTime.HasValue ? Query.QueryExecutionTime.Value : TimeSpan.Zero;
 
                                     if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
                                     SparqlResultSet rset = (SparqlResultSet) result;
-                                    foreach (String var in rset.Variables)
+                                    foreach (string var in rset.Variables)
                                     {
                                         handler.HandleVariable(var);
                                     }
 
                                     //If no further results can halt
                                     if (rset.Count == 0) break;
-                                    offset += this._pageSize;
+                                    offset += _pageSize;
 
                                     //Merge the partial result into the final result
                                     foreach (SparqlResult r in rset)
                                     {
                                         handler.HandleResult(r);
                                     }
-                                } while (this._usePaging);
+                                } while (_usePaging);
 
                                 handler.EndResults(true);
                             }
@@ -191,7 +191,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                                 handler.EndResults(false);
                                 throw;
                             }
-                            this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
+                            Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
                             return results;
 
                         default:
@@ -201,13 +201,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 catch
                 {
                     //Try and show the execution time if possible
-                    if (this.Query.QueryExecutionTime.HasValue)
+                    if (Query.QueryExecutionTime.HasValue)
                     {
-                        this.Information = "Query Failed (Took " + this.Query.QueryExecutionTime.Value + ")";
+                        Information = "Query Failed (Took " + Query.QueryExecutionTime.Value + ")";
                     }
                     else
                     {
-                        this.Information = "Query Failed";
+                        Information = "Query Failed";
                     }
                     throw;
                 }
@@ -217,12 +217,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             DateTime start = DateTime.Now;
             try
             {
-                if (this._usePaging)
+                if (_usePaging)
                 {
                     throw new RdfQueryException("Cannot apply paging to a Query that we cannot parse as a valid SPARQL 1.0/1.1 originalQuery");
                 }
-                Object results = this._storage.Query(this.QueryString);
-                this.Information = "Query Completed OK (Took " + (DateTime.Now - start) + ")";
+                object results = _storage.Query(QueryString);
+                Information = "Query Completed OK (Took " + (DateTime.Now - start) + ")";
                 return results;
             }
             catch
@@ -230,11 +230,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 //Try and show the execution time if possible
                 try
                 {
-                    this.Information = "Query Failed (Took " + (DateTime.Now - start) + ")";
+                    Information = "Query Failed (Took " + (DateTime.Now - start) + ")";
                 }
                 catch
                 {
-                    this.Information = "Query Failed";
+                    Information = "Query Failed";
                 }
                 throw;
             }
@@ -256,6 +256,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets the originalQuery string that is being used
         /// </summary>
-        public String QueryString { get; protected set; }
+        public string QueryString { get; protected set; }
     }
 }

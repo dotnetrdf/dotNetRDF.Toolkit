@@ -53,14 +53,14 @@ namespace VDS.RDF.Utilities.Convert
 
         public HighSpeedOption(bool allowed)
         {
-            this._hiSpeedAllowed = allowed;
+            _hiSpeedAllowed = allowed;
         }
 
         public void Apply(IRdfWriter writer)
         {
             if (writer is IHighSpeedWriter)
             {
-                ((IHighSpeedWriter)writer).HighSpeedModePermitted = this._hiSpeedAllowed;
+                ((IHighSpeedWriter)writer).HighSpeedModePermitted = _hiSpeedAllowed;
             }
         }
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer is IHighSpeedWriter)
             {
-                ((IHighSpeedWriter)writer).HighSpeedModePermitted = this._hiSpeedAllowed;
+                ((IHighSpeedWriter)writer).HighSpeedModePermitted = _hiSpeedAllowed;
             }
         }
     }
@@ -79,14 +79,14 @@ namespace VDS.RDF.Utilities.Convert
 
         public PrettyPrintingOption(bool prettyPrint)
         {
-            this._prettyPrint = prettyPrint;
+            _prettyPrint = prettyPrint;
         }
 
         public void Apply(IRdfWriter writer)
         {
             if (writer is IPrettyPrintingWriter)
             {
-                ((IPrettyPrintingWriter)writer).PrettyPrintMode = this._prettyPrint;
+                ((IPrettyPrintingWriter)writer).PrettyPrintMode = _prettyPrint;
             }
         }
 
@@ -94,7 +94,7 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer is IPrettyPrintingWriter)
             {
-                ((IPrettyPrintingWriter)writer).PrettyPrintMode = this._prettyPrint;
+                ((IPrettyPrintingWriter)writer).PrettyPrintMode = _prettyPrint;
             }
         }
     }
@@ -105,14 +105,14 @@ namespace VDS.RDF.Utilities.Convert
 
         public CompressionLevelOption(int compressionLevel)
         {
-            this._compressionLevel = compressionLevel;
+            _compressionLevel = compressionLevel;
         }
 
         public void Apply(IRdfWriter writer)
         {
             if (writer is ICompressingWriter)
             {
-                ((ICompressingWriter)writer).CompressionLevel = this._compressionLevel;
+                ((ICompressingWriter)writer).CompressionLevel = _compressionLevel;
             }
         }
 
@@ -120,18 +120,18 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer is ICompressingWriter)
             {
-                ((ICompressingWriter)writer).CompressionLevel = this._compressionLevel;
+                ((ICompressingWriter)writer).CompressionLevel = _compressionLevel;
             }
         }
     }
 
     public class StylesheetOption : IConversionOption
     {
-        private String _stylesheet;
+        private string _stylesheet;
 
-        public StylesheetOption(String stylesheet)
+        public StylesheetOption(string stylesheet)
         {
-            this._stylesheet = stylesheet;
+            _stylesheet = stylesheet;
         }
 
         #region IConversionOption Members
@@ -140,7 +140,7 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer is IHtmlWriter)
             {
-                ((IHtmlWriter)writer).Stylesheet = this._stylesheet;
+                ((IHtmlWriter)writer).Stylesheet = _stylesheet;
             }
         }
 
@@ -148,7 +148,7 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer is IHtmlWriter)
             {
-                ((IHtmlWriter)writer).Stylesheet = this._stylesheet;
+                ((IHtmlWriter)writer).Stylesheet = _stylesheet;
             }
         }
 

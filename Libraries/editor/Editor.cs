@@ -50,8 +50,8 @@ namespace VDS.RDF.Utilities.Editor
         public Editor(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
-            this._factory = factory;
-            this._docManager = new DocumentManager<TControl, TFont, TColor>(this._factory);
+            _factory = factory;
+            _docManager = new DocumentManager<TControl, TFont, TColor>(_factory);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._docManager;
+                return _docManager;
             }
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._factory;
+                return _factory;
             }
         }
     }

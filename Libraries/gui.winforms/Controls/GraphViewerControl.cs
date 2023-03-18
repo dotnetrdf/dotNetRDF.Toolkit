@@ -61,29 +61,29 @@ namespace VDS.RDF.GUI.WinForms.Controls
         public GraphViewerControl()
         {
              InitializeComponent();
-             this.dgvTriples.CellFormatting += dgvTriples_CellFormatting;
-             this.dgvTriples.CellContentClick += dgvTriples_CellClick;
-             this.fmtSelector.DefaultFormatter = typeof(TurtleFormatter);
-             this.fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
+             dgvTriples.CellFormatting += dgvTriples_CellFormatting;
+             dgvTriples.CellContentClick += dgvTriples_CellClick;
+             fmtSelector.DefaultFormatter = typeof(TurtleFormatter);
+             fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
         }
 
         private void fmtSelector_FormatterChanged(object sender, Formatter formatter)
         {
-            if (ReferenceEquals(formatter, this._lastFormatter)) return;
-            this._lastFormatter = formatter;
-            this.Reformat();
+            if (ReferenceEquals(formatter, _lastFormatter)) return;
+            _lastFormatter = formatter;
+            Reformat();
         }
 
         private void Reformat()
         {
-            if (ReferenceEquals(this._lastFormatter, null)) return;
-            this._formatter = this._lastFormatter.CreateInstance(this._g.NamespaceMap);
+            if (ReferenceEquals(_lastFormatter, null)) return;
+            _formatter = _lastFormatter.CreateInstance(_g.NamespaceMap);
 
-            if (this.dgvTriples.DataSource == null) return;
-            DataTable tbl = (DataTable)this.dgvTriples.DataSource;
-            this.dgvTriples.DataSource = null;
-            this.dgvTriples.Refresh();
-            this.dgvTriples.DataSource = tbl;
+            if (dgvTriples.DataSource == null) return;
+            DataTable tbl = (DataTable)dgvTriples.DataSource;
+            dgvTriples.DataSource = null;
+            dgvTriples.Refresh();
+            dgvTriples.DataSource = tbl;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="g">Graph to display</param>
         public void DisplayGraph(IGraph g)
         {
-            this.DisplayGraph(g, g.NamespaceMap);
+            DisplayGraph(g, g.NamespaceMap);
         }
 
         /// <summary>
@@ -102,19 +102,19 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="namespaces">Namespaces to use which may be different than those attached to the actual graph</param>
         public void DisplayGraph(IGraph g, INamespaceMapper namespaces)
         {
-            this.dgvTriples.DataSource = null;
-            this.dgvTriples.Refresh();
+            dgvTriples.DataSource = null;
+            dgvTriples.Refresh();
 
             if (g.BaseUri != null)
             {
-                this.lnkBaseURI.Text = g.BaseUri.ToString();
+                lnkBaseURI.Text = g.BaseUri.ToString();
             }
 
-            this._g = g;
+            _g = g;
 
-            this.Text = String.Format("Graph Viewer - {0} Triple(s)", g.Triples.Count);
+            Text = string.Format("Graph Viewer - {0} Triple(s)", g.Triples.Count);
 
-            this.LoadInternal();
+            LoadInternal();
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
                     break;
             }
 
-            e.Value = this._formatter.Format(n, segment);
+            e.Value = _formatter.Format(n, segment);
             e.FormattingApplied = true;
             switch (n.NodeType)
             {
@@ -156,23 +156,23 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            Object value = this.dgvTriples[e.ColumnIndex, e.RowIndex].Value;
+            object value = dgvTriples[e.ColumnIndex, e.RowIndex].Value;
             if (value == null) return;
             if (!(value is INode)) return;
             INode n = (INode)value;
             if (n.NodeType == NodeType.Uri)
             {
-                this.RaiseUriClicked(((IUriNode)n).Uri);
+                RaiseUriClicked(((IUriNode)n).Uri);
             }
         }
 
         private void LoadInternal()
         {
             //Show Graph Uri
-            this.lnkBaseURI.Text = this._g.BaseUri != null ? this._g.BaseUri.ToString() : "null";
+            lnkBaseURI.Text = _g.BaseUri != null ? _g.BaseUri.ToString() : "null";
 
             //Show Triples
-            this.dgvTriples.DataSource = this._g.ToDataTable();
+            dgvTriples.DataSource = _g.ToDataTable();
         }
 
         private void btnExport_Click(object sender, EventArgs e)
@@ -180,11 +180,11 @@ namespace VDS.RDF.GUI.WinForms.Controls
             ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
             if (exporter.ShowDialog() != DialogResult.OK) return;
             IRdfWriter writer = exporter.Writer;
-            String file = exporter.File;
+            string file = exporter.File;
 
             try
             {
-                writer.Save(this._g, file);
+                writer.Save(_g, file);
 
                 MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -196,13 +196,13 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         private void btnVisualise_Click(object sender, EventArgs e)
         {
-            VisualiseGraphForm visualiser = new VisualiseGraphForm(this._g);
+            VisualiseGraphForm visualiser = new VisualiseGraphForm(_g);
             visualiser.ShowDialog();
         }
 
         private void RaiseUriClicked(Uri u)
         {
-            UriClickedEventHandler d = this.UriClicked;
+            UriClickedEventHandler d = UriClicked;
             if (d != null)
             {
                 d(this, u);

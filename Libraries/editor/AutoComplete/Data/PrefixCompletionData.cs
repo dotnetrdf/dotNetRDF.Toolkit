@@ -43,7 +43,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <param name="nsUri">Namespace URI</param>
         /// <param name="prefix">Prefix Text</param>
         /// <param name="postfix">Postfix Text</param>
-        public BasePrefixDeclarationData(String nsPrefix, String nsUri, String prefix, String postfix)
+        public BasePrefixDeclarationData(string nsPrefix, string nsUri, string prefix, string postfix)
             : base(prefix + nsPrefix + ": <" + nsUri + ">" + postfix, prefix + nsPrefix + ": <" + nsUri + ">" + postfix, "Inserts a prefix declaration for the " + nsPrefix + " prefix which has a namespace URI of " + nsUri) { }
     }
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="nsPrefix">Namespace Prefix</param>
         /// <param name="nsUri">Namespace URI</param>
-        public TurtleStylePrefixDeclarationData(String nsPrefix, String nsUri)
+        public TurtleStylePrefixDeclarationData(string nsPrefix, string nsUri)
             : base(nsPrefix, nsUri, "@prefix ", ".") { }
     }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="nsPrefix">Namespace Prefix</param>
         /// <param name="nsUri">Namespace URI</param>
-        public SparqlStylePrefixDeclarationData(String nsPrefix, String nsUri)
-            : base(nsPrefix, nsUri, "PREFIX ", String.Empty) { }
+        public SparqlStylePrefixDeclarationData(string nsPrefix, string nsUri)
+            : base(nsPrefix, nsUri, "PREFIX ", string.Empty) { }
     }
 }

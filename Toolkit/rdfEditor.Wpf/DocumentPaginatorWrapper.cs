@@ -142,7 +142,7 @@ namespace PrintEngine
             using (DrawingContext ctx = header.RenderOpen())
             {
                 DrawPath(ctx, m_Margins.Top - 20, m_Title, TextAlignment.Left);
-                DrawText(ctx, m_Margins.Top - 20, String.Format("{0}", DateTime.Now), TextAlignment.Right);
+                DrawText(ctx, m_Margins.Top - 20, string.Format("{0}", DateTime.Now), TextAlignment.Right);
                 DrawLine(ctx, m_Margins.Top - 5, 0.5);
             }
 

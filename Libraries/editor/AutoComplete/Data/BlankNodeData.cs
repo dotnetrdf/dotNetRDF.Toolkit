@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         /// <param name="id">Node ID</param>
-        public BlankNodeData(String id)
+        public BlankNodeData(string id)
             : base(id, id, "Blank Node with ID " + id.Substring(2)) { }
     }
 }

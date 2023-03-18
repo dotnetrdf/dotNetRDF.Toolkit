@@ -43,7 +43,7 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
     interface IFileConversionInput : IConversionInput
     {
-        String SourceFile
+        string SourceFile
         {
             get;
         }

@@ -50,8 +50,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public CreateStoreTask(IStorageServer server, IStoreTemplate template)
             : base("Create Store")
         {
-            this._server = server;
-            this._template = template;
+            _server = server;
+            _template = template;
         }
 
         /// <summary>
@@ -60,10 +60,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskValueResult<bool> RunTaskInternal()
         {
-            this.Information = "Creating Store " + this._template.ID + "...";
-            if (this._server != null)
+            Information = "Creating Store " + _template.ID + "...";
+            if (_server != null)
             {
-                return new TaskValueResult<bool>(this._server.CreateStore(this._template));
+                return new TaskValueResult<bool>(_server.CreateStore(_template));
             }
             else
             {

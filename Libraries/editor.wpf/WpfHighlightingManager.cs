@@ -85,7 +85,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         /// <param name="filename">Filename</param>
         /// <returns>Highlighting Definition</returns>
-        private static IHighlightingDefinition LoadHighlighting(String filename)
+        private static IHighlightingDefinition LoadHighlighting(string filename)
         {
             if (File.Exists(Path.Combine("syntax/", filename)))
             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="filename">Filename</param>
         /// <param name="useResourceIfAvailable">Whether to use embedded resources</param>
         /// <returns>Highlight Definition</returns>
-        private static IHighlightingDefinition LoadHighlighting(String filename, bool useResourceIfAvailable)
+        private static IHighlightingDefinition LoadHighlighting(string filename, bool useResourceIfAvailable)
         {
             if (useResourceIfAvailable)
             {

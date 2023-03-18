@@ -27,9 +27,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions.Functions.XPath.String;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
@@ -51,7 +53,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyQueryEndpointUri),
          DefaultValue("http://example.org/sparql")]
-        public String EndpointUri
+        public string EndpointUri
         {
             get;
             set;
@@ -61,7 +63,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Default Graph URI
         /// </summary>
         [Connection(DisplayName = "Default Graph", DisplayOrder = 2, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
-        public String DefaultGraphUri
+        public string DefaultGraphUri
         {
             get;
             set;
@@ -91,13 +93,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.DefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.EndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.EndpointUri), this.DefaultGraphUri);
-            if (this.UseProxy)
-            {
-                endpoint.Proxy = this.GetProxy();
+            var httpClient = UseProxy ? new HttpClient(new HttpClientHandler { Proxy = GetProxy() }) : new HttpClient();
+            
+            SparqlQueryClient client = new SparqlQueryClient(httpClient, new Uri(EndpointUri));
+            if (!string.IsNullOrEmpty(DefaultGraphUri)) {
+                client.DefaultGraphs.Add(DefaultGraphUri); 
             }
-            SparqlConnector connector = new SparqlConnector(endpoint, this.LoadMode);
-            connector.SkipLocalParsing = this.SkipLocalParsing;
+            SparqlConnector connector = new SparqlConnector(client, LoadMode);
             return connector;
         }
 
@@ -108,19 +110,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         public override IConnectionDefinition Copy()
         {
             SparqlQueryConnectionDefinition definition = new SparqlQueryConnectionDefinition();
-            definition.EndpointUri = this.EndpointUri;
-            definition.DefaultGraphUri = this.DefaultGraphUri;
-            definition.LoadMode = this.LoadMode;
-            definition.SkipLocalParsing = this.SkipLocalParsing;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
+            definition.EndpointUri = EndpointUri;
+            definition.DefaultGraphUri = DefaultGraphUri;
+            definition.LoadMode = LoadMode;
+            definition.SkipLocalParsing = SkipLocalParsing;
+            definition.ProxyPassword = ProxyPassword;
+            definition.ProxyUsername = ProxyUsername;
+            definition.ProxyServer = ProxyServer;
             return definition;
         }
 
         public override string ToString()
         {
-            return "[SPARQL Query] " + this.EndpointUri.ToSafeString();
+            return "[SPARQL Query] " + EndpointUri.ToSafeString();
         }
     }
 }

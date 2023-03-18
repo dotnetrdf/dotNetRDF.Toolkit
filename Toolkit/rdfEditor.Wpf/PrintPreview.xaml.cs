@@ -171,7 +171,7 @@ namespace PrintEngine
             {
                 m_PrintQueue = printDialog.PrintQueue;
                 m_PrintTicket = printDialog.PrintTicket;
-                printDialog.PrintDocument(this.Document.DocumentPaginator, "PrintPreviewJob");
+                printDialog.PrintDocument(Document.DocumentPaginator, "PrintPreviewJob");
             }
         }
     }

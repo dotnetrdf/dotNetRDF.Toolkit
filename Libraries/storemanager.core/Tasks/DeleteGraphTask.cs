@@ -35,18 +35,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<TaskResult>
     {
         private readonly IStorageProvider _manager;
-        private readonly String _graphUri;
+        private readonly string _graphUri;
 
         /// <summary>
         /// Creates a new Delete Graph task
         /// </summary>
         /// <param name="manager">Storage Provider</param>
         /// <param name="graphUri">Graph URI</param>
-        public DeleteGraphTask(IStorageProvider manager, String graphUri)
+        public DeleteGraphTask(IStorageProvider manager, string graphUri)
             : base("Delete Graph")
         {
-            this._manager = manager;
-            this._graphUri = graphUri;
+            _manager = manager;
+            _graphUri = graphUri;
         }
 
         /// <summary>
@@ -55,22 +55,22 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
-            if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
+            if (_graphUri != null && !_graphUri.Equals(string.Empty))
             {
-                this.Information = "Deleting Graph " + this._graphUri + "...";
+                Information = "Deleting Graph " + _graphUri + "...";
             }
             else
             {
-                this.Information = "Deleting Default Graph...";
+                Information = "Deleting Default Graph...";
             }
-            this._manager.DeleteGraph(this._graphUri);
-            if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
+            _manager.DeleteGraph(_graphUri);
+            if (_graphUri != null && !_graphUri.Equals(string.Empty))
             {
-                this.Information = "Deleted Graph " + this._graphUri + " OK";
+                Information = "Deleted Graph " + _graphUri + " OK";
             }
             else
             {
-                this.Information = "Deleted Default Graph OK";
+                Information = "Deleted Default Graph OK";
             }
 
             return new TaskResult(true);

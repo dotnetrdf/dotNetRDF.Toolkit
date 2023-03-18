@@ -42,14 +42,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseHttpConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseHttpConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
         /// Gets/Sets the Proxy Server
         /// </summary>
         [Connection(DisplayName = "Proxy Server", DisplayOrder = 20, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String, PopulateVia = ConfigurationLoader.PropertyProxy, PopulateFrom = ConfigurationLoader.PropertyServer)]
-        public String ProxyServer
+        public string ProxyServer
         {
             get;
             set;
@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Proxy Username
         /// </summary>
         [Connection(DisplayName = "Proxy Username", DisplayOrder = 21, IsRequired = false, AllowEmptyString = false, Type = ConnectionSettingType.String, PopulateVia = ConfigurationLoader.PropertyProxy, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String ProxyUsername
+        public string ProxyUsername
         {
             get;
             set;
@@ -69,7 +69,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Proxy Password
         /// </summary>
         [Connection(DisplayName = "Proxy Password", DisplayOrder = 22, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateVia = ConfigurationLoader.PropertyProxy, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String ProxyPassword
+        public string ProxyPassword
         {
             get;
             set;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return !String.IsNullOrEmpty(this.ProxyServer);
+                return !string.IsNullOrEmpty(ProxyServer);
             }
         }
 
@@ -92,12 +92,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns></returns>
         protected WebProxy GetProxy()
         {
-            if (this.UseProxy)
+            if (UseProxy)
             {
-                WebProxy proxy = new WebProxy(this.ProxyServer);
-                if (this.ProxyUsername != null && this.ProxyPassword != null && !this.ProxyUsername.Equals(String.Empty))
+                WebProxy proxy = new WebProxy(ProxyServer);
+                if (ProxyUsername != null && ProxyPassword != null && !ProxyUsername.Equals(string.Empty))
                 {
-                    proxy.Credentials = new NetworkCredential(this.ProxyUsername, this.ProxyPassword);
+                    proxy.Credentials = new NetworkCredential(ProxyUsername, ProxyPassword);
                 }
             }
             return null;
@@ -116,7 +116,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Naem</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         [Connection(DisplayName = "Server", IsRequired = true, Type = ConnectionSettingType.String, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
         DefaultValue("localhost")]
-        public virtual String Server
+        public virtual string Server
         {
             get;
             set;
@@ -143,7 +143,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseHttpServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseHttpServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         [Connection(DisplayName = "Server", IsRequired = true, Type = ConnectionSettingType.String, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
         DefaultValue("localhost")]
-        public virtual String Server
+        public virtual string Server
         {
             get;
             set;
@@ -170,14 +170,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseCredentialsRequiredServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseCredentialsRequiredServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
         /// Gets/Sets the Username
         /// </summary>
         [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = true, AllowEmptyString = false, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String Username
+        public string Username
         {
             get;
             set;
@@ -187,7 +187,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Password
         /// </summary>
         [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = true, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String Password
+        public string Password
         {
             get;
             set;
@@ -206,14 +206,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseCredentialsOptionalServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseCredentialsOptionalServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
         /// Gets/Sets the Username
         /// </summary>
         [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String Username
+        public string Username
         {
             get;
             set;
@@ -223,7 +223,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Password
         /// </summary>
         [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String Password
+        public string Password
         {
             get;
             set;
@@ -242,14 +242,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseHttpCredentialsRequiredServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseHttpCredentialsRequiredServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
         /// Gets/Sets the Username
         /// </summary>
         [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = true, AllowEmptyString = true, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String Username
+        public string Username
         {
             get;
             set;
@@ -259,7 +259,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Password
         /// </summary>
         [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = true, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String Password
+        public string Password
         {
             get;
             set;
@@ -278,14 +278,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Store Name</param>
         /// <param name="storeDescrip">Store Description</param>
         /// <param name="t">Type of generated connection instances</param>
-        public BaseHttpCredentialsOptionalServerConnectionDefinition(String storeName, String storeDescrip, Type t)
+        public BaseHttpCredentialsOptionalServerConnectionDefinition(string storeName, string storeDescrip, Type t)
             : base(storeName, storeDescrip, t) { }
 
         /// <summary>
         /// Gets/Sets the Username
         /// </summary>
         [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String Username
+        public string Username
         {
             get;
             set;
@@ -295,7 +295,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets/Sets the Password
         /// </summary>
         [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String Password
+        public string Password
         {
             get;
             set;

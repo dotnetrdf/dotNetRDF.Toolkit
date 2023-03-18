@@ -40,8 +40,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="namespaceUri">Namespace URI</param>
         /// <param name="term">Term</param>
-        public NamespaceTerm(String namespaceUri, String term)
-            : this(namespaceUri, term, String.Empty) { }
+        public NamespaceTerm(string namespaceUri, string term)
+            : this(namespaceUri, term, string.Empty) { }
 
         /// <summary>
         /// Creates a new namespace term
@@ -49,17 +49,17 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <param name="namespaceUri">Namespace URI</param>
         /// <param name="term">Term</param>
         /// <param name="label">Label</param>
-        public NamespaceTerm(String namespaceUri, String term, String label)
+        public NamespaceTerm(string namespaceUri, string term, string label)
         {
-            this.NamespaceUri = namespaceUri;
-            this.Term = term;
-            this.Label = label;
+            NamespaceUri = namespaceUri;
+            Term = term;
+            Label = label;
         }
 
         /// <summary>
         /// Gets the Namespace URI
         /// </summary>
-        public String NamespaceUri
+        public string NamespaceUri
         {
             get;
             private set;
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <summary>
         /// Gets the term
         /// </summary>
-        public String Term
+        public string Term
         {
             get;
             private set;
@@ -77,7 +77,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <summary>
         /// Gets/Sets the label
         /// </summary>
-        public String Label
+        public string Label
         {
             get;
             set;
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         public override string ToString()
         {
-            return this.NamespaceUri + this.Term;
+            return NamespaceUri + Term;
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return ToString().GetHashCode();
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (obj is NamespaceTerm)
             {
                 NamespaceTerm other = (NamespaceTerm)obj;
-                return this.ToString().Equals(other.ToString(), StringComparison.OrdinalIgnoreCase);
+                return ToString().Equals(other.ToString(), StringComparison.OrdinalIgnoreCase);
             }
             else
             {

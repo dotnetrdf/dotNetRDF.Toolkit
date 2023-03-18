@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
@@ -53,7 +54,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Query Endpoint URI", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyQueryEndpointUri),
          DefaultValue("http://example.org/query")]
-        public String QueryEndpointUri
+        public string QueryEndpointUri
         {
             get;
             set;
@@ -64,7 +65,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Update Endpoint URI", DisplayOrder = 2, IsRequired = true, AllowEmptyString = false, PopulateVia = ConfigurationLoader.PropertyUpdateEndpoint, PopulateFrom = ConfigurationLoader.PropertyUpdateEndpointUri),
          DefaultValue("http://example.org/update")]
-        public String UpdateEndpointUri
+        public string UpdateEndpointUri
         {
             get;
             set;
@@ -74,7 +75,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Default Graph URI
         /// </summary>
         [Connection(DisplayName = "Query Default Graph", DisplayOrder = 3, IsRequired = false, AllowEmptyString = true, PopulateVia = ConfigurationLoader.PropertyQueryEndpoint, PopulateFrom = ConfigurationLoader.PropertyDefaultGraphUri)]
-        public String QueryDefaultGraphUri
+        public string QueryDefaultGraphUri
         {
             get;
             set;
@@ -104,16 +105,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.QueryDefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.QueryEndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.QueryEndpointUri), this.QueryDefaultGraphUri);
-            SparqlRemoteUpdateEndpoint updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri(this.UpdateEndpointUri));
-            if (this.UseProxy)
-            {
-                WebProxy proxy = this.GetProxy();
-                endpoint.Proxy = proxy;
-                updateEndpoint.Proxy = proxy;
-            }
-            ReadWriteSparqlConnector connector = new ReadWriteSparqlConnector(endpoint, updateEndpoint, this.LoadMode);
-            connector.SkipLocalParsing = this.SkipLocalParsing;
+            var httpClient = UseProxy ? new HttpClient(new HttpClientHandler { Proxy = GetProxy() }) : new HttpClient();
+            var client = new SparqlQueryClient(httpClient, new Uri(QueryEndpointUri));
+            if (!string.IsNullOrEmpty(QueryDefaultGraphUri)) client.DefaultGraphs.Add(QueryDefaultGraphUri);
+            var updateClient = new SparqlUpdateClient(httpClient, new Uri(UpdateEndpointUri));
+            ReadWriteSparqlConnector connector = new ReadWriteSparqlConnector(client, updateClient, LoadMode);
             return connector;
         }
 
@@ -124,20 +120,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         public override IConnectionDefinition Copy()
         {
             ReadWriteSparqlConnectionDefinition definition = new ReadWriteSparqlConnectionDefinition();
-            definition.QueryEndpointUri = this.QueryEndpointUri;
-            definition.QueryDefaultGraphUri = this.QueryDefaultGraphUri;
-            definition.UpdateEndpointUri = this.UpdateEndpointUri;
-            definition.LoadMode = this.LoadMode;
-            definition.SkipLocalParsing = this.SkipLocalParsing;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
+            definition.QueryEndpointUri = QueryEndpointUri;
+            definition.QueryDefaultGraphUri = QueryDefaultGraphUri;
+            definition.UpdateEndpointUri = UpdateEndpointUri;
+            definition.LoadMode = LoadMode;
+            definition.SkipLocalParsing = SkipLocalParsing;
+            definition.ProxyPassword = ProxyPassword;
+            definition.ProxyUsername = ProxyUsername;
+            definition.ProxyServer = ProxyServer;
             return definition;
         }
 
         public override string ToString()
         {
-            return "[SPARQL Query & Update] Query: " + this.QueryEndpointUri.ToSafeString() + " Update: " + this.UpdateEndpointUri.ToSafeString();
+            return "[SPARQL Query & Update] Query: " + QueryEndpointUri.ToSafeString() + " Update: " + UpdateEndpointUri.ToSafeString();
         }
     }
 }

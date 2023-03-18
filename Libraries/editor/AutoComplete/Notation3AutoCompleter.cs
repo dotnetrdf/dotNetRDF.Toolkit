@@ -52,7 +52,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         protected override bool IsValidPartialQName(string value)
         {
-            String ns, localname;
+            string ns, localname;
             if (value.Contains(':'))
             {
                 ns = value.Substring(0, value.IndexOf(':'));
@@ -61,11 +61,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             else
             {
                 ns = value;
-                localname = String.Empty;
+                localname = string.Empty;
             }
 
             //Namespace Validation
-            if (!ns.Equals(String.Empty))
+            if (!ns.Equals(string.Empty))
             {
                 //Allowed empty Namespace
                 if (ns.StartsWith("-"))
@@ -102,12 +102,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
 
             //Local Name Validation
-            if (!localname.Equals(String.Empty))
+            if (!localname.Equals(string.Empty))
             {
                 //Allowed empty Local Name
                 char[] lchars = localname.ToCharArray();
 
-                if (XmlSpecsHelper.IsNameStartChar(lchars[0]) || Char.IsNumber(lchars[0]))
+                if (XmlSpecsHelper.IsNameStartChar(lchars[0]) || char.IsNumber(lchars[0]))
                 {
                     if (lchars.Length > 1)
                     {

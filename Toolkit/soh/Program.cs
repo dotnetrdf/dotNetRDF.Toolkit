@@ -28,7 +28,10 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
             else
             {
                 Dictionary<String, String> arguments = ParseArguments(args.Skip(1).ToArray());
-                if (arguments.ContainsKey("nobom")) Options.UseBomForUtf8 = false;
+                if (arguments.ContainsKey("nobom"))
+                {
+                    Console.OutputEncoding = new UTF8Encoding(false);
+                }
 
                 try
                 {
@@ -71,6 +74,7 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
             }
         }
 
+        [Obsolete]
         static void DoQuery(Dictionary<String, String> arguments)
         {
             SparqlRemoteEndpoint endpoint;
@@ -264,6 +268,7 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
             }
         }
 
+        [Obsolete]
         static void DoUpdate(Dictionary<String, String> arguments)
         {
             SparqlRemoteUpdateEndpoint endpoint;
@@ -350,6 +355,7 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
             }
         }
 
+        [Obsolete]
         static void DoProtocol(Dictionary<String, String> arguments)
         {
             String method;

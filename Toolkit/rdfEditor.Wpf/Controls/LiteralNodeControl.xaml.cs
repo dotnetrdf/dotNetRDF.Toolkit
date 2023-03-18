@@ -53,28 +53,28 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Controls
         {
             InitializeComponent();
 
-            String data = formatter.Format(n);
+            string data = formatter.Format(n);
             if (data.Contains("\"^^"))
             {
-                String value = data.Substring(0, data.IndexOf("\"^^") + 3);
-                String dt = data.Substring(data.IndexOf("\"^^") + 4);
-                this.txtValue.Content = value;
-                this.lnkDatatypeUri.Text = dt;
-                this._u = n.DataType;
+                string value = data.Substring(0, data.IndexOf("\"^^") + 3);
+                string dt = data.Substring(data.IndexOf("\"^^") + 4);
+                txtValue.Content = value;
+                lnkDatatypeUri.Text = dt;
+                _u = n.DataType;
             }
             else
             {
-                this.txtValue.Content = data;
+                txtValue.Content = data;
             }
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            if (this._u != null)
+            if (_u != null)
             {
                 try
                 {
-                    Process.Start(this._u.AbsoluteUri);
+                    Process.Start(_u.AbsoluteUri);
                 }
                 catch
                 {

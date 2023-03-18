@@ -42,41 +42,41 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             InitializeComponent();
 
-            this._definitions.AddRange(ConnectionDefinitionManager.GetDefinitions().OrderBy(d => d.StoreName));
-            this.lstStoreTypes.DataSource = this._definitions;
-            this.lstStoreTypes.DisplayMember = "StoreName";
-            this.connSettings.Connected += this.HandleConnected;
+            _definitions.AddRange(ConnectionDefinitionManager.GetDefinitions().OrderBy(d => d.StoreName));
+            lstStoreTypes.DataSource = _definitions;
+            lstStoreTypes.DisplayMember = "StoreName";
+            connSettings.Connected += HandleConnected;
         }
 
         public NewConnectionForm(IConnectionDefinition def)
             : this()
         {
-            this.lstStoreTypes.SelectedItem = def;
+            lstStoreTypes.SelectedItem = def;
         }
 
         public Connection Connection
         {
             get
             {
-                return this._connection;
+                return _connection;
             }
         }
 
         private void lstStoreTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            IConnectionDefinition def = this.lstStoreTypes.SelectedItem as IConnectionDefinition;
+            IConnectionDefinition def = lstStoreTypes.SelectedItem as IConnectionDefinition;
             if (def != null)
             {
                 connSettings.Definition = def;
             }
         }
 
-        private void HandleConnected(Object sender, ConnectedEventArgs e)
+        private void HandleConnected(object sender, ConnectedEventArgs e)
         {
-            this._connection = e.Connection;
-            if (!String.IsNullOrEmpty(this.txtName.Text)) this._connection.Name = this.txtName.Text;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            _connection = e.Connection;
+            if (!string.IsNullOrEmpty(txtName.Text)) _connection.Name = txtName.Text;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
     }

@@ -37,7 +37,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="state">Task State</param>
         /// <returns>State Description</returns>
-        public static String GetStateDescription(this TaskState state)
+        public static string GetStateDescription(this TaskState state)
         {
             switch (state)
             {
@@ -63,9 +63,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        internal static String ToSafeString(this Object obj)
+        internal static string ToSafeString(this object obj)
         {
-            return (obj != null ? obj.ToString() : String.Empty);
+            return (obj != null ? obj.ToString() : string.Empty);
         }
     }
 }

@@ -94,7 +94,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         };
 
         private static List<NamespaceTerm> _terms = new List<NamespaceTerm>();
-        private static HashSet<String> _loadedNamespaces = new HashSet<String>();
+        private static HashSet<string> _loadedNamespaces = new HashSet<string>();
         private static LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <param name="name">Syntax Name</param>
         /// <param name="editor">Text Editor</param>
         /// <returns>Auto-Completer if available, null otherwise</returns>
-        public static IAutoCompleter<T> GetAutoCompleter<T>(String name, ITextEditorAdaptor<T> editor)
+        public static IAutoCompleter<T> GetAutoCompleter<T>(string name, ITextEditorAdaptor<T> editor)
         {
             foreach (AutoCompleteDefinition def in _builtinCompleters)
             {
@@ -135,7 +135,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     {
                         Type ctype = def.Type;
                         Type target = ctype.MakeGenericType(new Type[] { typeof(T) });
-                        IAutoCompleter<T> completer = (IAutoCompleter<T>)Activator.CreateInstance(target, new Object[] { editor });
+                        IAutoCompleter<T> completer = (IAutoCompleter<T>)Activator.CreateInstance(target, new object[] { editor });
                         return completer;
                     }
                     catch
@@ -175,14 +175,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
-        private delegate IEnumerable<NamespaceTerm> LoadNamespaceTermsDelegate(String namespaceUri);
+        private delegate IEnumerable<NamespaceTerm> LoadNamespaceTermsDelegate(string namespaceUri);
 
         /// <summary>
         /// Loads the terms from a given namespace
         /// </summary>
         /// <param name="namespaceUri">Namespace URI</param>
         /// <returns></returns>
-        public static IEnumerable<NamespaceTerm> LoadNamespaceTerms(String namespaceUri)
+        public static IEnumerable<NamespaceTerm> LoadNamespaceTerms(string namespaceUri)
         {
             //Don't load if already loaded
             if (_loadedNamespaces.Contains(namespaceUri)) return GetNamespaceTerms(namespaceUri);
@@ -192,14 +192,15 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 Graph g = new Graph();
                 try
                 {
-                    UriLoader.Load(g, new Uri(namespaceUri));
+                    var loader = new Loader();
+                    loader.LoadGraph(g, new Uri(namespaceUri));
                     if (g.Triples.Count == 0) throw new Exception("Did not appear to receive an RDF Format from Namespace URI " + namespaceUri);
                 }
                 catch
                 {
                     //Try and load from our local copy if there is one
-                    String prefix = GetDefaultPrefix(namespaceUri);
-                    if (!prefix.Equals(String.Empty))
+                    string prefix = GetDefaultPrefix(namespaceUri);
+                    if (!prefix.Equals(string.Empty))
                     {
                         Stream localCopy = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies." + prefix + ".ttl");
                         if (localCopy != null)
@@ -210,7 +211,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     }
                 }
                 List<NamespaceTerm> terms = new List<NamespaceTerm>();
-                String termUri;
+                string termUri;
 
                 //UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
                 IUriNode rdfsClass = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
@@ -227,7 +228,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 queryString.SetParameter("label", rdfsLabel);
                 queryString.SetParameter("comment", rdfsComment);
 
-                Object results = g.ExecuteQuery(queryString.ToString());
+                object results = g.ExecuteQuery(queryString.ToString());
                 if (results is SparqlResultSet)
                 {
                     foreach (SparqlResult r in ((SparqlResultSet)results))
@@ -283,7 +284,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="namespaceUri">Namespace URI</param>
         /// <returns>Terms in the namespace</returns>
-        public static IEnumerable<NamespaceTerm> GetNamespaceTerms(String namespaceUri)
+        public static IEnumerable<NamespaceTerm> GetNamespaceTerms(string namespaceUri)
         {
             return (from t in _terms
                     where t.NamespaceUri.Equals(namespaceUri, StringComparison.Ordinal)
@@ -295,13 +296,13 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="namespaceUri">Namespace URI</param>
         /// <returns>Default Prefix, empty if not known</returns>
-        public static String GetDefaultPrefix(String namespaceUri)
+        public static string GetDefaultPrefix(string namespaceUri)
         {
             foreach (VocabularyDefinition vocab in _builtInVocabs)
             {
                 if (vocab.NamespaceUri.Equals(namespaceUri, StringComparison.Ordinal)) return vocab.Prefix;
             }
-            return String.Empty;
+            return string.Empty;
         }
     }
 }

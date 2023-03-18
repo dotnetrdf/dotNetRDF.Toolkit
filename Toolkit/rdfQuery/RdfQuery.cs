@@ -49,31 +49,31 @@ namespace VDS.RDF.Utilities.Query
         private RdfQueryMode _mode = RdfQueryMode.Unknown;
         private IInMemoryQueryableStore _store = new WebDemandTripleStore();
         private SparqlRemoteEndpoint _endpoint;
-        private String _output;
+        private string _output;
         private long _timeout = 0;
         private bool _partialResults = false;
         private ISparqlResultsWriter _resultsWriter = new SparqlXmlWriter();
         private IRdfWriter _graphWriter = new NTriplesWriter();
         private SparqlQueryParser _parser = new SparqlQueryParser();
-        private String _query;
+        private string _query;
         private bool _print = false;
         private bool _debug = false;
         private bool _explain = false;
         private ExplanationLevel _level = (ExplanationLevel.Default | ExplanationLevel.OutputToConsoleStdErr) ^ ExplanationLevel.OutputToConsoleStdOut;
 
-        public void RunQuery(String[] args) 
+        public void RunQuery(string[] args) 
         {
             //If we can't set options then we abort
-            if (!this.SetOptions(args))
+            if (!SetOptions(args))
             {
                 return;
             }
 
-            if (this._query == null)
+            if (_query == null)
             {
                 //Try to read query from Standard In instead
-                this._query = Console.In.ReadToEnd();
-                if (this._query.Equals(String.Empty))
+                _query = Console.In.ReadToEnd();
+                if (_query.Equals(string.Empty))
                 {
                     Console.Error.WriteLine("rdfQuery: No Query was specified");
                     return;
@@ -83,22 +83,22 @@ namespace VDS.RDF.Utilities.Query
             //Parse the Query
             try
             {
-                SparqlQuery q = this._parser.ParseFromString(this._query);
+                SparqlQuery q = _parser.ParseFromString(_query);
 
                 //Set Timeout if necessary
-                q.Timeout = this._timeout;
-                q.PartialResultsOnTimeout = this._partialResults;
+                q.Timeout = _timeout;
+                q.PartialResultsOnTimeout = _partialResults;
 
                 //Execute the Query unless print was specified
-                Object results = null;
-                if (!this._print)
+                object results = null;
+                if (!_print)
                 {
-                    switch (this._mode)
+                    switch (_mode)
                     {
                         case RdfQueryMode.Local:
-                            if (this._explain)
+                            if (_explain)
                             {
-                                var processor = new ExplainQueryProcessor(this._store, this._level);
+                                var processor = new ExplainQueryProcessor(_store, _level);
                                 results = processor.ProcessQuery(q);
                             }
                             else
@@ -108,25 +108,25 @@ namespace VDS.RDF.Utilities.Query
                             }
                             break;
                         case RdfQueryMode.Remote:
-                            if (this._explain) Console.Error.WriteLine("rdfQuery: Warning: Cannot explain queries when the query is being sent to a remote endpoint");
-                            this._endpoint.Timeout = Convert.ToInt32(this._timeout);
+                            if (_explain) Console.Error.WriteLine("rdfQuery: Warning: Cannot explain queries when the query is being sent to a remote endpoint");
+                            _endpoint.Timeout = Convert.ToInt32(_timeout);
                             switch (q.QueryType)
                             {
                                 case SparqlQueryType.Construct:
                                 case SparqlQueryType.Describe:
                                 case SparqlQueryType.DescribeAll:
-                                    results = this._endpoint.QueryWithResultGraph(this._query);
+                                    results = _endpoint.QueryWithResultGraph(_query);
                                     break;
                                 default:
-                                    results = this._endpoint.QueryWithResultSet(this._query);
+                                    results = _endpoint.QueryWithResultSet(_query);
                                     break;
                             }
                             break;
                         case RdfQueryMode.Unknown:
                         default:
-                            if (this._explain)
+                            if (_explain)
                             {
-                                ExplainQueryProcessor processor = new ExplainQueryProcessor(new TripleStore(), this._level);
+                                ExplainQueryProcessor processor = new ExplainQueryProcessor(new TripleStore(), _level);
                                 processor.ProcessQuery(q);
                             }
                             else
@@ -139,25 +139,25 @@ namespace VDS.RDF.Utilities.Query
 
                 //Select the Output Stream
                 StreamWriter output;
-                if (this._output == null)
+                if (_output == null)
                 {
                     output = new StreamWriter(Console.OpenStandardOutput());
                 }
                 else
                 {
-                    output = new StreamWriter(this._output);
+                    output = new StreamWriter(_output);
                 }
 
-                if (!this._print)
+                if (!_print)
                 {
                     //Output the Results
                     if (results is SparqlResultSet)
                     {
-                        this._resultsWriter.Save((SparqlResultSet)results, output);
+                        _resultsWriter.Save((SparqlResultSet)results, output);
                     }
                     else if (results is IGraph)
                     {
-                        this._graphWriter.Save((IGraph)results, output);
+                        _graphWriter.Save((IGraph)results, output);
                     }
                     else
                     {
@@ -180,44 +180,44 @@ namespace VDS.RDF.Utilities.Query
             catch (RdfQueryTimeoutException timeout)
             {
                 Console.Error.WriteLine("rdfQuery: Query Timeout: " + timeout.Message);
-                if (this._debug) this.DebugErrors(timeout);
+                if (_debug) DebugErrors(timeout);
                 return;
             }
             catch (RdfQueryException queryEx)
             {
                 Console.Error.WriteLine("rdfQuery: Query Error: " + queryEx.Message);
-                if (this._debug) this.DebugErrors(queryEx);
+                if (_debug) DebugErrors(queryEx);
                 return;
             }
             catch (RdfParseException parseEx)
             {
                 Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
-                if (this._debug) this.DebugErrors(parseEx);
+                if (_debug) DebugErrors(parseEx);
                 return;
             }
             catch (RdfException rdfEx)
             {
                 Console.Error.WriteLine("rdfQuery: RDF Error: " + rdfEx.Message);
-                if (this._debug) this.DebugErrors(rdfEx);
+                if (_debug) DebugErrors(rdfEx);
                 return;
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
-                if (this._debug) this.DebugErrors(ex);
+                if (_debug) DebugErrors(ex);
                 return;
             }
         }
 
-        private bool SetOptions(String[] args)
+        private bool SetOptions(string[] args)
         {
             if (args.Length == 0 || args.Length == 1 && args[0].Equals("-help"))
             {
-                this.ShowUsage();
+                ShowUsage();
                 return false;
             }
 
-            String arg;
+            string arg;
             int i = 0;
             while (i < args.Length)
             {
@@ -225,24 +225,24 @@ namespace VDS.RDF.Utilities.Query
 
                 if (arg.StartsWith("-uri:"))
                 {
-                    if (this._mode == RdfQueryMode.Remote)
+                    if (_mode == RdfQueryMode.Remote)
                     {
                         Console.Error.WriteLine("rdfQuery: Cannot specify input URIs as well as specifying a remote endpoint to query");
                         return false;
                     }
 
-                    String uri = arg.Substring(5);
+                    string uri = arg.Substring(5);
                     try
                     {
-                        this._mode = RdfQueryMode.Local;
+                        _mode = RdfQueryMode.Local;
 
                         //Try and parse RDF from the given URI
-                        if (!this._print)
+                        if (!_print)
                         {
                             Uri u = new Uri(uri);
                             Graph g = new Graph();
                             UriLoader.Load(g, u);
-                            this._store.Add(g);
+                            _store.Add(g);
                         }
                         else
                         {
@@ -252,75 +252,75 @@ namespace VDS.RDF.Utilities.Query
                     catch (UriFormatException uriEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' since this is not a valid URI");
-                        if (this._debug) this.DebugErrors(uriEx);
+                        if (_debug) DebugErrors(uriEx);
                     }
                     catch (RdfParseException parseEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
-                        if (this._debug) this.DebugErrors(parseEx);
+                        if (_debug) DebugErrors(parseEx);
                     }
                     catch (Exception ex)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
-                        if (this._debug) this.DebugErrors(ex);
+                        if (_debug) DebugErrors(ex);
                     }
                 }
                 else if (arg.StartsWith("-endpoint:"))
                 {
-                    if (this._mode == RdfQueryMode.Local)
+                    if (_mode == RdfQueryMode.Local)
                     {
                         Console.Error.WriteLine("rdfQuery: Cannot specify a remote endpoint to query as well as specifying local files and/or input URIs");
                         return false;
                     }
-                    else if (this._mode == RdfQueryMode.Remote)
+                    else if (_mode == RdfQueryMode.Remote)
                     {
-                        if (!(this._endpoint is FederatedSparqlRemoteEndpoint))
+                        if (!(_endpoint is FederatedSparqlRemoteEndpoint))
                         {
-                            this._endpoint = new FederatedSparqlRemoteEndpoint(this._endpoint);
+                            _endpoint = new FederatedSparqlRemoteEndpoint(_endpoint);
                         }
                     }
 
                     try
                     {
-                        this._mode = RdfQueryMode.Remote;
-                        if (this._endpoint is FederatedSparqlRemoteEndpoint)
+                        _mode = RdfQueryMode.Remote;
+                        if (_endpoint is FederatedSparqlRemoteEndpoint)
                         {
-                            ((FederatedSparqlRemoteEndpoint)this._endpoint).AddEndpoint(new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1))));
+                            ((FederatedSparqlRemoteEndpoint)_endpoint).AddEndpoint(new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1))));
                         }
                         else
                         {
-                            this._endpoint = new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1)));
+                            _endpoint = new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1)));
                         }
                     }
                     catch (UriFormatException uriEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Unable to use remote endpoint with URI '" + arg.Substring(arg.IndexOf(':') + 1) + "' since this is not a valid URI");
-                        if (this._debug) this.DebugErrors(uriEx);
+                        if (_debug) DebugErrors(uriEx);
                         return false;
                     }
                 }
                 else if (arg.StartsWith("-output:") || arg.StartsWith("-out:"))
                 {
-                    this._output = arg.Substring(arg.IndexOf(':') + 1);
+                    _output = arg.Substring(arg.IndexOf(':') + 1);
                 }
                 else if (arg.StartsWith("-outformat:"))
                 {
-                    String format = arg.Substring(arg.IndexOf(':') + 1);
+                    string format = arg.Substring(arg.IndexOf(':') + 1);
                     try
                     {
                         if (format.Contains("/"))
                         {
                             //MIME Type
-                            this._graphWriter = MimeTypesHelper.GetWriter(format);
-                            this._resultsWriter = MimeTypesHelper.GetSparqlWriter(format);
+                            _graphWriter = MimeTypesHelper.GetWriter(format);
+                            _resultsWriter = MimeTypesHelper.GetSparqlWriter(format);
                         }
                         else
                         {
                             //File Extension
-                            this._graphWriter = MimeTypesHelper.GetWriterByFileExtension(format);
-                            this._resultsWriter = MimeTypesHelper.GetSparqlWriterByFileExtension(format);
+                            _graphWriter = MimeTypesHelper.GetWriterByFileExtension(format);
+                            _resultsWriter = MimeTypesHelper.GetSparqlWriterByFileExtension(format);
                         }
                     }
                     catch (RdfException)
@@ -332,37 +332,37 @@ namespace VDS.RDF.Utilities.Query
                 {
                     if (arg.Contains(':'))
                     {
-                        String syntax = arg.Substring(arg.IndexOf(':') + 1);
+                        string syntax = arg.Substring(arg.IndexOf(':') + 1);
                         switch (syntax)
                         {
                             case "1":
                             case "1.0":
-                                this._parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_0;
+                                _parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_0;
                                 break;
                             case "1.1":
-                                this._parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
+                                _parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
                                 break;
                             case "E":
                             case "e":
-                                this._parser.SyntaxMode = SparqlQuerySyntax.Extended;
+                                _parser.SyntaxMode = SparqlQuerySyntax.Extended;
                                 break;
                             default:
                                 Console.Error.WriteLine("rdfQuery: The value '" + syntax + "' is not a valid query syntax specifier - assuming SPARQL 1.1 with Extensions");
-                                this._parser.SyntaxMode = SparqlQuerySyntax.Extended;
+                                _parser.SyntaxMode = SparqlQuerySyntax.Extended;
                                 break;
                         }
                     }
                     else
                     {
-                        this._parser.SyntaxMode = SparqlQuerySyntax.Extended;
+                        _parser.SyntaxMode = SparqlQuerySyntax.Extended;
                     }
                 }
                 else if (arg.StartsWith("-timeout:"))
                 {
                     long timeout;
-                    if (Int64.TryParse(arg.Substring(arg.IndexOf(':') + 1), out timeout))
+                    if (long.TryParse(arg.Substring(arg.IndexOf(':') + 1), out timeout))
                     {
-                        this._timeout = timeout;
+                        _timeout = timeout;
                     }
                     else
                     {
@@ -375,10 +375,10 @@ namespace VDS.RDF.Utilities.Query
                     switch (arg)
                     {
                         case "rdfs":
-                            ((IInferencingTripleStore)this._store).AddInferenceEngine(new RdfsReasoner());
+                            ((IInferencingTripleStore)_store).AddInferenceEngine(new RdfsReasoner());
                             break;
                         case "skos":
-                            ((IInferencingTripleStore)this._store).AddInferenceEngine(new SkosReasoner());
+                            ((IInferencingTripleStore)_store).AddInferenceEngine(new SkosReasoner());
                             break;
                         default:
                             Console.Error.WriteLine("rdfQuery: The value '" + arg + "' is not a valid Reasoner - ignoring this option");
@@ -390,9 +390,9 @@ namespace VDS.RDF.Utilities.Query
                     if (arg.Contains(':'))
                     {
                         bool partial;
-                        if (Boolean.TryParse(arg.Substring(arg.IndexOf(':') + 1), out partial))
+                        if (bool.TryParse(arg.Substring(arg.IndexOf(':') + 1), out partial))
                         {
-                            this._partialResults = partial;
+                            _partialResults = partial;
                         }
                         else
                         {
@@ -401,7 +401,7 @@ namespace VDS.RDF.Utilities.Query
                     }
                     else
                     {
-                        this._partialResults = true;
+                        _partialResults = true;
                     }
                 }
                 else if (arg.StartsWith("-noopt"))
@@ -413,7 +413,7 @@ namespace VDS.RDF.Utilities.Query
                     }
                     else if (arg.Length >= 7)
                     {
-                        String opts = arg.Substring(7);
+                        string opts = arg.Substring(7);
                         foreach (char c in opts.ToCharArray())
                         {
                             if (c == 'a' || c == 'A')
@@ -441,21 +441,21 @@ namespace VDS.RDF.Utilities.Query
                 }
                 else if (arg.Equals("-print"))
                 {
-                    this._print = true;
+                    _print = true;
                 }
                 else if (arg.Equals("-debug"))
                 {
-                    this._debug = true;
+                    _debug = true;
                 }
                 else if (arg.StartsWith("-explain"))
                 {
-                    this._explain = true;
+                    _explain = true;
                     if (arg.Length > 9)
                     {
                         try
                         {
-                            this._level = (ExplanationLevel)Enum.Parse(typeof(ExplanationLevel), arg.Substring(9));
-                            this._level = (this._level | ExplanationLevel.OutputToConsoleStdErr | ExplanationLevel.Simulate) ^ ExplanationLevel.OutputToConsoleStdOut;
+                            _level = (ExplanationLevel)Enum.Parse(typeof(ExplanationLevel), arg.Substring(9));
+                            _level = (_level | ExplanationLevel.OutputToConsoleStdErr | ExplanationLevel.Simulate) ^ ExplanationLevel.OutputToConsoleStdOut;
                         }
                         catch
                         {
@@ -476,13 +476,13 @@ namespace VDS.RDF.Utilities.Query
                 else if (i == args.Length - 1)
                 {
                     //Last Argument must be the Query
-                    this._query = arg;
+                    _query = arg;
                 }
                 else
                 {
                     //Treat as an input file
 
-                    if (this._mode == RdfQueryMode.Remote)
+                    if (_mode == RdfQueryMode.Remote)
                     {
                         Console.Error.WriteLine("rdfQuery: Cannot specify local files as well as specifying a remote endpoint to query");
                         return false;
@@ -490,14 +490,14 @@ namespace VDS.RDF.Utilities.Query
 
                     try
                     {
-                        this._mode = RdfQueryMode.Local;
+                        _mode = RdfQueryMode.Local;
 
                         //Try and parse RDF from the given file
-                        if (!this._print)
+                        if (!_print)
                         {
                             Graph g = new Graph();
                             FileLoader.Load(g, arg);
-                            this._store.Add(g);
+                            _store.Add(g);
                         }
                         else
                         {
@@ -508,13 +508,13 @@ namespace VDS.RDF.Utilities.Query
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the local file '" + arg + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
-                        if (this._debug) this.DebugErrors(parseEx);
+                        if (_debug) DebugErrors(parseEx);
                     }
                     catch (Exception ex)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the local file '" + arg + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
-                        if (this._debug) this.DebugErrors(ex);
+                        if (_debug) DebugErrors(ex);
                     }
                 }
 

@@ -24,29 +24,29 @@ namespace VDS.RDF.GUI.WinForms.Controls
         public ResultSetViewerControl()
         {
             InitializeComponent();
-            this.dgvResults.CellFormatting += dgvTriples_CellFormatting;
-            this.dgvResults.CellContentClick += dgvTriples_CellClick;
-            this.fmtSelector.DefaultFormatter = typeof (SparqlFormatter);
-            this.fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
+            dgvResults.CellFormatting += dgvTriples_CellFormatting;
+            dgvResults.CellContentClick += dgvTriples_CellClick;
+            fmtSelector.DefaultFormatter = typeof (SparqlFormatter);
+            fmtSelector.FormatterChanged += fmtSelector_FormatterChanged;
         }
 
         private void fmtSelector_FormatterChanged(object sender, Formatter formatter)
         {
-            if (ReferenceEquals(formatter, this._lastFormatter)) return;
-            this._lastFormatter = formatter;
-            this.Reformat();
+            if (ReferenceEquals(formatter, _lastFormatter)) return;
+            _lastFormatter = formatter;
+            Reformat();
         }
 
         private void Reformat()
         {
-            if (ReferenceEquals(this._lastFormatter, null)) return;
-            this._formatter = this._lastFormatter.CreateInstance(this._nsmap);
+            if (ReferenceEquals(_lastFormatter, null)) return;
+            _formatter = _lastFormatter.CreateInstance(_nsmap);
 
-            if (this.dgvResults.DataSource == null) return;
-            DataTable tbl = (DataTable) this.dgvResults.DataSource;
-            this.dgvResults.DataSource = null;
-            this.dgvResults.Refresh();
-            this.dgvResults.DataSource = tbl;
+            if (dgvResults.DataSource == null) return;
+            DataTable tbl = (DataTable) dgvResults.DataSource;
+            dgvResults.DataSource = null;
+            dgvResults.Refresh();
+            dgvResults.DataSource = tbl;
         }
 
         /// <summary>
@@ -55,12 +55,12 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="results">SPARQL Result to display</param>
         public void DisplayResultSet(SparqlResultSet results)
         {
-            this._results = results;
+            _results = results;
 
-            this.Text = this.GetTitle();
+            Text = GetTitle();
 
             // Load Results and Populate Form Fields
-            this.LoadInternal();
+            LoadInternal();
         }
 
         /// <summary>
@@ -70,17 +70,17 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <param name="nsmap">Namespace Map to use for display</param>
         public void DisplayResultSet(SparqlResultSet results, INamespaceMapper nsmap)
         {
-            this._nsmap = nsmap;
-            if (nsmap != null) this._formatter = new SparqlFormatter(nsmap);
+            _nsmap = nsmap;
+            if (nsmap != null) _formatter = new SparqlFormatter(nsmap);
 
             DisplayResultSet(results);
         }
 
-        private String GetTitle()
+        private string GetTitle()
         {
-            if (this._results.ResultsType == SparqlResultsType.Boolean)
+            if (_results.ResultsType == SparqlResultsType.Boolean)
                 return "SPARQL Results Viewer - Boolean Result";
-            return this._results.ResultsType == SparqlResultsType.VariableBindings ? String.Format("SPARQL Results Viewer - {0} Result(s)", this._results.Count) : "SPARQL Results Viewer";
+            return _results.ResultsType == SparqlResultsType.VariableBindings ? string.Format("SPARQL Results Viewer - {0} Result(s)", _results.Count) : "SPARQL Results Viewer";
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         {
             if (!(e.Value is INode)) return;
             INode n = (INode) e.Value;
-            e.Value = this._formatter.Format(n);
+            e.Value = _formatter.Format(n);
             e.FormattingApplied = true;
             switch (n.NodeType)
             {
@@ -107,31 +107,31 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         private void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            Object value = this.dgvResults[e.ColumnIndex, e.RowIndex].Value;
+            object value = dgvResults[e.ColumnIndex, e.RowIndex].Value;
             if (value == null) return;
             if (!(value is INode)) return;
             INode n = (INode) value;
             if (n.NodeType == NodeType.Uri)
             {
-                this.RaiseUriClicked(((IUriNode) n).Uri);
+                RaiseUriClicked(((IUriNode) n).Uri);
             }
         }
 
         private void LoadInternal()
         {
             //Show Results
-            if (this._results.ResultsType == SparqlResultsType.Boolean)
+            if (_results.ResultsType == SparqlResultsType.Boolean)
             {
                 DataTable table = new DataTable();
-                table.Columns.Add(new DataColumn("ASK", typeof (String)));
+                table.Columns.Add(new DataColumn("ASK", typeof (string)));
                 DataRow row = table.NewRow();
-                row["ASK"] = this._results.Result.ToString();
+                row["ASK"] = _results.Result.ToString();
                 table.Rows.Add(row);
-                this.dgvResults.DataSource = table;
+                dgvResults.DataSource = table;
             }
             else
             {
-                this.dgvResults.DataSource = _results.ToDataTable();
+                dgvResults.DataSource = _results.ToDataTable();
             }
         }
 
@@ -140,11 +140,11 @@ namespace VDS.RDF.GUI.WinForms.Controls
             ExportResultSetOptionsForm exporter = new ExportResultSetOptionsForm();
             if (exporter.ShowDialog() != DialogResult.OK) return;
             ISparqlResultsWriter writer = exporter.Writer;
-            String file = exporter.File;
+            string file = exporter.File;
 
             try
             {
-                writer.Save(this._results, file);
+                writer.Save(_results, file);
 
                 MessageBox.Show("Successfully exported the SPARQL Results to the file '" + file + "'", "SPARQL Results Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -156,7 +156,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         private void RaiseUriClicked(Uri u)
         {
-            UriClickedEventHandler d = this.UriClicked;
+            UriClickedEventHandler d = UriClicked;
             if (d != null)
             {
                 d(this, u);

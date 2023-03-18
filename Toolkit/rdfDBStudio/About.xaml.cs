@@ -63,11 +63,11 @@ namespace VDS.RDF.Utilities.Studio
         {
             InitializeComponent();
 
-            this.lblStudioVersion.Content = Assembly.GetExecutingAssembly().GetName().Version;
-            this.lblEditorCoreVersion.Content = Assembly.GetAssembly(typeof(GlobalOptions)).GetName().Version;
-            this.lblEditorCoreWpfVersion.Content = Assembly.GetAssembly(typeof(WpfEditorAdaptor)).GetName().Version;
-            this.lblStoreManagerCoreVersion.Content = Assembly.GetAssembly(typeof(ConnectionDefinitionManager)).GetName().Version;
-            this.lblRdfVersion.Content = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
+            lblStudioVersion.Content = Assembly.GetExecutingAssembly().GetName().Version;
+            lblEditorCoreVersion.Content = Assembly.GetAssembly(typeof(GlobalOptions)).GetName().Version;
+            lblEditorCoreWpfVersion.Content = Assembly.GetAssembly(typeof(WpfEditorAdaptor)).GetName().Version;
+            lblStoreManagerCoreVersion.Content = Assembly.GetAssembly(typeof(ConnectionDefinitionManager)).GetName().Version;
+            lblRdfVersion.Content = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
         }
     }
 }

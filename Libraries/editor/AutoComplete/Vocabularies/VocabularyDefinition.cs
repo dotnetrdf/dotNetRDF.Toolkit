@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
     /// </summary>
     public class VocabularyDefinition
     {
-        private String _prefix, _uri, _descrip;
+        private string _prefix, _uri, _descrip;
 
         /// <summary>
         /// Creates a new vocabulary definition
@@ -43,43 +43,43 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace URI</param>
         /// <param name="description">Description</param>
-        public VocabularyDefinition(String prefix, String uri, String description)
+        public VocabularyDefinition(string prefix, string uri, string description)
         {
-            this._prefix = prefix;
-            this._uri = uri;
-            this._descrip = description;
+            _prefix = prefix;
+            _uri = uri;
+            _descrip = description;
         }
 
         /// <summary>
         /// Gets the prefix
         /// </summary>
-        public String Prefix
+        public string Prefix
         {
             get
             {
-                return this._prefix;
+                return _prefix;
             }
         }
 
         /// <summary>
         /// Gets the namespace URI
         /// </summary>
-        public String NamespaceUri
+        public string NamespaceUri
         {
             get
             {
-                return this._uri;
+                return _uri;
             }
         }
 
         /// <summary>
         /// Gets the description
         /// </summary>
-        public String Description
+        public string Description
         {
             get
             {
-                return this._descrip;
+                return _descrip;
             }
         }
     }

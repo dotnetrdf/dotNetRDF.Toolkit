@@ -53,10 +53,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public ResultSetWindow(SparqlResultSet results)
         {
             InitializeComponent();
-            this._formatter = new SparqlFormatter();
-            this._grid = this.gridResults;
+            _formatter = new SparqlFormatter();
+            _grid = gridResults;
 
-            this.RenderResultSet(results);
+            RenderResultSet(results);
         }
 
 
@@ -65,17 +65,17 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             //First Create the Header Row
             RowDefinition rowDef = new RowDefinition();
             rowDef.Height = new GridLength(27);
-            this._grid.RowDefinitions.Add(rowDef);
+            _grid.RowDefinitions.Add(rowDef);
 
             //Create the appropriate number of Columns
             int c = 0;
             List<GridSplitter> columnSplitters = new List<GridSplitter>();
-            foreach (String var in results.Variables)
+            foreach (string var in results.Variables)
             {
                 //Create the Column for the Variable
                 ColumnDefinition colDef = new ColumnDefinition();
                 colDef.Width = new GridLength(100, GridUnitType.Star);
-                this._grid.ColumnDefinitions.Add(colDef);
+                _grid.ColumnDefinitions.Add(colDef);
 
                 //Create a Label for the Variable
                 Label varLabel = new Label();
@@ -83,7 +83,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 varLabel.Background = Brushes.LightGray;
                 varLabel.HorizontalContentAlignment = HorizontalAlignment.Center;
                 varLabel.VerticalContentAlignment = VerticalAlignment.Center;
-                this._grid.Children.Add(varLabel);
+                _grid.Children.Add(varLabel);
                 Grid.SetColumn(varLabel, c);
                 Grid.SetRow(varLabel, 0);
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //Create a Column for a Splitter
                 colDef = new ColumnDefinition();
                 colDef.Width = new GridLength(1);
-                this._grid.ColumnDefinitions.Add(colDef);
+                _grid.ColumnDefinitions.Add(colDef);
 
                 //Add the Spliiter
                 GridSplitter splitter = new GridSplitter();
@@ -101,7 +101,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 splitter.Width = 1;
                 splitter.Background = Brushes.Black;
                 splitter.Foreground = Brushes.Black;
-                this._grid.Children.Add(splitter);
+                _grid.Children.Add(splitter);
                 Grid.SetColumn(splitter, c);
                 Grid.SetRow(splitter, 0);
                 columnSplitters.Add(splitter);
@@ -117,20 +117,20 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //Create a new Row
                 rowDef = new RowDefinition();
                 rowDef.Height = new GridLength(27, GridUnitType.Star);
-                this._grid.RowDefinitions.Add(rowDef);
+                _grid.RowDefinitions.Add(rowDef);
 
                 //Create Controls for each Value in the appropriate Columns
                 //The increment is two because we're skipping the column splitter columns
-                foreach (String var in results.Variables)
+                foreach (string var in results.Variables)
                 {
                     if (result.HasValue(var))
                     {
                         if (result[var] != null)
                         {
-                            Control value = this.RenderNode(result[var]);
+                            Control value = RenderNode(result[var]);
                             Grid.SetRow(value, row);
                             Grid.SetColumn(value, c);
-                            this._grid.Children.Add(value);
+                            _grid.Children.Add(value);
                         }
                     }
                     c += 2;
@@ -139,7 +139,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
                 //Add the Splitter Row
                 row++;
-                this._grid.RowDefinitions.Add(new RowDefinition());
+                _grid.RowDefinitions.Add(new RowDefinition());
                 GridSplitter rowSplitter = new GridSplitter();
                 rowSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
                 rowSplitter.Height = 1;
@@ -149,8 +149,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 rowSplitter.Foreground = Brushes.Black;
                 Grid.SetColumn(rowSplitter, 0);
                 Grid.SetRow(rowSplitter, row);
-                Grid.SetColumnSpan(rowSplitter, this._grid.ColumnDefinitions.Count);
-                this._grid.Children.Add(rowSplitter);
+                Grid.SetColumnSpan(rowSplitter, _grid.ColumnDefinitions.Count);
+                _grid.Children.Add(rowSplitter);
 
                 //Increment Row and Reset Column
                 row++;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
             foreach (GridSplitter splitter in columnSplitters)
             {
-                Grid.SetRowSpan(splitter, this._grid.RowDefinitions.Count);
+                Grid.SetRowSpan(splitter, _grid.RowDefinitions.Count);
             }
         }
 
@@ -169,7 +169,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 case NodeType.Blank:
                     Label bnode = new Label();
-                    bnode.Content = this._formatter.Format(n);
+                    bnode.Content = _formatter.Format(n);
                     bnode.Padding = new Thickness(2);
                     return bnode;
 
@@ -180,10 +180,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     return glit;
 
                 case NodeType.Literal:
-                    return new LiteralNodeControl((ILiteralNode)n, this._formatter);
+                    return new LiteralNodeControl((ILiteralNode)n, _formatter);
 
                 case NodeType.Uri:
-                    return new UriNodeControl((IUriNode)n, this._formatter);
+                    return new UriNodeControl((IUriNode)n, _formatter);
 
                 default:
                     Label unknown = new Label();

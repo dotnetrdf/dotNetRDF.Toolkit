@@ -406,7 +406,6 @@ namespace VDS.RDF.Utilities.Sparql
             this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
         "s tools that may have an issue with the UTF-8 BOM");
             this.chkUseUtf8Bom.UseVisualStyleBackColor = true;
-            this.chkUseUtf8Bom.CheckedChanged += new System.EventHandler(this.chkUseUtf8Bom_CheckedChanged);
             // 
             // chkViewResultsInApp
             // 
@@ -434,7 +433,6 @@ namespace VDS.RDF.Utilities.Sparql
             this.ttpTips.SetToolTip(this.chkAlgebraOptimisation, "Determines whether the Engine will use Algebra optimisations to evaluate some que" +
         "ries more efficiently");
             this.chkAlgebraOptimisation.UseVisualStyleBackColor = true;
-            this.chkAlgebraOptimisation.CheckedChanged += new System.EventHandler(this.chkAlgebraOptimisation_CheckedChanged);
             // 
             // chkQueryOptimisation
             // 
@@ -448,7 +446,6 @@ namespace VDS.RDF.Utilities.Sparql
             this.ttpTips.SetToolTip(this.chkQueryOptimisation, "Determines whether the Engine will optimise the ordering of Triple Patterns in yo" +
         "ur Query (highly recommended)");
             this.chkQueryOptimisation.UseVisualStyleBackColor = true;
-            this.chkQueryOptimisation.CheckedChanged += new System.EventHandler(this.chkQueryOptimisation_CheckedChanged);
             // 
             // chkAllowUnknownFunctions
             // 
@@ -462,7 +459,6 @@ namespace VDS.RDF.Utilities.Sparql
             this.ttpTips.SetToolTip(this.chkAllowUnknownFunctions, "Unknown Functions allow unrecognised extension Function URIs to be used but the e" +
         "ngine will not evaluate these when evaluating queries");
             this.chkAllowUnknownFunctions.UseVisualStyleBackColor = true;
-            this.chkAllowUnknownFunctions.CheckedChanged += new System.EventHandler(this.chkAllowUnknownFunctions_CheckedChanged);
             // 
             // chkWebDemand
             // 

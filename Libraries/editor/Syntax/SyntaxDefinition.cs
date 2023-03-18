@@ -37,13 +37,13 @@ namespace VDS.RDF.Utilities.Editor.Syntax
     /// </summary>
     public class SyntaxDefinition
     {
-        private String _name;
-        private String _defFile;
-        private String[] _extensions;
+        private string _name;
+        private string _defFile;
+        private string[] _extensions;
         private IRdfReader _parser;
         private IRdfWriter _writer;
         private ISyntaxValidator _validator;
-        private String _singleLineComment, _multiLineCommentStart, _multiLineCommentEnd;
+        private string _singleLineComment, _multiLineCommentStart, _multiLineCommentEnd;
         private bool _isXml = false;
 
         #region Constructors which lazily load the Highlighting Definition
@@ -54,11 +54,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="name">Name</param>
         /// <param name="definitionFile">Definition File</param>
         /// <param name="fileExtensions">Associated File Extensions</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions)
         {
-            this._name = name;
-            this._defFile = definitionFile;
-            this._extensions = fileExtensions;
+            _name = name;
+            _defFile = definitionFile;
+            _extensions = fileExtensions;
         }
 
         /// <summary>
@@ -68,10 +68,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="definitionFile">Definition File</param>
         /// <param name="fileExtensions">Associated File Extensions</param>
         /// <param name="defaultParser">Default RDF parser</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, IRdfReader defaultParser)
             : this(name, definitionFile, fileExtensions)
         {
-            this._parser = defaultParser;
+            _parser = defaultParser;
         }
 
         /// <summary>
@@ -82,10 +82,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="fileExtensions">Associated File Extensions</param>
         /// <param name="defaultParser">Default RDF parser</param>
         /// <param name="defaultWriter">Default RDF writer</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter)
             : this(name, definitionFile, fileExtensions, defaultParser)
         {
-            this._writer = defaultWriter;
+            _writer = defaultWriter;
         }
 
         /// <summary>
@@ -95,10 +95,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="definitionFile">Definition File</param>
         /// <param name="fileExtensions">Associated File Extensions</param>
         /// <param name="defaultWriter">Default RDF writer</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfWriter defaultWriter)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, IRdfWriter defaultWriter)
             : this(name, definitionFile, fileExtensions)
         {
-            this._writer = defaultWriter;
+            _writer = defaultWriter;
         }
 
         /// <summary>
@@ -110,10 +110,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="defaultParser">Default RDF parser</param>
         /// <param name="defaultWriter">Default RDF writer</param>
         /// <param name="validator">Syntax Validator</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter, ISyntaxValidator validator)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions, defaultParser, defaultWriter)
         {
-            this._validator = validator;
+            _validator = validator;
         }
 
         /// <summary>
@@ -124,10 +124,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="fileExtensions">Associated File Extensions</param>
         /// <param name="defaultWriter">Default RDF writer</param>
         /// <param name="validator">Syntax Validator</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfWriter defaultWriter, ISyntaxValidator validator)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, IRdfWriter defaultWriter, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions, defaultWriter)
         {
-            this._validator = validator;
+            _validator = validator;
         }
 
         /// <summary>
@@ -137,10 +137,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <param name="definitionFile">Definition File</param>
         /// <param name="fileExtensions">Associated File Extensions</param>
         /// <param name="validator">Syntax Validator</param>
-        public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, ISyntaxValidator validator)
+        public SyntaxDefinition(string name, string definitionFile, string[] fileExtensions, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions)
         {
-            this._validator = validator;
+            _validator = validator;
         }
 
         #endregion
@@ -148,33 +148,33 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         /// <summary>
         /// Gets the Name of the Syntax
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
         /// <summary>
         /// Gets the Filename of the file that defines how to highlight this syntax
         /// </summary>
-        public String DefinitionFile
+        public string DefinitionFile
         {
             get
             {
-                return this._defFile;
+                return _defFile;
             }
         }
 
         /// <summary>
         /// Gets the File Extensions associated with the Syntax
         /// </summary>
-        public String[] FileExtensions
+        public string[] FileExtensions
         {
             get
             {
-                return this._extensions;
+                return _extensions;
             }
         }
 
@@ -185,7 +185,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         {
             get
             {
-                return this._parser;
+                return _parser;
             }
         }
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         {
             get
             {
-                return this._writer;
+                return _writer;
             }
         }
 
@@ -207,52 +207,52 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         {
             get
             {
-                return this._validator;
+                return _validator;
             }
         }
 
         /// <summary>
         /// Gets/Sets single line comment character
         /// </summary>
-        public String SingleLineComment
+        public string SingleLineComment
         {
             get
             {
-                return this._singleLineComment;
+                return _singleLineComment;
             }
             set
             {
-                this._singleLineComment = value;
+                _singleLineComment = value;
             }
         }
 
         /// <summary>
         /// Gets/Sets multi-line comment start characters
         /// </summary>
-        public String MultiLineCommentStart
+        public string MultiLineCommentStart
         {
             get
             {
-                return this._multiLineCommentStart;
+                return _multiLineCommentStart;
             }
             set
             {
-                this._multiLineCommentStart = value;
+                _multiLineCommentStart = value;
             }
         }
 
         /// <summary>
         /// Gets/Sets multi-line comment end characters
         /// </summary>
-        public String MultiLineCommentEnd
+        public string MultiLineCommentEnd
         {
             get
             {
-                return this._multiLineCommentEnd;
+                return _multiLineCommentEnd;
             }
             set
             {
-                this._multiLineCommentEnd = value;
+                _multiLineCommentEnd = value;
             }
         }
 
@@ -263,7 +263,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         {
             get
             {
-                return this._singleLineComment != null || (this._multiLineCommentStart != null && this._multiLineCommentEnd != null);
+                return _singleLineComment != null || (_multiLineCommentStart != null && _multiLineCommentEnd != null);
             }
         }
 
@@ -274,11 +274,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         {
             get
             {
-                return this._isXml;
+                return _isXml;
             }
             set
             {
-                this._isXml = value;
+                _isXml = value;
             }
         }
     }

@@ -60,7 +60,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the Text in the editor
         /// </summary>
-        String Text
+        string Text
         {
             get;
             set;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="offset">Offset</param>
         /// <param name="length">Length</param>
         /// <returns></returns>
-        String GetText(int offset, int length);
+        string GetText(int offset, int length);
 
         /// <summary>
         /// Selects a section of text
@@ -174,7 +174,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="offset">Offset to start replace at</param>
         /// <param name="length">Length of the text to be replaced</param>
         /// <param name="text">Text to replace with</param>
-        void Replace(int offset, int length, String text);
+        void Replace(int offset, int length, string text);
 
         /// <summary>
         /// Gets the line number based on the offset
@@ -242,7 +242,7 @@ namespace VDS.RDF.Utilities.Editor
         /// Sets the Highlighter to be used (if supported)
         /// </summary>
         /// <param name="name">Syntax Name</param>
-        void SetHighlighter(String name);
+        void SetHighlighter(string name);
 
         /// <summary>
         /// Clears any highlighted errors (if supported)

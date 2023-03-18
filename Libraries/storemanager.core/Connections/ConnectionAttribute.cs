@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Display Name for the property
         /// </summary>
-        public String DisplayName
+        public string DisplayName
         {
             get;
             set;
@@ -81,7 +81,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Display Suffix to show after whatever UI element is rendered for the property
         /// </summary>
-        public String DisplaySuffix
+        public string DisplaySuffix
         {
             get;
             set;
@@ -99,7 +99,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// The URI for the Configuration Property that is used to serialize this piece of configuration for a connection created from this definition
         /// </summary>
-        public String PopulateFrom
+        public string PopulateFrom
         {
             get;
             set;
@@ -108,7 +108,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// The URI for a property defining an intermediate object via which the actual properties value may be populated using the property defined via the <see cref="ConnectionAttribute.PopulateFrom"/> property
         /// </summary>
-        public String PopulateVia
+        public string PopulateVia
         {
             get;
             set;
@@ -146,7 +146,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Is the setting optional only if some other property is set?
         /// </summary>
-        public String NotRequiredIf
+        public string NotRequiredIf
         {
             get;
             set;
@@ -214,7 +214,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Filename filter for <see cref="ConnectionSettingType.File"/> settings
         /// </summary>
-        public String FileFilter
+        public string FileFilter
         {
             get;
             set;

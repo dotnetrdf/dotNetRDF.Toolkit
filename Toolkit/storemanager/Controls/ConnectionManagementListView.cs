@@ -51,10 +51,10 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         public ConnectionManagementListView()
         {
             InitializeComponent();
-            this._handler = this.HandleCollectionChanged;
+            _handler = HandleCollectionChanged;
 
             // Subscribe to context menu events so we can configure the available options
-            this.mnuContext.Opening += MnuContextOnOpening;
+            mnuContext.Opening += MnuContextOnOpening;
         }
 
         /// <summary>
@@ -65,11 +65,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             : this()
         {
             if (connections == null) throw new ArgumentNullException("connections");
-            this._connections = connections;
-            this.BindData();
+            _connections = connections;
+            BindData();
 
             // Subscribe to events on connections graph
-            this._connections.CollectionChanged += this._handler;
+            _connections.CollectionChanged += _handler;
         }
 
         /// <summary>
@@ -79,28 +79,28 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         private List<Connection> GetSelectedConnections()
         {
             return (from ListViewItem item
-                        in this.lvwConnections.SelectedItems
+                        in lvwConnections.SelectedItems
                     where item.Tag is Connection
                     select (Connection) item.Tag).ToList();
         }
 
         private void MnuContextOnOpening(object sender, CancelEventArgs cancelEventArgs)
         {
-            if (this.lvwConnections.SelectedItems.Count == 0)
+            if (lvwConnections.SelectedItems.Count == 0)
             {
                 cancelEventArgs.Cancel = true;
                 return;
             }
 
             // Enable appropriate options based on settings and selected connection states
-            List<Connection> selectedConnections = this.GetSelectedConnections();
-            this.mnuClose.Enabled = this.AllowClose && selectedConnections.All(c => c.IsOpen);
-            this.mnuEdit.Enabled = this.AllowEdit && selectedConnections.All(c => !c.IsOpen);
-            this.mnuNewFromExisting.Enabled = this.AllowNewFromExisting;
-            this.mnuOpen.Enabled = this.AllowOpen && selectedConnections.All(c => !c.IsOpen);
-            this.mnuRemove.Enabled = this.AllowRemove;
-            this.mnuRename.Enabled = this.AllowRename;
-            this.mnuShow.Enabled = this.AllowShow && selectedConnections.All(c => c.IsOpen);
+            List<Connection> selectedConnections = GetSelectedConnections();
+            mnuClose.Enabled = AllowClose && selectedConnections.All(c => c.IsOpen);
+            mnuEdit.Enabled = AllowEdit && selectedConnections.All(c => !c.IsOpen);
+            mnuNewFromExisting.Enabled = AllowNewFromExisting;
+            mnuOpen.Enabled = AllowOpen && selectedConnections.All(c => !c.IsOpen);
+            mnuRemove.Enabled = AllowRemove;
+            mnuRename.Enabled = AllowRename;
+            mnuShow.Enabled = AllowShow && selectedConnections.All(c => c.IsOpen);
         }
 
         /// <summary>
@@ -114,33 +114,33 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             {
                 case NotifyCollectionChangedAction.Add:
                     // Add new item
-                    this.lvwConnections.BeginUpdate();
+                    lvwConnections.BeginUpdate();
                     foreach (Connection connection in e.NewItems.OfType<Connection>())
                     {
                         ListViewItem item = BindItem(connection);
-                        this.lvwConnections.Items.Add(item);
+                        lvwConnections.Items.Add(item);
                     }
-                    this.ResizeColumns();
-                    this.lvwConnections.EndUpdate();
+                    ResizeColumns();
+                    lvwConnections.EndUpdate();
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     // Remove all matched items
-                    this.lvwConnections.BeginUpdate();
+                    lvwConnections.BeginUpdate();
                     foreach (Connection connection in e.OldItems.OfType<Connection>())
                     {
-                        for (int i = 0; i < this.lvwConnections.Items.Count; i++)
+                        for (int i = 0; i < lvwConnections.Items.Count; i++)
                         {
-                            if (!ReferenceEquals(connection, this.lvwConnections.Items[i].Tag)) continue;
-                            this.lvwConnections.Items.RemoveAt(i);
+                            if (!ReferenceEquals(connection, lvwConnections.Items[i].Tag)) continue;
+                            lvwConnections.Items.RemoveAt(i);
                             i--;
                         }
                     }
-                    this.ResizeColumns();
-                    this.lvwConnections.EndUpdate();
+                    ResizeColumns();
+                    lvwConnections.EndUpdate();
                     break;
                 default:
                     // Rebind the whole list
-                    this.BindData();
+                    BindData();
                     break;
             }
         }
@@ -150,19 +150,19 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         private void BindData()
         {
-            this.lvwConnections.BeginUpdate();
-            this.lvwConnections.Items.Clear();
+            lvwConnections.BeginUpdate();
+            lvwConnections.Items.Clear();
 
-            if (!ReferenceEquals(this._connections, null))
+            if (!ReferenceEquals(_connections, null))
             {
-                foreach (ListViewItem item in this._connections.Connections.Select(connection => BindItem(connection)))
+                foreach (ListViewItem item in _connections.Connections.Select(connection => BindItem(connection)))
                 {
-                    this.lvwConnections.Items.Add(item);
+                    lvwConnections.Items.Add(item);
                 }
             }
-            this.ResizeColumns();
+            ResizeColumns();
 
-            this.lvwConnections.EndUpdate();
+            lvwConnections.EndUpdate();
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             item.SubItems.Add(connection.Definition.StoreName);
             item.SubItems.Add(connection.Created.ToString());
             item.SubItems.Add(connection.LastModified.ToString());
-            item.SubItems.Add(connection.LastOpened.HasValue ? connection.LastOpened.Value.ToString() : String.Empty);
+            item.SubItems.Add(connection.LastOpened.HasValue ? connection.LastOpened.Value.ToString() : string.Empty);
             item.SubItems.Add(connection.IsOpen ? Resources.Yes : Resources.No);
             item.SubItems.Add(connection.ActiveUsers.ToString(System.Globalization.CultureInfo.CurrentUICulture));
             return item;
@@ -185,15 +185,15 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void ResizeColumns()
         {
-            bool hasItems = this.lvwConnections.Items.Count > 0;
+            bool hasItems = lvwConnections.Items.Count > 0;
             ColumnHeaderAutoResizeStyle resizeStyle = hasItems ? ColumnHeaderAutoResizeStyle.ColumnContent : ColumnHeaderAutoResizeStyle.HeaderSize;
 
-            this.lvwConnections.AutoResizeColumn(0, resizeStyle);
-            this.lvwConnections.AutoResizeColumn(1, resizeStyle);
-            this.lvwConnections.AutoResizeColumn(2, resizeStyle);
-            this.lvwConnections.AutoResizeColumn(3, resizeStyle);
-            this.lvwConnections.AutoResizeColumn(4, ColumnHeaderAutoResizeStyle.HeaderSize);
-            this.lvwConnections.AutoResizeColumn(5, ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvwConnections.AutoResizeColumn(0, resizeStyle);
+            lvwConnections.AutoResizeColumn(1, resizeStyle);
+            lvwConnections.AutoResizeColumn(2, resizeStyle);
+            lvwConnections.AutoResizeColumn(3, resizeStyle);
+            lvwConnections.AutoResizeColumn(4, ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvwConnections.AutoResizeColumn(5, ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         /// <summary>
@@ -201,23 +201,23 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         public IConnectionsGraph DataSource
         {
-            get { return this._connections; }
+            get { return _connections; }
             set
             {
-                if (this._connections != null)
+                if (_connections != null)
                 {
-                    if (ReferenceEquals(this._connections, value)) return;
-                    this._connections.CollectionChanged -= this._handler;
-                    this._connections = value;
-                    if (value != null) this._connections.CollectionChanged += this._handler;
+                    if (ReferenceEquals(_connections, value)) return;
+                    _connections.CollectionChanged -= _handler;
+                    _connections = value;
+                    if (value != null) _connections.CollectionChanged += _handler;
                 }
                 else
                 {
-                    this._connections = value;
-                    if (value != null) this._connections.CollectionChanged += this._handler;
+                    _connections = value;
+                    if (value != null) _connections.CollectionChanged += _handler;
                 }
                 // Always bind data after the data source changes
-                this.BindData();
+                BindData();
             }
         }
 
@@ -226,8 +226,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         public bool MultiSelect
         {
-            get { return this.lvwConnections.MultiSelect; }
-            set { this.lvwConnections.MultiSelect = value; }
+            get { return lvwConnections.MultiSelect; }
+            set { lvwConnections.MultiSelect = value; }
         }
 
         /// <summary>
@@ -235,8 +235,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         public View View
         {
-            get { return this.lvwConnections.View; }
-            set { this.lvwConnections.View = value; }
+            get { return lvwConnections.View; }
+            set { lvwConnections.View = value; }
         }
 
         /// <summary>
@@ -281,13 +281,13 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuRemove_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                if (this.RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmRemove_Text, connection.Name), Resources.ConnectionManagement_ConfirmRemove_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
+                if (RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmRemove_Text, connection.Name), Resources.ConnectionManagement_ConfirmRemove_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
                 try
                 {
-                    this._connections.Remove(connection);
+                    _connections.Remove(connection);
                 }
                 catch (Exception ex)
                 {
@@ -298,10 +298,10 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuClose_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
-                if (this.RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmClose_Text, connection.Name), Resources.ConnectionManagement_ConfirmClose_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
+                if (RequireConfirmation && MessageBox.Show(string.Format(Resources.ConnectionManagement_ConfirmClose_Text, connection.Name), Resources.ConnectionManagement_ConfirmClose_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) continue;
                 try
                 {
                     connection.Close();
@@ -315,7 +315,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuShow_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
                 StoreManagerForm form = Program.MainForm.GetStoreManagerForm(connection);
@@ -327,7 +327,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuOpen_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
                 try
@@ -344,7 +344,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuEdit_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
                 try
@@ -363,7 +363,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuNewFromExisting_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
                 try
@@ -382,7 +382,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         private void mnuRename_Click(object sender, EventArgs e)
         {
-            List<Connection> selectedConnections = this.GetSelectedConnections();
+            List<Connection> selectedConnections = GetSelectedConnections();
             foreach (Connection connection in selectedConnections)
             {
                 try

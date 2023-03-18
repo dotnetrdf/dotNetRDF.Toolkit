@@ -35,28 +35,28 @@ namespace VDS.RDF.Utilities.Convert.Inputs
     {
         public UriInput(Uri u)
         {
-            this.SourceUri = u;
+            SourceUri = u;
         }
 
         public Uri SourceUri { get; private set; }
 
         public override void Convert()
         {
-            if (this.ConversionHandler == null) throw new Exception("Cannot convert the Input URI '" + this.SourceUri.ToString() + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
+            if (ConversionHandler == null) throw new Exception("Cannot convert the Input URI '" + SourceUri.ToString() + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
 
             try
             {
-                UriLoader.Load(this.ConversionHandler, this.SourceUri);
+                UriLoader.Load(ConversionHandler, SourceUri);
             }
             catch
             {
-                UriLoader.LoadDataset(this.ConversionHandler, this.SourceUri);
+                UriLoader.LoadDataset(ConversionHandler, SourceUri);
             }
         }
 
         public override string ToString()
         {
-            return "URI '" + this.SourceUri.AbsoluteUri + "'";
+            return "URI '" + SourceUri.AbsoluteUri + "'";
         }
     }
 }

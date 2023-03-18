@@ -45,18 +45,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="manager">Storage Provider</param>
         public ConnectionInfo(IStorageProvider manager)
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         /// <summary>
         /// Gets the name of the connection
         /// </summary>
         [Category("Basic"),Description("The name of the connection")]
-        public String Name
+        public string Name
         {
             get
             {
-                return this._manager.ToString();
+                return _manager.ToString();
             }
         }
 
@@ -64,11 +64,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets the .Net Type of the connection
         /// </summary>
         [Category("Basic"), Description("The .Net type of the connection")]
-        public String Type
+        public string Type
         {
             get
             {
-                return this._manager.GetType().AssemblyQualifiedName;
+                return _manager.GetType().AssemblyQualifiedName;
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return this._manager.IsReadOnly;
+                return _manager.IsReadOnly;
             }
         }
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return this._manager.IsReady;
+                return _manager.IsReady;
             }
         }
 
@@ -105,7 +105,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return this._manager;
+                return _manager;
             }
         }
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return (this._manager is IQueryableStorage);
+                return (_manager is IQueryableStorage);
             }
         }
 
@@ -125,15 +125,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets the SPARQL Update mode used for the connection
         /// </summary>
         [Category("Features"),Description("Is SPARQL Update supported by this connection and if so how?  Possible values are Native, Approximated and Not Supported")]
-        public String UpdateMode
+        public string UpdateMode
         {
             get
             {
-                if (this._manager is IUpdateableStorage)
+                if (_manager is IUpdateableStorage)
                 {
                     return "Native";
                 }
-                else if (!this._manager.IsReadOnly)
+                else if (!_manager.IsReadOnly)
                 {
                     return "Approximated";
                 }
@@ -152,7 +152,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return this._manager.ListGraphsSupported;
+                return _manager.ListGraphsSupported;
             }
         }
 
@@ -164,7 +164,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return this._manager.DeleteSupported;
+                return _manager.DeleteSupported;
             }
         }
 
@@ -176,7 +176,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return !this._manager.IsReadOnly && this._manager.UpdateSupported;
+                return !_manager.IsReadOnly && _manager.UpdateSupported;
             }
         }
 
@@ -184,15 +184,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets whether the connection is a Triple/Quad store
         /// </summary>
         [Category("IO Capabilities"),Description("Shows if the connection works in Triples or Quads")]
-        public String StorageType
+        public string StorageType
         {
             get
             {
-                if ((this._manager.IOBehaviour & IOBehaviour.IsTripleStore) != 0)
+                if ((_manager.IOBehaviour & IOBehaviour.IsTripleStore) != 0)
                 {
                     return "Triples";
                 }
-                else if ((this._manager.IOBehaviour & IOBehaviour.IsQuadStore) != 0)
+                else if ((_manager.IOBehaviour & IOBehaviour.IsQuadStore) != 0)
                 {
                     return "Quads";
                 }
@@ -211,7 +211,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) != 0);
+                return ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) != 0);
             }
         }
 
@@ -223,7 +223,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) != 0);
+                return ((_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) != 0);
             }
         }
 
@@ -231,19 +231,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets whether data imported by a <see cref="IStorageProvider.SaveGraph"/> call will append to existing data or overwrite it when saving to the Default Graph
         /// </summary>
         [Category("IO Capabilities"),Description("How does the connection handle saving graph data to the default graph?  Possible values are Overwrite, Append, N/A (Read Only) and Unknown.  Please note that when using the Import feature Store Manager will always attempt to append data unless the connection does not allow this, please see the WillImportsAppend property to see what the behaviour for this connection will be when used within Store Manager.  Note - If that property is false then this behaviour applies for triples in the default graph.")]
-        public String SaveToDefaultBehaviour
+        public string SaveToDefaultBehaviour
         {
             get
             {
-                if (this._manager.IsReadOnly)
+                if (_manager.IsReadOnly)
                 {
                     return "N/A (Read Only)";
                 }
-                else if ((this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0)
+                else if ((_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0)
                 {
                     return "Overwrite";
                 }
-                else if ((this._manager.IOBehaviour & IOBehaviour.AppendToDefault) != 0)
+                else if ((_manager.IOBehaviour & IOBehaviour.AppendToDefault) != 0)
                 {
                     return "Append";
                 }
@@ -258,19 +258,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph"/> call will append to existing data or overwrite it when saving to a Named Graph
         /// </summary>
         [Category("IO Capabilities"), Description("How does the connection handle saving graph data to named graphs?  Possible values are Overwrite, Append, N/A (Read Only) and Unknown.  Please note that when using the Import feature Store Manager will always attempt to append data unless the connection does not allow this, please see the WillImportsAppend property to see what the behaviour for this connection will be when used within Store Manager.  Note - If that property is false then this behaviour applies for triples in named graphs.")]
-        public String SaveToNamedBehaviour
+        public string SaveToNamedBehaviour
         {
             get
             {
-                if (this._manager.IsReadOnly)
+                if (_manager.IsReadOnly)
                 {
                     return "N/A (Read Only)";
                 }
-                else if ((this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0)
+                else if ((_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0)
                 {
                     return "Overwrite";
                 }
-                else if ((this._manager.IOBehaviour & IOBehaviour.AppendToNamed) != 0)
+                else if ((_manager.IOBehaviour & IOBehaviour.AppendToNamed) != 0)
                 {
                     return "Append";
                 }

@@ -47,17 +47,17 @@ namespace VDS.RDF.Utilities.Studio
 
         private void mnuViewSidebar_Click(object sender, RoutedEventArgs e)
         {
-            if (this.tvwSidebar.Visibility == System.Windows.Visibility.Collapsed)
+            if (tvwSidebar.Visibility == System.Windows.Visibility.Collapsed)
             {
-                this.gridMain.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
-                this.tvwSidebar.Visibility = System.Windows.Visibility.Visible;
-                this.splMain.Visibility = System.Windows.Visibility.Visible;
+                gridMain.ColumnDefinitions[0].Width = new GridLength(100, GridUnitType.Star);
+                tvwSidebar.Visibility = System.Windows.Visibility.Visible;
+                splMain.Visibility = System.Windows.Visibility.Visible;
             }
             else
             {
-                this.gridMain.ColumnDefinitions[0].Width = new GridLength(0);
-                this.tvwSidebar.Visibility = System.Windows.Visibility.Collapsed;
-                this.splMain.Visibility = System.Windows.Visibility.Hidden;
+                gridMain.ColumnDefinitions[0].Width = new GridLength(0);
+                tvwSidebar.Visibility = System.Windows.Visibility.Collapsed;
+                splMain.Visibility = System.Windows.Visibility.Hidden;
             }
         }
 

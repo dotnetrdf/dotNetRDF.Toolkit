@@ -37,10 +37,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             InitializeComponent();
 
-            this.FillConnectionList(recent, this.lstRecent);
-            this.FillConnectionList(faves, this.lstFaves);
-            this.chkAlwaysEdit.Checked = Settings.Default.AlwaysEdit;
-            this.chkAlwaysShow.Checked = Settings.Default.ShowStartPage;
+            FillConnectionList(recent, lstRecent);
+            FillConnectionList(faves, lstFaves);
+            chkAlwaysEdit.Checked = Settings.Default.AlwaysEdit;
+            chkAlwaysShow.Checked = Settings.Default.ShowStartPage;
         }
 
         private void StartPage_Load(object sender, EventArgs e)
@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                             {
                                 connection.Open();
                                 Program.MainForm.ShowStoreManagerForm(connection);
-                                this.Close();
+                                Close();
                             }
                             catch (Exception ex)
                             {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         {
                             connection.Open();
                             Program.MainForm.ShowStoreManagerForm(connection);
-                            this.Close();
+                            Close();
                         }
                         catch (Exception ex)
                         {
@@ -106,30 +106,30 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             //Add to Recent Connections
             Program.MainForm.AddRecentConnection(connection);
 
-            this.Close();
+            Close();
         }
 
         private void chkAlwaysShow_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Default.ShowStartPage = this.chkAlwaysShow.Checked;
+            Settings.Default.ShowStartPage = chkAlwaysShow.Checked;
             Settings.Default.Save();
         }
 
         private void chkAlwaysEdit_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Default.AlwaysEdit = this.chkAlwaysEdit.Checked;
+            Settings.Default.AlwaysEdit = chkAlwaysEdit.Checked;
             Settings.Default.Save();
         }
 
 
         private void mnuEditFave_Click(object sender, EventArgs e)
         {
-            EditConnection(this.lstFaves);
+            EditConnection(lstFaves);
         }
 
         private void mnuEditRecent_Click(object sender, EventArgs e)
         {
-            EditConnection(this.lstRecent);
+            EditConnection(lstRecent);
         }
 
         private void EditConnection(ListBox lbox)
@@ -158,7 +158,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             //Add to Recent Connections
             Program.MainForm.AddRecentConnection(connection);
 
-            this.Close();
+            Close();
         }
 
         private static void CheckConnectionContext(ListBox lbox, CancelEventArgs e)
@@ -168,12 +168,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuFaveConnections_Opening(object sender, CancelEventArgs e)
         {
-            CheckConnectionContext(this.lstFaves, e);
+            CheckConnectionContext(lstFaves, e);
         }
 
         private void mnuRecentConnections_Opening(object sender, CancelEventArgs e)
         {
-            CheckConnectionContext(this.lstRecent, e);
+            CheckConnectionContext(lstRecent, e);
         }
     }
 }

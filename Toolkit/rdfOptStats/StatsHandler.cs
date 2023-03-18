@@ -42,7 +42,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         public BaseStatsHandler(bool literals)
         {
-            this._literals = literals;
+            _literals = literals;
         }
 
         public void GetStats(IGraph g)
@@ -53,25 +53,30 @@ namespace VDS.RDF.Utilities.OptimiserStats
             INode objectCount = g.CreateUriNode("opt:objectCount");
             INode count = g.CreateUriNode("opt:count");
 
-            this.AddStats(g, this.NodeCounts, count);
-            this.AddStats(g, this.ObjectCounts, objectCount);
-            this.AddStats(g, this.PredicateCounts, predicateCount);
-            this.AddStats(g, this.SubjectCounts, subjectCount);
+            AddStats(g, NodeCounts, count);
+            AddStats(g, ObjectCounts, objectCount);
+            AddStats(g, PredicateCounts, predicateCount);
+            AddStats(g, SubjectCounts, subjectCount);
         }
         
         private void AddStats(IGraph g, IEnumerable<KeyValuePair<INode, long>> stats, INode statsProperty)
         {
             foreach (KeyValuePair<INode, long> kvp in stats)
             {
-                g.Assert(kvp.Key.CopyNode(g), statsProperty, kvp.Value.ToLiteral(g));
+                g.Assert(kvp.Key, statsProperty, kvp.Value.ToLiteral(g));
             }
         }
 
         protected abstract override bool HandleTripleInternal(Triple t);
 
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return HandleTripleInternal(t);
+        }
+
         protected sealed override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            this._nsmap.AddNamespace(prefix, namespaceUri);
+            _nsmap.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
@@ -88,7 +93,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
             switch (n.NodeType)
             {
                 case NodeType.Literal:
-                    return this._literals;
+                    return _literals;
                 case NodeType.Uri:
                     return true;
                 default:
@@ -100,7 +105,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._nsmap;
+                return _nsmap;
             }
         }
 
@@ -154,31 +159,31 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Subject))
+            if (IsCountableNode(t.Subject))
             {
-                if (!this._subjectCount.ContainsKey(t.Subject))
+                if (!_subjectCount.ContainsKey(t.Subject))
                 {
-                    this._subjectCount.Add(t.Subject, 0);
+                    _subjectCount.Add(t.Subject, 0);
                 }
-                this._subjectCount[t.Subject]++;
+                _subjectCount[t.Subject]++;
             }
 
-            if (this.IsCountableNode(t.Predicate))
+            if (IsCountableNode(t.Predicate))
             {
-                if (!this._predicateCount.ContainsKey(t.Predicate))
+                if (!_predicateCount.ContainsKey(t.Predicate))
                 {
-                    this._predicateCount.Add(t.Predicate, 0);
+                    _predicateCount.Add(t.Predicate, 0);
                 }
-                this._predicateCount[t.Predicate]++;
+                _predicateCount[t.Predicate]++;
             }
 
-            if (this.IsCountableNode(t.Object))
+            if (IsCountableNode(t.Object))
             {
-                if (!this._objectCount.ContainsKey(t.Object))
+                if (!_objectCount.ContainsKey(t.Object))
                 {
-                    this._objectCount.Add(t.Object, 0);
+                    _objectCount.Add(t.Object, 0);
                 }
-                this._objectCount[t.Object]++;
+                _objectCount[t.Object]++;
             }
 
             return true;
@@ -196,7 +201,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._objectCount;
+                return _objectCount;
             }
         }
 
@@ -204,7 +209,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._predicateCount;
+                return _predicateCount;
             }
         }
 
@@ -212,7 +217,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._subjectCount;
+                return _subjectCount;
             }
         }
     }
@@ -233,22 +238,22 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Subject))
+            if (IsCountableNode(t.Subject))
             {
-                if (!this._subjectCount.ContainsKey(t.Subject))
+                if (!_subjectCount.ContainsKey(t.Subject))
                 {
-                    this._subjectCount.Add(t.Subject, 0);
+                    _subjectCount.Add(t.Subject, 0);
                 }
-                this._subjectCount[t.Subject]++;
+                _subjectCount[t.Subject]++;
             }
 
-            if (this.IsCountableNode(t.Predicate))
+            if (IsCountableNode(t.Predicate))
             {
-                if (!this._predicateCount.ContainsKey(t.Predicate))
+                if (!_predicateCount.ContainsKey(t.Predicate))
                 {
-                    this._predicateCount.Add(t.Predicate, 0);
+                    _predicateCount.Add(t.Predicate, 0);
                 }
-                this._predicateCount[t.Predicate]++;
+                _predicateCount[t.Predicate]++;
             }
 
             return true;
@@ -266,7 +271,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._predicateCount;
+                return _predicateCount;
             }
         }
 
@@ -274,7 +279,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._subjectCount;
+                return _subjectCount;
             }
         }
     }
@@ -291,13 +296,13 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Subject))
+            if (IsCountableNode(t.Subject))
             {
-                if (!this._subjectCount.ContainsKey(t.Subject))
+                if (!_subjectCount.ContainsKey(t.Subject))
                 {
-                    this._subjectCount.Add(t.Subject, 0);
+                    _subjectCount.Add(t.Subject, 0);
                 }
-                this._subjectCount[t.Subject]++;
+                _subjectCount[t.Subject]++;
             }
             return true;
         }
@@ -306,7 +311,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._subjectCount;
+                return _subjectCount;
             }
         }
     }
@@ -323,13 +328,13 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Predicate))
+            if (IsCountableNode(t.Predicate))
             {
-                if (!this._predicateCount.ContainsKey(t.Predicate))
+                if (!_predicateCount.ContainsKey(t.Predicate))
                 {
-                    this._predicateCount.Add(t.Predicate, 0);
+                    _predicateCount.Add(t.Predicate, 0);
                 }
-                this._predicateCount[t.Predicate]++;
+                _predicateCount[t.Predicate]++;
             }
 
             return true;
@@ -339,7 +344,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._predicateCount;
+                return _predicateCount;
             }
         }
     }
@@ -356,13 +361,13 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Object))
+            if (IsCountableNode(t.Object))
             {
-                if (!this._objectCount.ContainsKey(t.Object))
+                if (!_objectCount.ContainsKey(t.Object))
                 {
-                    this._objectCount.Add(t.Object, 0);
+                    _objectCount.Add(t.Object, 0);
                 }
-                this._objectCount[t.Object]++;
+                _objectCount[t.Object]++;
             }
 
             return true;
@@ -372,7 +377,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._objectCount;
+                return _objectCount;
             }
         }
     }
@@ -389,31 +394,31 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (this.IsCountableNode(t.Subject))
+            if (IsCountableNode(t.Subject))
             {
-                if (!this._nodeCount.ContainsKey(t.Subject))
+                if (!_nodeCount.ContainsKey(t.Subject))
                 {
-                    this._nodeCount.Add(t.Subject, 0);
+                    _nodeCount.Add(t.Subject, 0);
                 }
-                this._nodeCount[t.Subject]++;
+                _nodeCount[t.Subject]++;
             }
 
-            if (this.IsCountableNode(t.Predicate))
+            if (IsCountableNode(t.Predicate))
             {
-                if (!this._nodeCount.ContainsKey(t.Predicate))
+                if (!_nodeCount.ContainsKey(t.Predicate))
                 {
-                    this._nodeCount.Add(t.Predicate, 0);
+                    _nodeCount.Add(t.Predicate, 0);
                 }
-                this._nodeCount[t.Predicate]++;
+                _nodeCount[t.Predicate]++;
             }
 
-            if (this.IsCountableNode(t.Object))
+            if (IsCountableNode(t.Object))
             {
-                if (!this._nodeCount.ContainsKey(t.Object))
+                if (!_nodeCount.ContainsKey(t.Object))
                 {
-                    this._nodeCount.Add(t.Object, 0);
+                    _nodeCount.Add(t.Object, 0);
                 }
-                this._nodeCount[t.Object]++;
+                _nodeCount[t.Object]++;
             }
 
             return true;
@@ -423,7 +428,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             get
             {
-                return this._nodeCount;
+                return _nodeCount;
             }
         }
     }

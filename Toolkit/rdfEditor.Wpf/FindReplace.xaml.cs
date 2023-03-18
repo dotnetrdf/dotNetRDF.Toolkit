@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public FindReplace()
         {
             InitializeComponent();
-            this.GotFocus += new RoutedEventHandler(FindReplace_GotFocus);
+            GotFocus += new RoutedEventHandler(FindReplace_GotFocus);
         }
 
         void FindReplace_GotFocus(object sender, RoutedEventArgs e)
@@ -53,18 +53,18 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this._mode;
+                return _mode;
             }
             set
             {
-                this._mode = value;
-                if (this._mode == FindReplaceMode.Find)
+                _mode = value;
+                if (_mode == FindReplaceMode.Find)
                 {
-                    this.ToggleReplaceVisibility(Visibility.Collapsed);
+                    ToggleReplaceVisibility(Visibility.Collapsed);
                 }
                 else
                 {
-                    this.ToggleReplaceVisibility(Visibility.Visible);
+                    ToggleReplaceVisibility(Visibility.Visible);
                 }
             }
         }
@@ -77,78 +77,78 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         public void FindNext()
         {
-            this._engine.Find(this.Editor);
+            _engine.Find(Editor);
         }
 
         private void ToggleReplaceVisibility(Visibility v)
         {
-            this.lblReplace.Visibility = v;
-            this.cboReplace.Visibility = v;
-            this.btnReplace.Visibility = v;
-            this.btnReplaceAll.Visibility = v;
+            lblReplace.Visibility = v;
+            cboReplace.Visibility = v;
+            btnReplace.Visibility = v;
+            btnReplaceAll.Visibility = v;
 
             switch (v)
             {
                 case Visibility.Collapsed:
                 case Visibility.Hidden:
-                    this.Title = "Find";
+                    Title = "Find";
                     break;
                 default:
-                    this.Title = "Find and Replace";
+                    Title = "Find and Replace";
                     break;
             }
-            this.stkDialog.UpdateLayout();
+            stkDialog.UpdateLayout();
         }
 
         private void btnFindNext_Click(object sender, RoutedEventArgs e)
         {
-            this._engine.FindText = this.cboFind.Text;
-            this._engine.Find(this.Editor);
+            _engine.FindText = cboFind.Text;
+            _engine.Find(Editor);
         }
 
         private void btnReplace_Click(object sender, RoutedEventArgs e)
         {
-            if (this._mode == FindReplaceMode.Find) return;
-            this._engine.FindText = this.cboFind.Text;
-            this._engine.ReplaceText = this.cboReplace.Text;
-            this._engine.Replace(this.Editor);
+            if (_mode == FindReplaceMode.Find) return;
+            _engine.FindText = cboFind.Text;
+            _engine.ReplaceText = cboReplace.Text;
+            _engine.Replace(Editor);
         }
 
         private void btnReplaceAll_Click(object sender, RoutedEventArgs e)
         {
-            if (this._mode == FindReplaceMode.Find) return;
-            this._engine.FindText = this.cboFind.Text;
-            this._engine.ReplaceText = this.cboReplace.Text;
-            this._engine.ReplaceAll(this.Editor);
+            if (_mode == FindReplaceMode.Find) return;
+            _engine.FindText = cboFind.Text;
+            _engine.ReplaceText = cboReplace.Text;
+            _engine.ReplaceAll(Editor);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            this.Visibility = Visibility.Collapsed;
+            Visibility = Visibility.Collapsed;
             e.Cancel = true;
         }
 
         private void btnReplace_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (this.btnReplace.Visibility != Visibility.Visible)
+            if (btnReplace.Visibility != Visibility.Visible)
             {
-                this.cboFind.Focus();
+                cboFind.Focus();
             }
         }
 
         private void btnReplaceAll_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (this.btnReplaceAll.Visibility != Visibility.Visible)
+            if (btnReplaceAll.Visibility != Visibility.Visible)
             {
-                this.cboFind.Focus();
+                cboFind.Focus();
             }
         }
 
         private void cboReplace_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (this.cboReplace.Visibility != Visibility.Visible)
+            if (cboReplace.Visibility != Visibility.Visible)
             {
-                this.chkMatchCase.Focus();
+                chkMatchCase.Focus();
             }
         }
 
@@ -156,33 +156,33 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             if (sender is EditorWindow)
             {
-                this.cboFind.Focus();
+                cboFind.Focus();
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.cboFind.Focus();
+            cboFind.Focus();
         }
 
         private void cboLookIn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            String tag = ((ComboBoxItem)this.cboLookIn.SelectedItem).Tag as String;
+            string tag = ((ComboBoxItem)cboLookIn.SelectedItem).Tag as string;
             if (tag == null)
             {
-                this._engine.Scope = FindAndReplaceScope.CurrentDocument;
+                _engine.Scope = FindAndReplaceScope.CurrentDocument;
             }
             else
             {
                 switch (tag)
                 {
                     case "Selection":
-                        this._engine.Scope = FindAndReplaceScope.Selection;
+                        _engine.Scope = FindAndReplaceScope.Selection;
                         break;
 
                     case "Current Document":
                     default:
-                        this._engine.Scope = FindAndReplaceScope.CurrentDocument;
+                        _engine.Scope = FindAndReplaceScope.CurrentDocument;
                         break;
                 }
             }
@@ -190,22 +190,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void chkMatchCase_Click(object sender, RoutedEventArgs e)
         {
-            this._engine.MatchCase = (this.chkMatchCase.IsChecked == true);
+            _engine.MatchCase = (chkMatchCase.IsChecked == true);
         }
 
         private void chkMatchWholeWord_Click(object sender, RoutedEventArgs e)
         {
-            this._engine.MatchWholeWord = (this.chkMatchWholeWord.IsChecked == true);
+            _engine.MatchWholeWord = (chkMatchWholeWord.IsChecked == true);
         }
 
         private void chkSearchUp_Click(object sender, RoutedEventArgs e)
         {
-            this._engine.SearchUp = (this.chkSearchUp.IsChecked == true);
+            _engine.SearchUp = (chkSearchUp.IsChecked == true);
         }
 
         private void chkRegex_Click(object sender, RoutedEventArgs e)
         {
-            this._engine.UseRegex = (this.chkRegex.IsChecked == true);
+            _engine.UseRegex = (chkRegex.IsChecked == true);
         }
     }
 }

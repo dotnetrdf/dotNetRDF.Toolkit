@@ -40,15 +40,15 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         /// <param name="qname">QName</param>
-        public QNameData(String qname)
-            : this(qname, String.Empty) { }
+        public QNameData(string qname)
+            : this(qname, string.Empty) { }
 
         /// <summary>
         /// Creates new completion data
         /// </summary>
         /// <param name="qname">QName</param>
         /// <param name="description">Description</param>
-        public QNameData(String qname, String description)
+        public QNameData(string qname, string description)
             : base(qname, qname, description) { }
     }
 }

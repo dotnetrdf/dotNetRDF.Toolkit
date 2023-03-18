@@ -48,49 +48,49 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             InitializeComponent();
         }
 
-        public TaskInformationForm(ITask<T> task, String subtitle)
+        public TaskInformationForm(ITask<T> task, string subtitle)
             : this()
         {
-            this.Text = string.Format(Resources.TaskForm_Title, task.Name, subtitle);
-            this.btnErrorTrace.Click += delegate
+            Text = string.Format(Resources.TaskForm_Title, task.Name, subtitle);
+            btnErrorTrace.Click += delegate
                 {
                     TaskErrorTraceForm<T> errorTrace = new TaskErrorTraceForm<T>(task, subtitle);
-                    errorTrace.MdiParent = this.MdiParent;
+                    errorTrace.MdiParent = MdiParent;
                     errorTrace.Show();
                 };
-            this.ShowInformation(task);
+            ShowInformation(task);
 
-            task.StateChanged += () => this.ShowInformation(task);
+            task.StateChanged += () => ShowInformation(task);
 
             if (task is CancellableTask<T>)
             {
-                this.btnCancel.Click += (sender, e) => ((CancellableTask<T>) task).Cancel();
+                btnCancel.Click += (sender, e) => ((CancellableTask<T>) task).Cancel();
             }
         }
 
-        public TaskInformationForm(QueryTask task, String subtitle)
+        public TaskInformationForm(QueryTask task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
-            this.ShowQueryInformation(task);
+            ShowQueryInformation(task);
             if (task.Query == null)
             {
-                task.StateChanged += () => this.ShowQueryInformation(task);
+                task.StateChanged += () => ShowQueryInformation(task);
             }
-            this.btnViewResults.Click += delegate
+            btnViewResults.Click += delegate
                 {
                     if (task.Result != null)
                     {
                         if (task.Result is IGraph)
                         {
                             GraphViewerForm graphViewer = new GraphViewerForm((IGraph)task.Result, subtitle);
-                            graphViewer.MdiParent = this.MdiParent;
+                            graphViewer.MdiParent = MdiParent;
                             graphViewer.Show();
                         }
                         else if (task.Result is SparqlResultSet)
                         {
                             INamespaceMapper nsmap = task.Query.NamespaceMap;
                             ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, nsmap, subtitle);
-                            resultsViewer.MdiParent = this.MdiParent;
+                            resultsViewer.MdiParent = MdiParent;
                             resultsViewer.Show();
                         }
                         else
@@ -105,38 +105,38 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                 };
         }
 
-        public TaskInformationForm(UpdateTask task, String subtitle)
+        public TaskInformationForm(UpdateTask task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
-            this.ShowUpdateInformation(task);
+            ShowUpdateInformation(task);
             if (task.Updates == null)
             {
-                task.StateChanged += () => this.ShowUpdateInformation(task);
+                task.StateChanged += () => ShowUpdateInformation(task);
             }
         }
 
-        public TaskInformationForm(ListGraphsTask task, String subtitle)
+        public TaskInformationForm(ListGraphsTask task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
 
         }
 
-        public TaskInformationForm(ListStoresTask task, String subtitle)
+        public TaskInformationForm(ListStoresTask task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
 
         }
 
-        public TaskInformationForm(ITask<IGraph> task, String subtitle)
+        public TaskInformationForm(ITask<IGraph> task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
-            CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
-            this.btnViewResults.Click += delegate
+            CrossThreadSetEnabled(btnViewResults, task.State == TaskState.Completed && task.Result != null);
+            btnViewResults.Click += delegate
                 {
                     if (task.Result != null)
                     {
                         GraphViewerForm graphViewer = new GraphViewerForm(task.Result, subtitle);
-                        graphViewer.MdiParent = this.MdiParent;
+                        graphViewer.MdiParent = MdiParent;
                         graphViewer.Show();
                     }
                     else
@@ -146,44 +146,44 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                 };
         }
 
-        public TaskInformationForm(ITask<TaskValueResult<bool>> task, String subtitle)
+        public TaskInformationForm(ITask<TaskValueResult<bool>> task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
 
         }
 
-        public TaskInformationForm(GetStoreTask task, String subtitle)
+        public TaskInformationForm(GetStoreTask task, string subtitle)
             : this((ITask<T>)task, subtitle)
         {
 
         }
 
-        public TaskInformationForm(GenerateEntitiesQueryTask task, String subtitle)
+        public TaskInformationForm(GenerateEntitiesQueryTask task, string subtitle)
             : this((ITask<T>) task, subtitle)
         {
-            this.txtAdvInfo.Text = "Original Query String:" + Environment.NewLine + task.OriginalQueryString;
-            this.btnViewResults.Click += delegate
+            txtAdvInfo.Text = "Original Query String:" + Environment.NewLine + task.OriginalQueryString;
+            btnViewResults.Click += delegate
                 {
                     StringResultDialogue dialogue = new StringResultDialogue(string.Format("Generated Entity Query on {0}", subtitle), task.Result);
                     CrossThreadSetMdiParent(dialogue);
                     CrossThreadShow(dialogue);
                 };
-            this.btnViewResults.Enabled = task.State == TaskState.Completed;
+            btnViewResults.Enabled = task.State == TaskState.Completed;
         }
 
         private void ShowInformation(ITaskBase task)
         {
-            CrossThreadSetText(this.lblTaskState, String.Format("Task State: {0}", task.State.GetStateDescription()));
-            CrossThreadSetText(this.txtBasicInfo, task.Information);
-            CrossThreadSetText(this.lblElapsed, (task.Elapsed != null) ? String.Format("Time Elapsed: {0}", task.Elapsed) : "N/A");
-            CrossThreadSetEnabled(this.btnCancel,task.IsCancellable && task.State != TaskState.Completed && task.State != TaskState.CompletedWithErrors);
-            CrossThreadSetEnabled(this.btnErrorTrace, task.Error != null);
-            CrossThreadSetEnabled(this.btnViewResults, false);
+            CrossThreadSetText(lblTaskState, string.Format("Task State: {0}", task.State.GetStateDescription()));
+            CrossThreadSetText(txtBasicInfo, task.Information);
+            CrossThreadSetText(lblElapsed, (task.Elapsed != null) ? string.Format("Time Elapsed: {0}", task.Elapsed) : "N/A");
+            CrossThreadSetEnabled(btnCancel,task.IsCancellable && task.State != TaskState.Completed && task.State != TaskState.CompletedWithErrors);
+            CrossThreadSetEnabled(btnErrorTrace, task.Error != null);
+            CrossThreadSetEnabled(btnViewResults, false);
         }
 
         private void ShowQueryInformation(QueryTask task)
         {
-            CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
+            CrossThreadSetEnabled(btnViewResults, task.State == TaskState.Completed && task.Result != null);
             if (task.Query == null) return;
             StringWriter writer = new StringWriter();
             writer.WriteLine("Parsed Query:");
@@ -198,7 +198,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             {
                 writer.WriteLine("Unavailable - Not standard SPARQL 1.0/1.1");
             }
-            CrossThreadSetText(this.txtAdvInfo, writer.ToString());
+            CrossThreadSetText(txtAdvInfo, writer.ToString());
         }
 
         private void ShowUpdateInformation(UpdateTask task)
@@ -207,7 +207,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             StringWriter writer = new StringWriter();
             writer.WriteLine("Parsed Updates:");
             writer.WriteLine(task.Updates.ToString());
-            CrossThreadSetText(this.txtAdvInfo, writer.ToString());
+            CrossThreadSetText(txtAdvInfo, writer.ToString());
         }
     }
 }

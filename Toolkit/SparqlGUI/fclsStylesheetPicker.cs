@@ -30,30 +30,30 @@ namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsStylesheetPicker : Form
     {
-        public fclsStylesheetPicker(String type)
+        public fclsStylesheetPicker(string type)
         {
             InitializeComponent();
 
-            this.Text = String.Format(this.Text, type);
+            Text = string.Format(Text, type);
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        public String StylesheetUri
+        public string StylesheetUri
         {
             get
             {
-                return this.txtStylesheetUri.Text;
+                return txtStylesheetUri.Text;
             }
         }
     }

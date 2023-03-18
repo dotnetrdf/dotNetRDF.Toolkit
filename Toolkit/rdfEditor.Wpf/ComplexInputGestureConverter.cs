@@ -63,10 +63,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
 			for (var i = 0; i < keyStrokes.Length; i++)
 			{
-                String keyStroke = keyStrokes[i];
+                string keyStroke = keyStrokes[i];
                 if (keyStroke.Contains('+'))
                 {
-                    Key k = this.ConvertKey(keyStroke.Substring(keyStroke.IndexOf('+') + 1));
+                    Key k = ConvertKey(keyStroke.Substring(keyStroke.IndexOf('+') + 1));
                     ModifierKeys modifier = (ModifierKeys)_modifierKeysConverter.ConvertFrom(keyStroke.Substring(0, keyStroke.IndexOf('+')));
                     if (modifier != ModifierKeys.Shift)
                     {
@@ -79,14 +79,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 }
                 else
                 {
-                    gestures.Add(new UnmodifiedKeyGesture(this.ConvertKey(keyStroke)));
+                    gestures.Add(new UnmodifiedKeyGesture(ConvertKey(keyStroke)));
                 }
 			}
 
             return new ComplexInputGesture(gestures, value.ToString());
 		}
 
-        private Key ConvertKey(String keyDef)
+        private Key ConvertKey(string keyDef)
         {
             switch (keyDef)
             {

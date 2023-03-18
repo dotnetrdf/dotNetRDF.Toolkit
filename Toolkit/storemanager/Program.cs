@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     internal static class Program
     {
-        private static object _lock = new Object();
+        private static object _lock = new object();
 
         /// <summary>
         /// The main entry point for the application.
@@ -78,7 +78,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         /// <param name="message">Friendly message to display to the user</param>
         /// <param name="ex">Exception</param>
-        public static void HandleInternalError(String message, Exception ex)
+        public static void HandleInternalError(string message, Exception ex)
         {
             HandleInternalError(message, ex, false);
         }
@@ -89,17 +89,17 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="message">Friendly message to display to the user</param>
         /// <param name="ex">Exception</param>
         /// <param name="exit">Whether the program should now exit</param>
-        public static void HandleInternalError(String message, Exception ex, bool exit)
+        public static void HandleInternalError(string message, Exception ex, bool exit)
         {
             TryLogError(message, ex, exit);
             if (exit)
             {
-                MessageBox.Show(String.Format(Resources.HandleInternalError_Exit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.HandleInternalError_Exit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Environment.Exit(1);
             }
             else
             {
-                MessageBox.Show(String.Format(Resources.HandleInternalError_NonExit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(string.Format(Resources.HandleInternalError_NonExit, message), Resources.Internal_Error, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -118,13 +118,13 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="message">Error Message</param>
         /// <param name="ex">Exception</param>
         /// <param name="exit">Whether the error required the program to exit</param>
-        private static void TryLogError(String message, Exception ex, bool exit)
+        private static void TryLogError(string message, Exception ex, bool exit)
         {
             lock (_lock)
             {
                 try
                 {
-                    String logPath = Path.Combine(GetApplicationDataDirectory(), "errors.log");
+                    string logPath = Path.Combine(GetApplicationDataDirectory(), "errors.log");
                     using (StreamWriter writer = new StreamWriter(logPath, true, Encoding.UTF8))
                     {
                         writer.Write(exit ? "FATAL" : "ERROR");
@@ -154,8 +154,8 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <returns></returns>
         public static string GetApplicationDataDirectory()
         {
-            String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            String sepChar = new String(new char[] {Path.DirectorySeparatorChar});
+            string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string sepChar = new string(new char[] {Path.DirectorySeparatorChar});
             if (!appDataDir.EndsWith(sepChar)) appDataDir += sepChar;
             appDataDir = Path.Combine(appDataDir, "dotNetRDF" + sepChar);
             if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);

@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="doc">Document</param>
         public DocumentChangedEventArgs(Document<T> doc)
         {
-            this._doc = doc;
+            _doc = doc;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._doc;
+                return _doc;
             }
         }
     }
@@ -78,7 +78,7 @@ namespace VDS.RDF.Utilities.Editor
         public DocumentValidatedEventArgs(Document<T> doc, ISyntaxValidationResults results)
             : base(doc)
         {
-            this._results = results;
+            _results = results;
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._results;
+                return _results;
             }
         }
     }
@@ -99,7 +99,7 @@ namespace VDS.RDF.Utilities.Editor
     /// <typeparam name="T">Control Type</typeparam>
     /// <param name="sender">Sender</param>
     /// <param name="args">Event Arguments</param>
-    public delegate void DocumentChangedHandler<T>(Object sender, DocumentChangedEventArgs<T> args);
+    public delegate void DocumentChangedHandler<T>(object sender, DocumentChangedEventArgs<T> args);
 
     /// <summary>
     /// Delegate type for document validation events handlers
@@ -107,7 +107,7 @@ namespace VDS.RDF.Utilities.Editor
     /// <typeparam name="T">Control Type</typeparam>
     /// <param name="sender">Sender</param>
     /// <param name="args">Event Arguments</param>
-    public delegate void DocumentValidatedHandler<T>(Object sender, DocumentValidatedEventArgs<T> args);
+    public delegate void DocumentValidatedHandler<T>(object sender, DocumentValidatedEventArgs<T> args);
 
     /// <summary>
     /// Delegate for document callbacks
@@ -150,5 +150,5 @@ namespace VDS.RDF.Utilities.Editor
     /// <typeparam name="T">Control Type</typeparam>
     /// <param name="doc">Document</param>
     /// <returns>Filename to save as</returns>
-    public delegate String SaveAsCallback<T>(Document<T> doc);
+    public delegate string SaveAsCallback<T>(Document<T> doc);
 }

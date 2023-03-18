@@ -48,17 +48,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             InitializeComponent();
             if (!copy && connection.IsOpen) throw new ArgumentException("Cannot edit an open connection");
-            this.Connection = copy ? connection.Copy() : connection;
-            this.connSettings.Definition = this.Connection.Definition;
-            this.connSettings.Connected += this.HandleConnected;
+            Connection = copy ? connection.Copy() : connection;
+            connSettings.Definition = Connection.Definition;
+            connSettings.Connected += HandleConnected;
 
             if (copy)
             {
-                this.Text = Resources.NewFromExisting;
+                Text = Resources.NewFromExisting;
             }
             else
             {
-                this._editing = true;
+                _editing = true;
             }
         }
 
@@ -67,21 +67,21 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="e">Connection Event arguments</param>
-        private void HandleConnected(Object sender, ConnectedEventArgs e)
+        private void HandleConnected(object sender, ConnectedEventArgs e)
         {
-            if (!this._editing)
+            if (!_editing)
             {
                 // When not editing need to take the newly created connection
-                this.Connection = e.Connection;
+                Connection = e.Connection;
             }
             else
             {
                 // Otherwise take just the definition and update the last modified
-                this.Connection.Definition = e.Connection.Definition;
-                this.Connection.LastModified = DateTimeOffset.UtcNow;
+                Connection.Definition = e.Connection.Definition;
+                Connection.LastModified = DateTimeOffset.UtcNow;
             }
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         /// <summary>

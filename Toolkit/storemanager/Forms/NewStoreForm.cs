@@ -41,21 +41,21 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         public NewStoreForm(IStorageServer server)
         {
-            this._server = server;
+            _server = server;
             InitializeComponent();
 
             //Generate Templates
-            this._defaultTemplate = this._server.GetDefaultTemplate(String.Empty);
-            foreach (IStoreTemplate template in this._server.GetAvailableTemplates(String.Empty))
+            _defaultTemplate = _server.GetDefaultTemplate(string.Empty);
+            foreach (IStoreTemplate template in _server.GetAvailableTemplates(string.Empty))
             {
-                this._templates.Add(template);
+                _templates.Add(template);
             }
-            this.cboTemplates.DataSource = this._templates;
-            this.radTemplateDefault.Text = String.Format(this.radTemplateDefault.Text, this._defaultTemplate);
+            cboTemplates.DataSource = _templates;
+            radTemplateDefault.Text = string.Format(radTemplateDefault.Text, _defaultTemplate);
 
             //Wire up property grid
-            this.propConfig.SelectedObjectsChanged += propConfig_SelectedObjectsChanged;
-            this.propConfig.PropertyValueChanged += propConfig_PropertyValueChanged;
+            propConfig.SelectedObjectsChanged += propConfig_SelectedObjectsChanged;
+            propConfig.PropertyValueChanged += propConfig_PropertyValueChanged;
 
         }
 
@@ -70,82 +70,82 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void txtStoreID_TextChanged(object sender, EventArgs e)
         {
-            bool enabled = !this.txtStoreID.Text.Equals(String.Empty);
-            this.grpTemplates.Enabled = enabled;
-            this.grpConfig.Enabled = enabled;
+            bool enabled = !txtStoreID.Text.Equals(string.Empty);
+            grpTemplates.Enabled = enabled;
+            grpConfig.Enabled = enabled;
 
-            this._defaultTemplate.ID = this.txtStoreID.Text;
-            foreach (IStoreTemplate t in this._templates)
+            _defaultTemplate.ID = txtStoreID.Text;
+            foreach (IStoreTemplate t in _templates)
             {
-                t.ID = this.txtStoreID.Text;
+                t.ID = txtStoreID.Text;
             }
 
             if (enabled)
             {
                 //Update Property Grid
-                this.propConfig.SelectedObject = this.radTemplateDefault.Checked ? this._defaultTemplate : this.cboTemplates.SelectedItem;
-                this.propConfig.Refresh();
+                propConfig.SelectedObject = radTemplateDefault.Checked ? _defaultTemplate : cboTemplates.SelectedItem;
+                propConfig.Refresh();
             }
             else
             {
                 //Clear Templates
-                this._templates.Clear();
-                this.propConfig.SelectedObject = null;
+                _templates.Clear();
+                propConfig.SelectedObject = null;
             }
         }
 
         private void radTemplateDefault_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radTemplateDefault.Checked)
+            if (radTemplateDefault.Checked)
             {
-                this.propConfig.SelectedObject = this._defaultTemplate;
+                propConfig.SelectedObject = _defaultTemplate;
             }
         }
 
         private void radTemplateSelected_CheckedChanged(object sender, EventArgs e)
         {
-            this.cboTemplates.Enabled = this.radTemplateSelected.Checked;
-            if (this.radTemplateSelected.Checked)
+            cboTemplates.Enabled = radTemplateSelected.Checked;
+            if (radTemplateSelected.Checked)
             {
-                this.propConfig.SelectedObject = this.cboTemplates.SelectedItem;
+                propConfig.SelectedObject = cboTemplates.SelectedItem;
             }
         }
 
         private void cboTemplates_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.radTemplateSelected.Checked)
+            if (radTemplateSelected.Checked)
             {
-                this.propConfig.SelectedObject = this.cboTemplates.SelectedItem;
+                propConfig.SelectedObject = cboTemplates.SelectedItem;
             }
         }
 
 
         void propConfig_SelectedObjectsChanged(object sender, EventArgs e)
         {
-            this.btnCreate.Enabled = this.propConfig.SelectedObject != null;
+            btnCreate.Enabled = propConfig.SelectedObject != null;
         }
 
         void propConfig_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             if (e.ChangedItem.Label == null || !e.ChangedItem.Label.Equals("ID")) return;
-            String id = e.ChangedItem.Value.ToString();
-            if (!id.Equals(this.txtStoreID.Text))
+            string id = e.ChangedItem.Value.ToString();
+            if (!id.Equals(txtStoreID.Text))
             {
-                this.txtStoreID.Text = id;
+                txtStoreID.Text = id;
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            this.Template = this.propConfig.SelectedObject as IStoreTemplate;
+            Template = propConfig.SelectedObject as IStoreTemplate;
 
-            List<String> errors = this.Template != null ? this.Template.Validate().ToList() : new List<string> { "No template selected"};
+            List<string> errors = Template != null ? Template.Validate().ToList() : new List<string> { "No template selected"};
             if (errors.Count > 0)
             {
                 InvalidTemplateForm invalid = new InvalidTemplateForm(errors);
@@ -153,8 +153,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             else
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
     }

@@ -74,7 +74,7 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintPreviewDialog(this TextEditor textEditor)
         {
-            PrintPreviewDialog(textEditor, String.Empty);
+            PrintPreviewDialog(textEditor, string.Empty);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace ICSharpCode.AvalonEdit
                 textEditor.Tag = settings;
             }
 
-            settings.DocumentTitle = (title != null) ? title : String.Empty;
+            settings.DocumentTitle = (title != null) ? title : string.Empty;
             PrintEngine.PrintPreviewDialog printPreview = new PrintEngine.PrintPreviewDialog();
             printPreview.DocumentViewer.FitToMaxPagesAcross(1);
             printPreview.DocumentViewer.PrintQueue = settings.PrintQueue;
@@ -126,13 +126,13 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintDialog(this TextEditor textEditor)
         {
-            PrintDialog(textEditor, String.Empty);
+            PrintDialog(textEditor, string.Empty);
         }
 
         /// <summary>
         /// Invokes a System.Windows.Controls.PrintDialog to print the TextEditor.Document.
         /// </summary>
-        public static void PrintDialog(this TextEditor textEditor, String title)
+        public static void PrintDialog(this TextEditor textEditor, string title)
         {
             PrintDialog(textEditor, title, true);
         }
@@ -149,7 +149,7 @@ namespace ICSharpCode.AvalonEdit
                 textEditor.Tag = settings;
             }
 
-            settings.DocumentTitle = (title != null) ? title : String.Empty;
+            settings.DocumentTitle = (title != null) ? title : string.Empty;
             System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
             printDialog.PrintQueue = settings.PrintQueue;
 
@@ -173,13 +173,13 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintDirect(this TextEditor textEditor)
         {
-            PrintDirect(textEditor, String.Empty);
+            PrintDirect(textEditor, string.Empty);
         }
 
         /// <summary>
         /// Prints the the TextEditor.Document to the current printer (no dialogs).
         /// </summary>
-        public static void PrintDirect(this TextEditor textEditor, String title)
+        public static void PrintDirect(this TextEditor textEditor, string title)
         {
             PrintDirect(textEditor, title, true);
         }
@@ -196,7 +196,7 @@ namespace ICSharpCode.AvalonEdit
                 textEditor.Tag = settings;
             }
 
-            settings.DocumentTitle = (title != null) ? title : String.Empty;
+            settings.DocumentTitle = (title != null) ? title : string.Empty;
             System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
             printDialog.PrintQueue = settings.PrintQueue;
 
@@ -336,10 +336,10 @@ namespace ICSharpCode.AvalonEdit
     {
         public PrintSettings()
         {
-            this.PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
-            this.PrintTicket = this.PrintQueue.DefaultPrintTicket;
-            this.PageSettings = new PageSettings();
-            this.PageSettings.Margins = new Margins(40, 40, 40, 40);
+            PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
+            PrintTicket = PrintQueue.DefaultPrintTicket;
+            PageSettings = new PageSettings();
+            PageSettings.Margins = new Margins(40, 40, 40, 40);
         }
 
         public PageSettings PageSettings
@@ -360,7 +360,7 @@ namespace ICSharpCode.AvalonEdit
             set;
         }
 
-        public String DocumentTitle
+        public string DocumentTitle
         {
             get;
             set;

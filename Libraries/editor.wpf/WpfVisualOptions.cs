@@ -42,7 +42,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public WpfVisualOptions()
         {
-            this.Foreground = Colors.Black;
+            Foreground = Colors.Black;
         }
     }
 }

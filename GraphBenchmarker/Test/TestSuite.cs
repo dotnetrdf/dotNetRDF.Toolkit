@@ -16,48 +16,48 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         private BindingList<TestCase> _cases = new BindingList<TestCase>();
         private int _currTest = 0, _currTestCase = 0;
         private bool _cancelled = false;
-        private String _data;
+        private string _data;
         private int _iterations;
 
-        public TestSuite(IEnumerable<TestCase> testCases, String data, int iterations, TestSet set)
+        public TestSuite(IEnumerable<TestCase> testCases, string data, int iterations, TestSet set)
         {
-            this._data = data;
-            this._iterations = iterations;
+            _data = data;
+            _iterations = iterations;
 
             foreach (TestCase c in testCases)
             {
-                this._cases.Add(c);
+                _cases.Add(c);
             }
 
             //Firstly add the Initial Memory Usage Check
-            this._tests.Add(new InitialMemoryUsageCheck());
+            _tests.Add(new InitialMemoryUsageCheck());
 
             //Then do a Load Test and a further Memory Usage Check
-            this._tests.Add(new LoadDataTest(data));
-            this._tests.Add(new CountTriplesTest());
-            this._tests.Add(new MemoryUsageCheck());
+            _tests.Add(new LoadDataTest(data));
+            _tests.Add(new CountTriplesTest());
+            _tests.Add(new MemoryUsageCheck());
 
             //Then add the actual tests
             if (set == TestSet.Standard)
             {
-                this._tests.Add(new EnumerateTriplesTest(iterations));
-                this._tests.Add(new SubjectLookupTest(iterations));
-                this._tests.Add(new PredicateLookupTest(iterations));
-                this._tests.Add(new ObjectLookupTest(iterations));
+                _tests.Add(new EnumerateTriplesTest(iterations));
+                _tests.Add(new SubjectLookupTest(iterations));
+                _tests.Add(new PredicateLookupTest(iterations));
+                _tests.Add(new ObjectLookupTest(iterations));
 
                 //Do an Enumerate Test again to see if index population has changed performance
-                this._tests.Add(new EnumerateTriplesTest(iterations));
+                _tests.Add(new EnumerateTriplesTest(iterations));
 
                 //Finally add the final Memory Usage Check
-                this._tests.Add(new MemoryUsageCheck());
+                _tests.Add(new MemoryUsageCheck());
             }
         }
 
-        public String Data
+        public string Data
         {
             get
             {
-                return this._data;
+                return _data;
             }
         }
 
@@ -65,7 +65,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._iterations;
+                return _iterations;
             }
         }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._cases;
+                return _cases;
             }
         }
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._tests;
+                return _tests;
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._currTest;
+                return _currTest;
             }
         }
 
@@ -97,53 +97,53 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._currTestCase;
+                return _currTestCase;
             }
         }
 
         public void Run()
         {
-            for (int c = 0; c < this._cases.Count; c++)
+            for (int c = 0; c < _cases.Count; c++)
             {
-                if (this._cancelled) break;
+                if (_cancelled) break;
 
-                this._currTestCase = c;
-                this._currTest = 0;
-                this._cases[c].Reset(true);
+                _currTestCase = c;
+                _currTest = 0;
+                _cases[c].Reset(true);
 
-                this.RaiseProgress();
+                RaiseProgress();
 
                 //Get the Initial Memory Usage allowing the GC to clean up as necessary
-                this._cases[c].InitialMemory = GC.GetTotalMemory(true);
+                _cases[c].InitialMemory = GC.GetTotalMemory(true);
 
                 //Do this to ensure we've created the Graph instance
-                IGraph temp = this._cases[c].Instance;
+                IGraph temp = _cases[c].Instance;
 
-                this.RaiseProgress();
+                RaiseProgress();
 
-                for (int t = 0; t < this._tests.Count; t++)
+                for (int t = 0; t < _tests.Count; t++)
                 {
-                    if (this._cancelled) break;
+                    if (_cancelled) break;
 
-                    this._currTest = t;
-                    this.RaiseProgress();
+                    _currTest = t;
+                    RaiseProgress();
 
                     //Run the Test and remember the Results
-                    TestResult r = this._tests[t].Run(this._cases[c]);
-                    this._cases[c].Results.Add(r);
+                    TestResult r = _tests[t].Run(_cases[c]);
+                    _cases[c].Results.Add(r);
                 }
 
                 //Clear URI Factory after Tests to return memory usage to base levels
                 UriFactory.Clear();
             }
-            this.RaiseProgress();
-            if (this._cancelled)
+            RaiseProgress();
+            if (_cancelled)
             {
-                this.RaiseCancelled();
+                RaiseCancelled();
             }
-            this._cancelled = false;
+            _cancelled = false;
 
-            foreach (TestCase c in this._cases)
+            foreach (TestCase c in _cases)
             {
                 c.Reset(false);
             }
@@ -151,7 +151,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
         public void Cancel()
         {
-            this._cancelled = true;
+            _cancelled = true;
         }
 
         public event TestSuiteProgressHandler Progress;
@@ -160,7 +160,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
         private void RaiseProgress()
         {
-            TestSuiteProgressHandler d = this.Progress;
+            TestSuiteProgressHandler d = Progress;
             if (d != null)
             {
                 d();
@@ -169,7 +169,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
         private void RaiseCancelled()
         {
-            TestSuiteProgressHandler d = this.Cancelled;
+            TestSuiteProgressHandler d = Cancelled;
             if (d != null)
             {
                 d();

@@ -59,7 +59,7 @@ namespace VDS.RDF.GUI.WinForms.Forms
         /// </summary>
         /// <param name="results">SPARQL Result Set to display</param>
         /// <param name="title">Title prefix</param>
-        public ResultSetViewerForm(SparqlResultSet results, String title)
+        public ResultSetViewerForm(SparqlResultSet results, string title)
             : this(results, null, title) { }
 
         /// <summary>
@@ -68,32 +68,32 @@ namespace VDS.RDF.GUI.WinForms.Forms
         /// <param name="results">Result Set</param>
         /// <param name="nsmap">Namespace Map to use for display</param>
         /// <param name="title">Title prefix</param>
-        public ResultSetViewerForm(SparqlResultSet results, INamespaceMapper nsmap, String title)
+        public ResultSetViewerForm(SparqlResultSet results, INamespaceMapper nsmap, string title)
         {
             InitializeComponent();
             if (Constants.WindowIcon != null)
             {
-                this.Icon = Constants.WindowIcon;
+                Icon = Constants.WindowIcon;
             }
-            this._results = results;
-            this.Text = GetTitle(title, results);
-            this._nsmap = nsmap;
+            _results = results;
+            Text = GetTitle(title, results);
+            _nsmap = nsmap;
 
-            this.resultsViewer.UriClicked += (sender, uri) => this.RaiseUriClicked(uri);
-            this.Load += (sender, args) => this.resultsViewer.DisplayResultSet(this._results, this._nsmap);
+            resultsViewer.UriClicked += (sender, uri) => RaiseUriClicked(uri);
+            Load += (sender, args) => resultsViewer.DisplayResultSet(_results, _nsmap);
         }
 
-        private static String GetTitle(SparqlResultSet results)
+        private static string GetTitle(SparqlResultSet results)
         {
             if (results.ResultsType == SparqlResultsType.Boolean)
                 return "SPARQL Results Viewer - Boolean Result";
-            return results.ResultsType == SparqlResultsType.VariableBindings ? String.Format("SPARQL Results Viewer - {0} Result(s)", results.Count) : "SPARQL Results Viewer";
+            return results.ResultsType == SparqlResultsType.VariableBindings ? string.Format("SPARQL Results Viewer - {0} Result(s)", results.Count) : "SPARQL Results Viewer";
         }
 
-        private static String GetTitle(String title, SparqlResultSet results)
+        private static string GetTitle(string title, SparqlResultSet results)
         {
             if (title == null) return GetTitle(results);
-            return String.Format("{0} - " + GetTitle(results), title);
+            return string.Format("{0} - " + GetTitle(results), title);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.GUI.WinForms.Forms
 
         private void RaiseUriClicked(Uri u)
         {
-            UriClickedEventHandler d = this.UriClicked;
+            UriClickedEventHandler d = UriClicked;
             if (d != null)
             {
                 d(this, u);

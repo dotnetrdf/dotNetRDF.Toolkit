@@ -37,53 +37,53 @@ namespace VDS.RDF.Utilities.OptimiserStats
 {
     public class RdfOptimiserStats
     {
-        private String[] _args;
+        private string[] _args;
         private bool _subjects = false, _predicates = false, _objects = false, _nodes = false;
-        private String _file = "stats.ttl";
-        private List<String> _inputs = new List<string>();
+        private string _file = "stats.ttl";
+        private List<string> _inputs = new List<string>();
         private bool _literals = false;
 
-        public RdfOptimiserStats(String[] args)
+        public RdfOptimiserStats(string[] args)
         {
-            this._args = args;
+            _args = args;
         }
 
         public void Run()
         {
-            if (this._args.Length == 0)
+            if (_args.Length == 0)
             {
-                this.ShowUsage();
+                ShowUsage();
             }
             else
             {
-                if (!this.ParseOptions())
+                if (!ParseOptions())
                 {
                     Console.Error.WriteLine("rdfOptStats: Error: One/More options were invalid");
                     return;
                 }
 
-                if (this._inputs.Count == 0)
+                if (_inputs.Count == 0)
                 {
                     Console.Error.WriteLine("rdfOptStats: Error: No Inputs Specified");
                     return;
                 }
 
                 List<BaseStatsHandler> handlers = new List<BaseStatsHandler>();
-                if (this._subjects && this._predicates && this._objects)
+                if (_subjects && _predicates && _objects)
                 {
-                    handlers.Add(new SPOStatsHandler(this._literals));
+                    handlers.Add(new SPOStatsHandler(_literals));
                 }
-                else if (this._subjects && this._predicates)
+                else if (_subjects && _predicates)
                 {
-                    handlers.Add(new SPStatsHandler(this._literals));
+                    handlers.Add(new SPStatsHandler(_literals));
                 }
                 else
                 {
-                    if (this._subjects) handlers.Add(new SubjectStatsHandler(this._literals));
-                    if (this._predicates) handlers.Add(new PredicateStatsHandler(this._literals));
-                    if (this._objects) handlers.Add(new ObjectStatsHandler(this._literals));
+                    if (_subjects) handlers.Add(new SubjectStatsHandler(_literals));
+                    if (_predicates) handlers.Add(new PredicateStatsHandler(_literals));
+                    if (_objects) handlers.Add(new ObjectStatsHandler(_literals));
                 }
-                if (this._nodes)
+                if (_nodes)
                 {
                     handlers.Add(new NodeStatsHandler());
                 }
@@ -101,13 +101,13 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
-                for (int i = 0; i < this._inputs.Count; i++)
+                for (int i = 0; i < _inputs.Count; i++)
                 {
-                    Console.WriteLine("rdfOptStats: Processing Input " + (i + 1) + " of " + this._inputs.Count + " - '" + this._inputs[i] + "'");
+                    Console.WriteLine("rdfOptStats: Processing Input " + (i + 1) + " of " + _inputs.Count + " - '" + _inputs[i] + "'");
 
                     try
                     {
-                        FileLoader.Load(handler, this._inputs[i]);
+                        FileLoader.Load(handler, _inputs[i]);
                     }
                     catch (RdfParserSelectionException selEx)
                     {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                         {
                             h.GetStats(g);
                         }
-                        IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._file));
+                        IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(_file));
                         if (writer is ICompressingWriter)
                         {
                             ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
@@ -160,15 +160,15 @@ namespace VDS.RDF.Utilities.OptimiserStats
                         {
                             ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
                         }
-                        writer.Save(g, this._file);
+                        writer.Save(g, _file);
 
-                        Console.WriteLine("rdfOptStats: Statistics output to " + this._file);
+                        Console.WriteLine("rdfOptStats: Statistics output to " + _file);
                         timer.Stop();
                         Console.WriteLine("rdfOptStats: Took " + timer.Elapsed + " to output statistics");
                     }
                     catch (Exception ex)
                     {
-                        Console.Error.WriteLine("rdfOptStats: Error: Unexpected error outputting statistics to " + this._file);
+                        Console.Error.WriteLine("rdfOptStats: Error: Unexpected error outputting statistics to " + _file);
                         Console.Error.WriteLine(ex.Message);
                         Console.Error.WriteLine(ex.StackTrace);
                     }
@@ -184,37 +184,37 @@ namespace VDS.RDF.Utilities.OptimiserStats
         {
             bool ok = true;
 
-            for (int i = 0; i < this._args.Length; i++)
+            for (int i = 0; i < _args.Length; i++)
             {
-                String arg = this._args[i];
+                string arg = _args[i];
                 switch (arg)
                 {
                     case "-all":
-                        this._subjects = true;
-                        this._predicates = true;
-                        this._objects = true;
+                        _subjects = true;
+                        _predicates = true;
+                        _objects = true;
                         break;
                     case "-s":
-                        this._subjects = true;
+                        _subjects = true;
                         break;
                     case "-p":
-                        this._predicates = true;
+                        _predicates = true;
                         break;
                     case "-o":
-                        this._objects = true;
+                        _objects = true;
                         break;
                     case "-nodes":
-                        this._nodes = true;
+                        _nodes = true;
                         break;
 
                     case "-literals":
-                        this._literals = true;
+                        _literals = true;
                         break;
 
                     case "-output":
-                        if (i < this._args.Length - 1)
+                        if (i < _args.Length - 1)
                         {
-                            this._file = this._args[i + 1];
+                            _file = _args[i + 1];
                             i++;
                         }
                         else
@@ -225,7 +225,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                         break;
 
                     default:
-                        ok = this.ParseInputs(arg);
+                        ok = ParseInputs(arg);
                         break;
                 }
 
@@ -235,7 +235,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
             return ok;
         }
 
-        private bool ParseInputs(String arg)
+        private bool ParseInputs(string arg)
         {
             if (arg.Contains("*"))
             {
@@ -246,23 +246,23 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     return false;
                 }
 
-                String sep = new String(new char[] { Path.DirectorySeparatorChar });
+                string sep = new string(new char[] { Path.DirectorySeparatorChar });
                 if (arg.Contains(sep))
                 {
                     //Wildcard has a Directory in it
-                    String dir = arg.Substring(0, arg.LastIndexOf(sep) + 1);
+                    string dir = arg.Substring(0, arg.LastIndexOf(sep) + 1);
                     if (!Directory.Exists(dir))
                     {
                         Console.Error.WriteLine("rdfOptStats: Error: Input Wildcard '" + arg + "' uses a Directory '" + dir + "' which does not exist");
                         return false;
                     }
 
-                    String wildcard = arg.Substring(dir.Length);
-                    return this.ParseInputs(wildcard, dir);
+                    string wildcard = arg.Substring(dir.Length);
+                    return ParseInputs(wildcard, dir);
                 }
                 else
                 {
-                    return this.ParseInputs(arg, Environment.CurrentDirectory);
+                    return ParseInputs(arg, Environment.CurrentDirectory);
                 }
             }
             else
@@ -274,7 +274,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                 }
                 else
                 {
-                    this._inputs.Add(arg);
+                    _inputs.Add(arg);
                     return true;
                 }
             }
@@ -282,7 +282,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
             return true;
         }
 
-        private bool ParseInputs(String arg, String dir)
+        private bool ParseInputs(string arg, string dir)
         {
             if (arg.Contains("*"))
             {
@@ -290,14 +290,14 @@ namespace VDS.RDF.Utilities.OptimiserStats
                 if (arg.Equals("*") || arg.Equals("*.*"))
                 {
                     //All Files
-                    this._inputs.AddRange(Directory.GetFiles(dir));
+                    _inputs.AddRange(Directory.GetFiles(dir));
                     return true;
                 }
                 else if (arg.Contains("*."))
                 {
                     //All Files with a given Extension
-                    String ext = arg.Substring(arg.LastIndexOf("*.") + 1);
-                    this._inputs.AddRange(Directory.GetFiles(dir).Where(f => ext.Equals(MimeTypesHelper.GetTrueFileExtension(f))));
+                    string ext = arg.Substring(arg.LastIndexOf("*.") + 1);
+                    _inputs.AddRange(Directory.GetFiles(dir).Where(f => ext.Equals(MimeTypesHelper.GetTrueFileExtension(f))));
                     return true;
                 }
                 else
@@ -316,7 +316,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                 }
                 else
                 {
-                    this._inputs.Add(arg);
+                    _inputs.Add(arg);
                     return true;
                 }
             }

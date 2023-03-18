@@ -51,8 +51,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <param name="options">Visual Options</param>
         public ValidationErrorElementGenerator(WpfEditorAdaptor adaptor, VisualOptions<FontFamily, Color> options)
         {
-            this._adaptor = adaptor;
-            this._options = options;
+            _adaptor = adaptor;
+            _options = options;
         }
 
         /// <summary>
@@ -62,25 +62,25 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns>Element</returns>
         public override VisualLineElement ConstructElement(int offset)
         {
-            RdfParseException parseEx = this.GetException();
+            RdfParseException parseEx = GetException();
             if (parseEx == null) return null;
             if (parseEx.StartLine > CurrentContext.Document.LineCount) return null;
-            if (this._options == null) return null;
+            if (_options == null) return null;
 
             //Get the Start Offset which is the greater of the error start position or the offset start
             //Move it back one if it is not at start of offset/document and the error is a single point
-            int startOffset = Math.Max(this.CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition), offset);
+            int startOffset = Math.Max(CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition), offset);
             if (startOffset > 0 && startOffset > offset && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition) startOffset--;
 
             //Get the End Offset which is the lesser of the error end position of the end of this line
             //If the Start and End Offsets are equal we can't show an error
-            int endOffset = Math.Min(this.CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition), this.CurrentContext.VisualLine.LastDocumentLine.EndOffset);
+            int endOffset = Math.Min(CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition), CurrentContext.VisualLine.LastDocumentLine.EndOffset);
             if (startOffset == endOffset) return null;
             if (startOffset > endOffset) return null;
 
             System.Diagnostics.Debug.WriteLine("Input Offset: " + offset + " - Start Offset: " + startOffset + " - End Offset: " + endOffset);
 
-            return new ValidationErrorLineText(this._options, this.CurrentContext.VisualLine, endOffset - startOffset);
+            return new ValidationErrorLineText(_options, CurrentContext.VisualLine, endOffset - startOffset);
         }
 
         /// <summary>
@@ -90,10 +90,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns></returns>
         public override int GetFirstInterestedOffset(int startOffset)
         {
-            RdfParseException parseEx = this.GetException();
+            RdfParseException parseEx = GetException();
             if (parseEx == null) return -1;
             if (parseEx.StartLine > CurrentContext.Document.LineCount) return -1;
-            if (this._options == null) return -1;
+            if (_options == null) return -1;
 
             try
             {
@@ -134,10 +134,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns>Parser Error with position information or null</returns>
         private RdfParseException GetException()
         {
-            if (this._adaptor.ErrorToHighlight == null) return null;
-            if (this._adaptor.ErrorToHighlight is RdfParseException)
+            if (_adaptor.ErrorToHighlight == null) return null;
+            if (_adaptor.ErrorToHighlight is RdfParseException)
             {
-                RdfParseException parseEx = (RdfParseException)this._adaptor.ErrorToHighlight;
+                RdfParseException parseEx = (RdfParseException)_adaptor.ErrorToHighlight;
                 if (parseEx.HasPositionInformation)
                 {
                     return parseEx;

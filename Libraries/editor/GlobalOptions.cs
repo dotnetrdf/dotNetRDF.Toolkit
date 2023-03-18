@@ -84,14 +84,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._syntaxHighlightingEnabled;
+                return _syntaxHighlightingEnabled;
             }
             set
             {
-                if (value != this._syntaxHighlightingEnabled)
+                if (value != _syntaxHighlightingEnabled)
                 {
-                    this._syntaxHighlightingEnabled = value;
-                    this.RaiseEvent(this.HighlightingToggled);
+                    _syntaxHighlightingEnabled = value;
+                    RaiseEvent(HighlightingToggled);
                 }
             }
         }
@@ -107,14 +107,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._symbolSelectEnabled;
+                return _symbolSelectEnabled;
             }
             set
             {
-                if (this._symbolSelectEnabled != value)
+                if (_symbolSelectEnabled != value)
                 {
-                    this._symbolSelectEnabled = value;
-                    this.RaiseEvent(this.SymbolSelectionToggled);
+                    _symbolSelectEnabled = value;
+                    RaiseEvent(SymbolSelectionToggled);
                 }
             }
         }
@@ -126,9 +126,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._selector != null)
+                if (_selector != null)
                 {
-                    return this._selector.IncludeDeliminator;
+                    return _selector.IncludeDeliminator;
                 }
                 else
                 {
@@ -137,10 +137,10 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._includeDelim = value;
-                if (this._selector != null)
+                _includeDelim = value;
+                if (_selector != null)
                 {
-                    this._selector.IncludeDeliminator = value;
+                    _selector.IncludeDeliminator = value;
                 }
             }
         }
@@ -152,15 +152,15 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._selector;
+                return _selector;
             }
             set
             {
-                if (!ReferenceEquals(this._selector, value))
+                if (!ReferenceEquals(_selector, value))
                 {
-                    this._selector = value;
-                    this._selector.IncludeDeliminator = this.IncludeBoundaryInSymbolSelection;
-                    this.RaiseEvent(this.SymbolSelectorChanged);
+                    _selector = value;
+                    _selector.IncludeDeliminator = IncludeBoundaryInSymbolSelection;
+                    RaiseEvent(SymbolSelectorChanged);
                 }
             }
         }
@@ -176,11 +176,11 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._validateAsYouType;
+                return _validateAsYouType;
             }
             set
             {
-                this._validateAsYouType = value;
+                _validateAsYouType = value;
             }
         }
 
@@ -191,14 +191,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._highlightErrors;
+                return _highlightErrors;
             }
             set
             {
-                if (value != this._highlightErrors)
+                if (value != _highlightErrors)
                 {
-                    this._highlightErrors = value;
-                    this.RaiseEvent(this.HighlightErrorsToggled);
+                    _highlightErrors = value;
+                    RaiseEvent(HighlightErrorsToggled);
                 }
             }
         }
@@ -214,14 +214,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._autoCompleteEnabled;
+                return _autoCompleteEnabled;
             }
             set
             {
-                if (this._autoCompleteEnabled != value)
+                if (_autoCompleteEnabled != value)
                 {
-                    this._autoCompleteEnabled = value;
-                    this.RaiseEvent(this.AutoCompleteToggled);
+                    _autoCompleteEnabled = value;
+                    RaiseEvent(AutoCompleteToggled);
                 }
             }
         }

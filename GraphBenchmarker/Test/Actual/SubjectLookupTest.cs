@@ -14,16 +14,16 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
 
         protected override void PreIterationSetup(TestCase testCase)
         {
-            if (this._subjects.Count == 0)
+            if (_subjects.Count == 0)
             {
                 Random rnd = new Random();
-                while (this._subjects.Count < 3)
+                while (_subjects.Count < 3)
                 {
                     int i = rnd.Next(1, testCase.Instance.Triples.Count) - 1;
                     Triple t = testCase.Instance.Triples.Skip(i).FirstOrDefault();
                     if (t != null)
                     {
-                        this._subjects.Add(t.Subject);
+                        _subjects.Add(t.Subject);
                     }
                 }
             }
@@ -32,7 +32,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
         protected override int RunIteration(TestCase testCase)
         {
             int actions = 0;
-            foreach (INode subj in this._subjects)
+            foreach (INode subj in _subjects)
             {
                 foreach (Triple t in testCase.Instance.GetTriplesWithSubject(subj))
                 {
@@ -52,16 +52,16 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
 
         protected override void PreIterationSetup(TestCase testCase)
         {
-            if (this._predicates.Count == 0)
+            if (_predicates.Count == 0)
             {
                 Random rnd = new Random();
-                while (this._predicates.Count < 3)
+                while (_predicates.Count < 3)
                 {
                     int i = rnd.Next(1, testCase.Instance.Triples.Count) - 1;
                     Triple t = testCase.Instance.Triples.Skip(i).FirstOrDefault();
                     if (t != null)
                     {
-                        this._predicates.Add(t.Predicate);
+                        _predicates.Add(t.Predicate);
                     }
                 }
             }
@@ -70,7 +70,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
         protected override int RunIteration(TestCase testCase)
         {
             int actions = 0;
-            foreach (INode subj in this._predicates)
+            foreach (INode subj in _predicates)
             {
                 foreach (Triple t in testCase.Instance.GetTriplesWithPredicate(subj))
                 {
@@ -90,16 +90,16 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
 
         protected override void PreIterationSetup(TestCase testCase)
         {
-            if (this._objects.Count == 0)
+            if (_objects.Count == 0)
             {
                 Random rnd = new Random();
-                while (this._objects.Count < 3)
+                while (_objects.Count < 3)
                 {
                     int i = rnd.Next(1, testCase.Instance.Triples.Count) - 1;
                     Triple t = testCase.Instance.Triples.Skip(i).FirstOrDefault();
                     if (t != null)
                     {
-                        this._objects.Add(t.Object);
+                        _objects.Add(t.Object);
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
         protected override int RunIteration(TestCase testCase)
         {
             int actions = 0;
-            foreach (INode obj in this._objects)
+            foreach (INode obj in _objects)
             {
                 foreach (Triple t in testCase.Instance.GetTriplesWithObject(obj))
                 {

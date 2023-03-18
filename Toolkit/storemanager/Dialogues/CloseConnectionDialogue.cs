@@ -42,22 +42,22 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 
         private void btnCloseWindow_Click(object sender, EventArgs e)
         {
-            this.ForceClose = false;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            ForceClose = false;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCloseAll_Click(object sender, EventArgs e)
         {
-            this.ForceClose = true;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            ForceClose = true;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

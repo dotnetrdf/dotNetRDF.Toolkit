@@ -39,7 +39,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : CancellableTask<TaskValueResult<int>>
     {
         private readonly IStorageProvider _manager;
-        private readonly String _graphUri;
+        private readonly string _graphUri;
         private CancellableHandler _canceller;
         private CountHandler _counter;
 
@@ -48,11 +48,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="manager">Storage Provider</param>
         /// <param name="graphUri">Graph URI</param>
-        public CountTriplesTask(IStorageProvider manager, String graphUri)
+        public CountTriplesTask(IStorageProvider manager, string graphUri)
             : base("Count Triples")
         {
-            this._manager = manager;
-            this._graphUri = graphUri;
+            _manager = manager;
+            _graphUri = graphUri;
         }
 
         /// <summary>
@@ -61,20 +61,20 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskValueResult<int> RunTaskInternal()
         {
-            if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
+            if (_graphUri != null && !_graphUri.Equals(string.Empty))
             {
-                this.Information = "Counting Triples for Graph " + this._graphUri + "...";
+                Information = "Counting Triples for Graph " + _graphUri + "...";
             }
             else
             {
-                this.Information = "Counting Triples for Default Graph...";
+                Information = "Counting Triples for Default Graph...";
             }
 
-            this._counter = new CountHandler();
-            this._canceller = new CancellableHandler(this._counter);
-            this._manager.LoadGraph(this._canceller, this._graphUri);
-            this.Information = "Graph contains " + this._counter.Count + " Triple(s)";
-            return new TaskValueResult<int>(this._counter.Count);
+            _counter = new CountHandler();
+            _canceller = new CancellableHandler(_counter);
+            _manager.LoadGraph(_canceller, _graphUri);
+            Information = "Graph contains " + _counter.Count + " Triple(s)";
+            return new TaskValueResult<int>(_counter.Count);
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void CancelInternal()
         {
-            if (this._canceller != null)
+            if (_canceller != null)
             {
-                this._canceller.Cancel();
+                _canceller.Cancel();
             }
         }
     }

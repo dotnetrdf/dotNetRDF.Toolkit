@@ -16,40 +16,40 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
     {
         private TimeSpan _elapsed;
         private int _actions;
-        private String _unit;
+        private string _unit;
         private double _memory = 0d;
         private TestMetricType _metric;
 
-        public TestResult(TimeSpan elapsed, int actions, String unit, TestMetricType metric)
+        public TestResult(TimeSpan elapsed, int actions, string unit, TestMetricType metric)
         {
-            this._elapsed = elapsed;
-            this._actions = actions;
-            this._unit = unit;
-            this._metric = metric;
+            _elapsed = elapsed;
+            _actions = actions;
+            _unit = unit;
+            _metric = metric;
         }
 
         public TestResult(TimeSpan elapsed, long memory)
             : this(elapsed, 0, "Bytes", TestMetricType.MemoryUsage)
         {
-            this._memory = (double)memory;
+            _memory = (double)memory;
 
             //Convert up to KB if possible
-            if (this._memory > 1024d)
+            if (_memory > 1024d)
             {
-                this._memory /= 1024d;
-                this._unit = "Kilobytes";
+                _memory /= 1024d;
+                _unit = "Kilobytes";
 
                 //Convert up to MB if possible
-                if (this._memory > 1024d)
+                if (_memory > 1024d)
                 {
-                    this._memory /= 1024d;
-                    this._unit = "Megabytes";
+                    _memory /= 1024d;
+                    _unit = "Megabytes";
 
                     //Convert up to GB if possible
-                    if (this._memory > 1024d)
+                    if (_memory > 1024d)
                     {
-                        this._memory /= 1024d;
-                        this._unit = "Gigabytes";
+                        _memory /= 1024d;
+                        _unit = "Gigabytes";
                     }
                 }
             }
@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._elapsed;
+                return _elapsed;
             }
         }
 
@@ -67,15 +67,15 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._actions;
+                return _actions;
             }
         }
 
-        public String Unit
+        public string Unit
         {
             get
             {
-                return this._unit;
+                return _unit;
             }
         }
 
@@ -83,14 +83,14 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                if (this._actions > 0)
+                if (_actions > 0)
                 {
-                    double seconds = ((double)this._elapsed.TotalMilliseconds) / 1000d;
-                    return ((double)this._actions) / seconds;
+                    double seconds = ((double)_elapsed.TotalMilliseconds) / 1000d;
+                    return ((double)_actions) / seconds;
                 }
                 else
                 {
-                    return Double.NaN;
+                    return double.NaN;
                 }
             }
         }
@@ -99,20 +99,20 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._memory;
+                return _memory;
             }
         }
 
         public override string ToString()
         {
-            switch (this._metric)
+            switch (_metric)
             {
                 case TestMetricType.Speed:
-                    return this.Speed.ToString("N3") + " " + this.Unit;
+                    return Speed.ToString("N3") + " " + Unit;
                 case TestMetricType.MemoryUsage:
-                    return this.Memory.ToString("F3") + " " + this.Unit + "";
+                    return Memory.ToString("F3") + " " + Unit + "";
                 case TestMetricType.Count:
-                    return this.Actions.ToString("F3") + " " + this.Unit + "";
+                    return Actions.ToString("F3") + " " + Unit + "";
                 default:
                     return "Unknown";
             }

@@ -13,12 +13,12 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
     public interface ITest
     {
-        String Name
+        string Name
         {
             get;
         }
 
-        String Description
+        string Description
         {
             get;
         }

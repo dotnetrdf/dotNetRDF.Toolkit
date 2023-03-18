@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
     {
         private const double DefaultPriority = 1.0d;
 
-        private String _display, _insert, _descrip;
+        private string _display, _insert, _descrip;
         private double _priority = DefaultPriority;
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="displayText">Display Text</param>
         /// <param name="insertText">Insertion Text</param>
-        public BaseCompletionData(String displayText, String insertText)
-            : this(displayText, insertText, String.Empty, DefaultPriority) { }
+        public BaseCompletionData(string displayText, string insertText)
+            : this(displayText, insertText, string.Empty, DefaultPriority) { }
 
         /// <summary>
         /// Creates new completion data
@@ -55,7 +55,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <param name="displayText">Display Text</param>
         /// <param name="insertText">Insertion Text</param>
         /// <param name="description">Description</param>
-        public BaseCompletionData(String displayText, String insertText, String description)
+        public BaseCompletionData(string displayText, string insertText, string description)
             : this(displayText, insertText, description, DefaultPriority) { }
 
         /// <summary>
@@ -65,22 +65,22 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <param name="insertText">Insertion Text</param>
         /// <param name="description">Description</param>
         /// <param name="priority">Priority</param>
-        public BaseCompletionData(String displayText, String insertText, String description, double priority)
+        public BaseCompletionData(string displayText, string insertText, string description, double priority)
         {
-            this._display = displayText;
-            this._insert = insertText;
-            this._descrip = description;
-            this._priority = priority;
+            _display = displayText;
+            _insert = insertText;
+            _descrip = description;
+            _priority = priority;
         }
 
         /// <summary>
         /// Gets the description
         /// </summary>
-        public String Description
+        public string Description
         {
             get
             {
-                return this._descrip;
+                return _descrip;
             }
         }
 
@@ -91,29 +91,29 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         {
             get
             {
-                return this._priority;
+                return _priority;
             }
         }
 
         /// <summary>
         /// Gets the display text
         /// </summary>
-        public String DisplayText
+        public string DisplayText
         {
             get
             {
-                return this._display;
+                return _display;
             }
         }
 
         /// <summary>
         /// Gets the insertion text
         /// </summary>
-        public String InsertionText
+        public string InsertionText
         {
             get
             {
-                return this._insert;
+                return _insert;
             }
         }
 
@@ -124,10 +124,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <returns></returns>
         public int CompareTo(ICompletionData other)
         {
-            int c = this.Priority.CompareTo(other.Priority);
+            int c = Priority.CompareTo(other.Priority);
             if (c == 0)
             {
-                return this.InsertionText.CompareTo(other.InsertionText);
+                return InsertionText.CompareTo(other.InsertionText);
             }
             else
             {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             if (obj == null) return 1;
             if (obj is ICompletionData)
             {
-                return this.CompareTo((ICompletionData)obj);
+                return CompareTo((ICompletionData)obj);
             }
             else
             {
@@ -163,7 +163,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             if (obj == null) return false;
             if (obj is ICompletionData)
             {
-                return this.Equals((ICompletionData)obj);
+                return Equals((ICompletionData)obj);
             }
             else
             {
@@ -178,7 +178,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <returns></returns>
         public bool Equals(ICompletionData other)
         {
-            return this.GetHashCode().Equals(other.GetHashCode());
+            return GetHashCode().Equals(other.GetHashCode());
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return this.ToString().GetHashCode();
+            return ToString().GetHashCode();
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <returns></returns>
         public override string ToString()
         {
-            return this.GetType().Name + ": " + this.InsertionText;
+            return GetType().Name + ": " + InsertionText;
         }
     }
 }

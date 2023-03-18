@@ -44,8 +44,8 @@ namespace VDS.RDF.Utilities.Editor
         //General State
         private bool _changed = false;
         private bool _enableHighlighting = true, _enableAutoCompletion = true;
-        private String _filename, _title;
-        private String _syntax = "None";
+        private string _filename, _title;
+        private string _syntax = "None";
         private ITextEditorAdaptor<T> _editor;
         private Encoding _encoding = Encoding.UTF8;
 
@@ -65,7 +65,7 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="editor">Text Editor</param>
         /// <param name="filename">Filename</param>
-        internal Document(ITextEditorAdaptor<T> editor, String filename)
+        internal Document(ITextEditorAdaptor<T> editor, string filename)
             : this(editor, filename, Path.GetFileName(filename)) { }
 
         /// <summary>
@@ -74,16 +74,16 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="editor">Text Editor</param>
         /// <param name="filename">Filename</param>
         /// <param name="title">Title</param>
-        internal Document(ITextEditorAdaptor<T> editor, String filename, String title)
+        internal Document(ITextEditorAdaptor<T> editor, string filename, string title)
         {
             if (editor == null) throw new ArgumentNullException("editor");
-            this._editor = editor;
-            this._filename = filename;
-            this._title = title;
+            _editor = editor;
+            _filename = filename;
+            _title = title;
 
             //Subscribe to relevant events on the Editor
-            this._editor.TextChanged += new TextEditorEventHandler<T>(this.HandleTextChanged);
-            this._editor.DoubleClick += new TextEditorEventHandler<T>(this.HandleDoubleClick);
+            _editor.TextChanged += new TextEditorEventHandler<T>(HandleTextChanged);
+            _editor.DoubleClick += new TextEditorEventHandler<T>(HandleDoubleClick);
         }
 
         #region General State
@@ -95,7 +95,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._editor;
+                return _editor;
             }
         }
 
@@ -106,30 +106,30 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._changed;
+                return _changed;
             }
             private set
             {
-                this._changed = value;
+                _changed = value;
             }
         }
 
         /// <summary>
         /// Gets/Sets the Current Filename of the Document
         /// </summary>
-        public String Filename
+        public string Filename
         {
             get
             {
-                return this._filename;
+                return _filename;
             }
             set
             {
-                if (this._filename != value)
+                if (_filename != value)
                 {
-                    this._filename = value;
-                    this.HasChanged = true;
-                    this.RaiseEvent(this.FilenameChanged);
+                    _filename = value;
+                    HasChanged = true;
+                    RaiseEvent(FilenameChanged);
                 }
             }
         }
@@ -137,25 +137,25 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the Title of the Document, if a filename is present that is always returned instead of any set title
         /// </summary>
-        public String Title
+        public string Title
         {
             get
             {
-                if (this._filename != null && !this._filename.Equals(String.Empty))
+                if (_filename != null && !_filename.Equals(string.Empty))
                 {
-                    return Path.GetFileName(this._filename);
+                    return Path.GetFileName(_filename);
                 }
                 else
                 {
-                    return this._title;
+                    return _title;
                 }
             }
             set
             {
-                if (this._title != value)
+                if (_title != value)
                 {
-                    this._title = value;
-                    this.RaiseEvent(this.TitleChanged);
+                    _title = value;
+                    RaiseEvent(TitleChanged);
                 }
             }
         }
@@ -163,15 +163,15 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the text of the document
         /// </summary>
-        public String Text
+        public string Text
         {
             get
             {
-                return this._editor.Text;
+                return _editor.Text;
             }
             set
             {
-                this._editor.Text = value;
+                _editor.Text = value;
             }
         }
 
@@ -182,7 +182,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._editor.TextLength;
+                return _editor.TextLength;
             }
         }
 
@@ -193,7 +193,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._editor.CaretOffset;
+                return _editor.CaretOffset;
             }
         }
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._editor.SelectionStart;
+                return _editor.SelectionStart;
             }
         }
 
@@ -215,7 +215,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._editor.SelectionLength;
+                return _editor.SelectionLength;
             }
         }
 
@@ -226,18 +226,18 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the syntax for the document
         /// </summary>
-        public String Syntax
+        public string Syntax
         {
             get
             {
-                return this._syntax;
+                return _syntax;
             }
             set
             {
-                if (this._syntax != value)
+                if (_syntax != value)
                 {
-                    this._syntax = value;
-                    this.SetSyntax(this._syntax);
+                    _syntax = value;
+                    SetSyntax(_syntax);
                 }
             }
         }
@@ -247,15 +247,15 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void AutoDetectSyntax()
         {
-            if (this._filename != null && !this._filename.Equals(String.Empty))
+            if (_filename != null && !_filename.Equals(string.Empty))
             {
                 try
                 {
                     //Try filename based syntax detection
-                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._filename)).FirstOrDefault();
+                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(_filename)).FirstOrDefault();
                     if (def != null)
                     {
-                        this.Syntax = def.SyntaxName.GetSyntaxName();
+                        Syntax = def.SyntaxName.GetSyntaxName();
                         return;
                     }
                 }
@@ -267,11 +267,11 @@ namespace VDS.RDF.Utilities.Editor
 
             //Otherwise try and use string based detection
             //First take a guess at it being a SPARQL Results format
-            String text = this.Text;
+            string text = Text;
             try
             {
                 ISparqlResultsReader resultsReader = StringParser.GetResultSetParser(text);
-                this.Syntax = resultsReader.GetSyntaxName();
+                Syntax = resultsReader.GetSyntaxName();
             }
             catch (RdfParserSelectionException)
             {
@@ -279,7 +279,7 @@ namespace VDS.RDF.Utilities.Editor
                 if (text.Contains("SELECT") || text.Contains("CONSTRUCT") || text.Contains("DESCRIBE") || text.Contains("ASK"))
                 {
                     //Likely a SPARQL Query
-                    this.Syntax = "SparqlQuery11";
+                    Syntax = "SparqlQuery11";
                 }
                 else
                 {
@@ -287,13 +287,13 @@ namespace VDS.RDF.Utilities.Editor
                     try
                     {
                         IRdfReader rdfReader = StringParser.GetParser(text);
-                        this.Syntax = rdfReader.GetSyntaxName();
+                        Syntax = rdfReader.GetSyntaxName();
                     }
                     catch (RdfParserSelectionException)
                     {
                         //Finally take a guess at it being a RDF Dataset format
                         IStoreReader datasetReader = StringParser.GetDatasetParser(text);
-                        this.Syntax = datasetReader.GetSyntaxName();
+                        Syntax = datasetReader.GetSyntaxName();
                     }
                 }
             }
@@ -303,26 +303,26 @@ namespace VDS.RDF.Utilities.Editor
         /// Sets the syntax configuring the associated text editor as appropriate
         /// </summary>
         /// <param name="syntax">Syntax</param>
-        private void SetSyntax(String syntax)
+        private void SetSyntax(string syntax)
         {
-            if (this._enableHighlighting)
+            if (_enableHighlighting)
             {
-                this._editor.SetHighlighter(syntax);
+                _editor.SetHighlighter(syntax);
             }
-            this.SyntaxValidator = SyntaxManager.GetValidator(syntax);
-            if (this._editor.CanAutoComplete)
+            SyntaxValidator = SyntaxManager.GetValidator(syntax);
+            if (_editor.CanAutoComplete)
             {
-                if (this.IsAutoCompleteEnabled)
+                if (IsAutoCompleteEnabled)
                 {
-                    this.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(this.Syntax, this.TextEditor);
+                    TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(Syntax, TextEditor);
                 }
                 else
                 {
-                    this.TextEditor.AutoCompleter = null;
+                    TextEditor.AutoCompleter = null;
                 }
             }
 
-            this.RaiseEvent(this.SyntaxChanged);
+            RaiseEvent(SyntaxChanged);
         }
 
         /// <summary>
@@ -331,11 +331,11 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>Syntax Validation Results if available, null otherwise</returns>
         public ISyntaxValidationResults Validate()
         {
-            if (this._validator != null)
+            if (_validator != null)
             {
-                ISyntaxValidationResults results = this._validator.Validate(this.Text);
-                this._lastError = results.Error;
-                this.RaiseValidated(results);
+                ISyntaxValidationResults results = _validator.Validate(Text);
+                _lastError = results.Error;
+                RaiseValidated(results);
                 return results;
             }
             else
@@ -351,14 +351,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._validator;
+                return _validator;
             }
             set
             {
-                if (!ReferenceEquals(this._validator, value))
+                if (!ReferenceEquals(_validator, value))
                 {
-                    this._validator = value;
-                    this.RaiseEvent(this.ValidatorChanged);
+                    _validator = value;
+                    RaiseEvent(ValidatorChanged);
                 }
             }
         }
@@ -370,7 +370,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._lastError;
+                return _lastError;
             }
         }
 
@@ -381,20 +381,20 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._enableHighlighting;
+                return _enableHighlighting;
             }
             set
             {
-                if (value != this._enableHighlighting)
+                if (value != _enableHighlighting)
                 {
-                    this._enableHighlighting = value;
+                    _enableHighlighting = value;
                     if (value)
                     {
-                        this.TextEditor.SetHighlighter(this.Syntax);
+                        TextEditor.SetHighlighter(Syntax);
                     }
                     else
                     {
-                        this.TextEditor.SetHighlighter(null);
+                        TextEditor.SetHighlighter(null);
                     }
                 }
             }
@@ -407,20 +407,20 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._enableAutoCompletion;
+                return _enableAutoCompletion;
             }
             set
             {
-                if (value != this._enableAutoCompletion)
+                if (value != _enableAutoCompletion)
                 {
-                    this._enableAutoCompletion = value;
+                    _enableAutoCompletion = value;
                     if (value)
                     {
-                        this.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(this.Syntax, this.TextEditor);
+                        TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(Syntax, TextEditor);
                     }
                     else
                     {
-                        this.TextEditor.AutoCompleter = null;
+                        TextEditor.AutoCompleter = null;
                     }
                 }
             }
@@ -436,13 +436,13 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns></returns>
         private Encoding GetEncoding()
         {
-            if (this._encoding.Equals(Encoding.UTF8))
+            if (_encoding.Equals(Encoding.UTF8))
             {
                 return new UTF8Encoding(GlobalOptions.UseBomForUtf8);
             }
             else
             {
-                return this._encoding;
+                return _encoding;
             }
         }
 
@@ -451,15 +451,15 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void Save()
         {
-            if (this._filename != null && !this._filename.Equals(String.Empty))
+            if (_filename != null && !_filename.Equals(string.Empty))
             {
-                using (StreamWriter writer = new StreamWriter(this._filename, false, this.GetEncoding()))
+                using (StreamWriter writer = new StreamWriter(_filename, false, GetEncoding()))
                 {
-                    writer.Write(this.Text);
+                    writer.Write(Text);
                     writer.Close();
                 }
-                this.RaiseEvent(this.Saved);
-                this.HasChanged = false;
+                RaiseEvent(Saved);
+                HasChanged = false;
             }
         }
 
@@ -467,31 +467,31 @@ namespace VDS.RDF.Utilities.Editor
         /// Saves the document with the given filename
         /// </summary>
         /// <param name="filename">Filename</param>
-        public void SaveAs(String filename)
+        public void SaveAs(string filename)
         {
             if (filename == null) throw new ArgumentNullException("filename");
-            if (filename.Equals(String.Empty)) throw new ArgumentException("filename", "Filename cannot be empty");
-            this._filename = filename;
-            this.RaiseEvent(this.FilenameChanged);
-            this.Save();
+            if (filename.Equals(string.Empty)) throw new ArgumentException("filename", "Filename cannot be empty");
+            _filename = filename;
+            RaiseEvent(FilenameChanged);
+            Save();
         }
 
         /// <summary>
         /// Opens the document from a file
         /// </summary>
         /// <param name="filename">Filename</param>
-        public void Open(String filename)
+        public void Open(string filename)
         {
-            this.Filename = filename;
-            using (StreamReader reader = new StreamReader(this._filename))
+            Filename = filename;
+            using (StreamReader reader = new StreamReader(_filename))
             {
-                this._encoding = reader.CurrentEncoding;
-                this.Text = reader.ReadToEnd();
+                _encoding = reader.CurrentEncoding;
+                Text = reader.ReadToEnd();
                 reader.Close();
             }
-            this.AutoDetectSyntax();
-            this.HasChanged = false;
-            this.RaiseEvent(this.Opened);
+            AutoDetectSyntax();
+            HasChanged = false;
+            RaiseEvent(Opened);
         }
 
         /// <summary>
@@ -511,10 +511,10 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Arguments</param>
-        private void HandleTextChanged(Object sender, TextEditorEventArgs<T> args)
+        private void HandleTextChanged(object sender, TextEditorEventArgs<T> args)
         {
-            this.HasChanged = true;
-            this.RaiseEvent(sender, this.TextChanged);
+            HasChanged = true;
+            RaiseEvent(sender, TextChanged);
         }
 
         /// <summary>
@@ -522,11 +522,11 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Arguments</param>
-        private void HandleDoubleClick(Object sender, TextEditorEventArgs<T> args)
+        private void HandleDoubleClick(object sender, TextEditorEventArgs<T> args)
         {
-            if (this._editor.SymbolSelector != null)
+            if (_editor.SymbolSelector != null)
             {
-                this._editor.SymbolSelector.SelectSymbol(this);
+                _editor.SymbolSelector.SelectSymbol(this);
             }
         }
 
@@ -536,10 +536,10 @@ namespace VDS.RDF.Utilities.Editor
 
         private void RaiseEvent(DocumentChangedHandler<T> evt)
         {
-            this.RaiseEvent(this, evt);
+            RaiseEvent(this, evt);
         }
 
-        private void RaiseEvent(Object sender, DocumentChangedHandler<T> evt)
+        private void RaiseEvent(object sender, DocumentChangedHandler<T> evt)
         {
             if (evt != null)
             {
@@ -549,7 +549,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private void RaiseValidated(ISyntaxValidationResults results)
         {
-            DocumentValidatedHandler<T> d = this.Validated;
+            DocumentValidatedHandler<T> d = Validated;
             if (d != null)
             {
                 d(this, new DocumentValidatedEventArgs<T>(this, results));

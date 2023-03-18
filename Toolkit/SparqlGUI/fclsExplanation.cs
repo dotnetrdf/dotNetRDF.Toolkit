@@ -41,8 +41,8 @@ namespace VDS.RDF.Utilities.Sparql
         {
             InitializeComponent();
 
-            this.lblParseTime.Text = "Took " + parseTime + "ms to parse";
-            this.txtQuery.Text = this._formatter.Format(query);
+            lblParseTime.Text = "Took " + parseTime + "ms to parse";
+            txtQuery.Text = _formatter.Format(query);
 
             //First need to create the Explanation
             using (StreamWriter writer = new StreamWriter("explain.temp", false, Encoding.UTF8))
@@ -54,7 +54,7 @@ namespace VDS.RDF.Utilities.Sparql
                 Trace.Listeners.Add(listener);
                 try
                 {
-                    Object results = processor.ProcessQuery(query);
+                    object results = processor.ProcessQuery(query);
                 }
                 catch
                 {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Utilities.Sparql
             //Then need to display it
             using (StreamReader reader = new StreamReader("explain.temp"))
             {
-                this.txtExplanation.Text = reader.ReadToEnd();
+                txtExplanation.Text = reader.ReadToEnd();
                 reader.Close();
             }
         }

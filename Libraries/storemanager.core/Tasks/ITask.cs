@@ -77,7 +77,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="ok">Whether the task complete successfully</param>
         public TaskResult(bool ok)
         {
-            this.OK = ok;
+            OK = ok;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="value">Value</param>
         public TaskValueResult(T? value)
         {
-            this.Value = value;
+            Value = value;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets the name of the Task
         /// </summary>
-        String Name
+        string Name
         {
             get;
         }
@@ -144,7 +144,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets current information about the Task
         /// </summary>
-        String Information
+        string Information
         {
             get;
             set;

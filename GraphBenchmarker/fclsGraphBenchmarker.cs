@@ -17,21 +17,21 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
         private BindingList<Type> _graphTypes = new BindingList<Type>();
         private BindingList<Type> _tripleCollectionTypes = new BindingList<Type>();
         private BindingList<TestCase> _testCases = new BindingList<TestCase>();
-        private BindingList<String> _dataFiles = new BindingList<string>();
+        private BindingList<string> _dataFiles = new BindingList<string>();
 
         public fclsGraphBenchmarker()
         {
             InitializeComponent();
 
-            this.lstIGraphImpl.DataSource = this._graphTypes;
-            this.lstIGraphImpl.DisplayMember = "FullName";
-            this.lstTripleCollectionImpl.DataSource = this._tripleCollectionTypes;
-            this.lstTripleCollectionImpl.DisplayMember = "FullName";
-            this.lstTestCases.DataSource = this._testCases;
-            this.lstTestData.DataSource = this._dataFiles;
+            lstIGraphImpl.DataSource = _graphTypes;
+            lstIGraphImpl.DisplayMember = "FullName";
+            lstTripleCollectionImpl.DataSource = _tripleCollectionTypes;
+            lstTripleCollectionImpl.DisplayMember = "FullName";
+            lstTestCases.DataSource = _testCases;
+            lstTestData.DataSource = _dataFiles;
 
-            this.FindTypes(Assembly.GetAssembly(typeof(IGraph)));
-            this.FindTestData("Data\\");
+            FindTypes(Assembly.GetAssembly(typeof(IGraph)));
+            FindTestData("Data\\");
         }
 
         private void FindTypes(Assembly assm)
@@ -43,11 +43,11 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             {
                 if (t.GetInterfaces().Contains(igraph))
                 {
-                    if (this.IsTestableGraphType(t)) this._graphTypes.Add(t);
+                    if (IsTestableGraphType(t)) _graphTypes.Add(t);
                 }
                 else if (t.IsSubclassOf(tcol))
                 {
-                    if (this.IsTestableCollectionType(t)) this._tripleCollectionTypes.Add(t);
+                    if (IsTestableCollectionType(t)) _tripleCollectionTypes.Add(t);
                 }
             }
         }
@@ -62,16 +62,16 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             return !t.IsAbstract && t.IsPublic && t.GetConstructors().Any(c => c.GetParameters().Length == 0);
         }
 
-        private void FindTestData(String dir)
+        private void FindTestData(string dir)
         {
             if (Directory.Exists(dir))
             {
-                foreach (String file in Directory.GetFiles(dir))
+                foreach (string file in Directory.GetFiles(dir))
                 {
-                    String ext = MimeTypesHelper.GetTrueFileExtension(file);
+                    string ext = MimeTypesHelper.GetTrueFileExtension(file);
                     if (MimeTypesHelper.Definitions.Any(d => d.SupportsFileExtension(ext)))
                     {
-                        this._dataFiles.Add(file);
+                        _dataFiles.Add(file);
                     }
                 }
             }
@@ -79,37 +79,37 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
 
         private void chkUseDefault_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkUseDefault.Checked)
+            if (chkUseDefault.Checked)
             {
                 //Check whether it can be enabled
-                if (this.lstIGraphImpl.SelectedItem != null)
+                if (lstIGraphImpl.SelectedItem != null)
                 {
-                    Type t = (Type)this.lstIGraphImpl.SelectedItem;
+                    Type t = (Type)lstIGraphImpl.SelectedItem;
                     if (t.GetConstructors().Any(c => c.GetParameters().Length == 1 && c.GetParameters()[0].ParameterType.Equals(typeof(BaseTripleCollection))))
                     {
-                        this.lstTripleCollectionImpl.Enabled = true;
+                        lstTripleCollectionImpl.Enabled = true;
                     }
                     else
                     {
-                        this.chkUseDefault.Checked = false;
-                        this.lstTripleCollectionImpl.Enabled = false;
+                        chkUseDefault.Checked = false;
+                        lstTripleCollectionImpl.Enabled = false;
                     }
                 }
                 else
                 {
-                    this.chkUseDefault.Checked = false;
-                    this.lstTripleCollectionImpl.Enabled = false;
+                    chkUseDefault.Checked = false;
+                    lstTripleCollectionImpl.Enabled = false;
                 }
             }
             else
             {
-                this.lstTripleCollectionImpl.Enabled = false;
+                lstTripleCollectionImpl.Enabled = false;
             }
         }
 
         private void lstIGraphImpl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.chkUseDefault.Checked)
+            if (chkUseDefault.Checked)
             {
                 chkUseDefault_CheckedChanged(sender, e);
             }
@@ -117,37 +117,37 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
 
         private void btnAddTestCase_Click(object sender, EventArgs e)
         {
-            if (this.lstIGraphImpl.SelectedItem != null)
+            if (lstIGraphImpl.SelectedItem != null)
             {
-                if (this.chkUseDefault.Checked && this.lstTripleCollectionImpl.SelectedItem != null)
+                if (chkUseDefault.Checked && lstTripleCollectionImpl.SelectedItem != null)
                 {
-                    this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem, (Type)this.lstTripleCollectionImpl.SelectedItem));
+                    _testCases.Add(new TestCase((Type)lstIGraphImpl.SelectedItem, (Type)lstTripleCollectionImpl.SelectedItem));
                 }
                 else
                 {
-                    this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem));
+                    _testCases.Add(new TestCase((Type)lstIGraphImpl.SelectedItem));
                 }
             }
         }
 
         private void btnRemoveTestCase_Click(object sender, EventArgs e)
         {
-            if (this.lstTestCases.SelectedItem != null)
+            if (lstTestCases.SelectedItem != null)
             {
-                this._testCases.Remove((TestCase)this.lstTestCases.SelectedItem);
+                _testCases.Remove((TestCase)lstTestCases.SelectedItem);
             }
         }
 
         private void btnRun_Click(object sender, EventArgs e)
         {
-            if (this._testCases.Count > 0)
+            if (_testCases.Count > 0)
             {
-                if (this.lstTestData.SelectedItem != null)
+                if (lstTestData.SelectedItem != null)
                 {
                     TestSet set = TestSet.Standard;
-                    if (this.radLoadAndMem.Checked) set = TestSet.LoadAndMemory;
+                    if (radLoadAndMem.Checked) set = TestSet.LoadAndMemory;
 
-                    TestSuite suite = new TestSuite(this._testCases, (String)this.lstTestData.SelectedItem, (int)this.numIterations.Value, set);
+                    TestSuite suite = new TestSuite(_testCases, (string)lstTestData.SelectedItem, (int)numIterations.Value, set);
                     fclsTestRunner runner = new fclsTestRunner(suite);
                     runner.ShowDialog();
                 }

@@ -47,10 +47,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         public SparqlUpdateAutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor, SparqlQuerySyntax.Sparql_1_1)
         {
-            foreach (String keyword in SparqlSpecsHelper.SparqlUpdate11Keywords)
+            foreach (string keyword in SparqlSpecsHelper.SparqlUpdate11Keywords)
             {
-                this._keywords.Add(new KeywordData(keyword));
-                this._keywords.Add(new KeywordData(keyword.ToLower()));
+                _keywords.Add(new KeywordData(keyword));
+                _keywords.Add(new KeywordData(keyword.ToLower()));
             }
         }
     }

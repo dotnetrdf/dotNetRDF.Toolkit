@@ -66,6 +66,12 @@
     <Reference Include="dotNetRdf, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\dotNetRdf.Core.3.0.0-rc0008\lib\netstandard2.0\dotNetRdf.dll</HintPath>
     </Reference>
+    <Reference Include="dotNetRdf.Inferencing, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRdf.Inferencing.3.0.0-rc0008\lib\netstandard2.0\dotNetRdf.Inferencing.dll</HintPath>
+    </Reference>
+    <Reference Include="dotNetRdf.Ontology, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6055ffe4c97cc780, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\dotNetRdf.Ontology.3.0.0-rc0008\lib\netstandard2.0\dotNetRdf.Ontology.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.46.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HtmlAgilityPack.1.11.46\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>

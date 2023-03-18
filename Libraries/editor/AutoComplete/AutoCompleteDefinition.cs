@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
     /// </summary>
     public class AutoCompleteDefinition
     {
-        private String _name;
+        private string _name;
         private Type _type;
 
         /// <summary>
@@ -43,20 +43,20 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="name">Name</param>
         /// <param name="autoCompleteType">Type of the auto-complete implementation</param>
-        public AutoCompleteDefinition(String name, Type autoCompleteType)
+        public AutoCompleteDefinition(string name, Type autoCompleteType)
         {
-            this._name = name;
-            this._type = autoCompleteType;
+            _name = name;
+            _type = autoCompleteType;
         }
 
         /// <summary>
         /// Name of the Syntax for which auto-completion is provided
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
-                return this._name;
+                return _name;
             }
         }
 
@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
     }

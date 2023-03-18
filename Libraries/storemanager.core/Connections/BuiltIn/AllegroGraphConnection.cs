@@ -47,7 +47,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Server URI", IsRequired = true, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
          DefaultValue("http://localhost:9875/")]
-        public override String Server
+        public override string Server
         {
             get
             {
@@ -63,7 +63,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Catalog ID
         /// </summary>
         [Connection(DisplayName = "Catalog ID", DisplayOrder = 1, AllowEmptyString = true, IsRequired = true, Type = ConnectionSettingType.String, NotRequiredIf = "UseRootCatalog", PopulateFrom = ConfigurationLoader.PropertyCatalog)]
-        public String CatalogID
+        public string CatalogID
         {
             get;
             set;
@@ -83,7 +83,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Store ID
         /// </summary>
         [Connection(DisplayName = "Store ID", DisplayOrder = 3, AllowEmptyString = false, IsRequired = true, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String StoreID
+        public string StoreID
         {
             get;
             set;
@@ -95,26 +95,26 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            if (this.UseRootCatalog)
+            if (UseRootCatalog)
             {
-                if (this.UseProxy)
+                if (UseProxy)
                 {
-                    return new AllegroGraphConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
+                    return new AllegroGraphConnector(Server, StoreID, Username, Password, GetProxy());
                 }
                 else
                 {
-                    return new AllegroGraphConnector(this.Server, this.StoreID, this.Username, this.Password);
+                    return new AllegroGraphConnector(Server, StoreID, Username, Password);
                 }
             }
             else
             {
-                if (this.UseProxy)
+                if (UseProxy)
                 {
-                    return new AllegroGraphConnector(this.Server, this.CatalogID, this.StoreID, this.GetProxy());
+                    return new AllegroGraphConnector(Server, CatalogID, StoreID, GetProxy());
                 }
                 else
                 {
-                    return new AllegroGraphConnector(this.Server, this.CatalogID, this.StoreID, this.Username, this.Password);
+                    return new AllegroGraphConnector(Server, CatalogID, StoreID, Username, Password);
                 }
                 
             }
@@ -127,21 +127,22 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         public override IConnectionDefinition Copy()
         {
             AllegroGraphConnectionDefinition definition = new AllegroGraphConnectionDefinition();
-            definition.Server = this.Server;
-            definition.CatalogID = this.CatalogID;
-            definition.UseRootCatalog = this.UseRootCatalog;
-            definition.StoreID = this.StoreID;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
-            definition.Username = this.Username;
-            definition.Password = this.Password;
+            definition.Server = Server;
+            definition.CatalogID = CatalogID;
+            definition.UseRootCatalog = UseRootCatalog;
+            definition.StoreID = StoreID;
+            definition.ProxyPassword = ProxyPassword;
+            definition.ProxyUsername = ProxyUsername;
+            definition.ProxyServer = ProxyServer;
+            definition.Username = Username;
+            definition.Password = Password;
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[AllegroGraph] Store '" + this.StoreID.ToSafeString() + "' in Catalog '" + (this.UseRootCatalog ? "Root Catalog" : this.CatalogID.ToSafeString()) + "' on Server '" + this.Server.ToSafeString() + "'";
+            return "[AllegroGraph] Store '" + StoreID.ToSafeString() + "' in Catalog '" + (UseRootCatalog ? "Root Catalog" : CatalogID.ToSafeString()) + "' on Server '" + Server.ToSafeString() + "'";
         }
     }
 }

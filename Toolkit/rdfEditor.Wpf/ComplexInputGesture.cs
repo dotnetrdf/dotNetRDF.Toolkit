@@ -44,15 +44,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private DateTime _lastKeyPress;
         private TimeSpan _keyPressInterval = new TimeSpan(0, 0, 1);
 
-        public ComplexInputGesture(IEnumerable<KeyGesture> gestureSequence, String displayString)
+        public ComplexInputGesture(IEnumerable<KeyGesture> gestureSequence, string displayString)
             : base(Key.None, ModifierKeys.None, displayString)
         {
-            this._gestures.AddRange(gestureSequence);
+            _gestures.AddRange(gestureSequence);
         }
 
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
         {
-            if (this._index >= this._gestures.Count) this._index = 0;
+            if (_index >= _gestures.Count) _index = 0;
 
             KeyEventArgs e = inputEventArgs as KeyEventArgs;
             if (e == null || IsIgnorableKey(e.Key, e.KeyboardDevice.Modifiers))
@@ -60,21 +60,21 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 return false;
             }
 
-            if (this._index > 0 && (DateTime.Now - this._lastKeyPress) > _keyPressInterval)
+            if (_index > 0 && (DateTime.Now - _lastKeyPress) > _keyPressInterval)
             {
-                this._index = 0;
+                _index = 0;
             }
 
-            if (this._gestures[this._index].Matches(targetElement, inputEventArgs))
+            if (_gestures[_index].Matches(targetElement, inputEventArgs))
             {
-                this._lastKeyPress = DateTime.Now;
-                this._index++;
+                _lastKeyPress = DateTime.Now;
+                _index++;
                 inputEventArgs.Handled = true;
-                return (this._index == this._gestures.Count);
+                return (_index == _gestures.Count);
             }
             else
             {
-                this._index = 0;
+                _index = 0;
                 return false;
             }
         }
@@ -102,10 +102,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            for (int i = 0; i < this._gestures.Count; i++)
+            for (int i = 0; i < _gestures.Count; i++)
             {
-                output.Append(this._gestures[i].ToString());
-                if (i < this._gestures.Count - 1)
+                output.Append(_gestures[i].ToString());
+                if (i < _gestures.Count - 1)
                 {
                     output.Append(",");
                 }
@@ -122,7 +122,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public UnmodifiedKeyGesture(Key k)
             : base(Key.None)
         {
-            this._key = k;
+            _key = k;
         }
 
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
@@ -130,7 +130,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             if (inputEventArgs is KeyEventArgs)
             {
                 KeyEventArgs e = (KeyEventArgs)inputEventArgs;
-                return (e.Key == this._key && e.KeyboardDevice.Modifiers == ModifierKeys.None);
+                return (e.Key == _key && e.KeyboardDevice.Modifiers == ModifierKeys.None);
             }
             else
             {
@@ -140,7 +140,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         public override string ToString()
         {
-            return this._key.ToString();
+            return _key.ToString();
         }
     }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public ShiftKeyGesture(Key k)
             : base(Key.None)
         {
-            this._key = k;
+            _key = k;
         }
 
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
@@ -159,7 +159,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             if (inputEventArgs is KeyEventArgs)
             {
                 KeyEventArgs e = (KeyEventArgs)inputEventArgs;
-                return (e.Key == this._key && e.KeyboardDevice.Modifiers == ModifierKeys.Shift);
+                return (e.Key == _key && e.KeyboardDevice.Modifiers == ModifierKeys.Shift);
             }
             else
             {
@@ -169,7 +169,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         public override string ToString()
         {
-            return "Shift+" + this._key.ToString();
+            return "Shift+" + _key.ToString();
         }
 
     }

@@ -47,8 +47,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <param name="c">Colour</param>
         public CustomHighlightingBrush(Color c)
         {
-            this._brush = new SolidColorBrush(c);
-            this._brush.Freeze();
+            _brush = new SolidColorBrush(c);
+            _brush.Freeze();
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <param name="b">Brish</param>
         public CustomHighlightingBrush(SolidColorBrush b)
         {
-            this._brush = b;
-            this._brush.Freeze();
+            _brush = b;
+            _brush.Freeze();
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns></returns>
         public override Brush GetBrush(ITextRunConstructionContext context)
         {
-            return this._brush;
+            return _brush;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return this._brush.ToString();
+            return _brush.ToString();
         }
     }
 }

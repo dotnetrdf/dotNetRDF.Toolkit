@@ -4,10 +4,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: windows-latest
-  steps:
-  - name: Checkout
-    uses: actions/checkout@v3
-    with:
-      fetch-depth: 0
-  - name: Build
-    run: dotnet build dotNetRDF.Toolkit.sln
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Build
+      run: dotnet build dotNetRDF.Toolkit.sln

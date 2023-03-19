@@ -70,6 +70,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public string OriginalQueryString { get; private set; }
 
+        /// <inheritdoc/>
         protected override string RunTaskInternal()
         {
             // Start from an initial Original Query issued by user
@@ -104,16 +105,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             // GROUP BY ?p
             // Create a dynamic originalQuery
 
-            SparqlVariable subject = initialQuery.Variables.FirstOrDefault(v => v.IsResultVariable);
-            if (subject == null) throw new RdfQueryException("At least one result variable is required to generate an entities query");
+            SparqlVariable subject = initialQuery.Variables.FirstOrDefault(v => v.IsResultVariable) ?? throw new RdfQueryException("At least one result variable is required to generate an entities query");
             INode subjectNode = _nodeFactory.CreateVariableNode(subject.Name);
 
-            SparqlParameterizedString getPredicatesQuery = new SparqlParameterizedString();
-            getPredicatesQuery.Namespaces = originalPrefixes;
-            getPredicatesQuery.CommandText = @"
+            SparqlParameterizedString getPredicatesQuery = new SparqlParameterizedString
+            {
+                Namespaces = originalPrefixes,
+                CommandText = @"
 SELECT DISTINCT ?p (COUNT(?p) as ?count)
 WHERE
-{";
+{"
+            };
             getPredicatesQuery.AppendSubQuery(initialQuery);
             getPredicatesQuery.CommandText += @"
   @subject ?p ?o.
@@ -125,14 +127,11 @@ GROUP BY ?p";
             {
                 // Get predicates and number of usages
                 Information = "Running query to extract predicates for entities selected by original query...";
-                SparqlResultSet sparqlResults = (SparqlResultSet) _storage.Query(getPredicatesQuery.ToString());
-                if (sparqlResults == null)
+                SparqlResultSet sparqlResults = (SparqlResultSet) _storage.Query(getPredicatesQuery.ToString()) ?? throw new RdfQueryException("Unexpected results type received while trying to build entities query");
+                List<string> selectColumns = new List<string>
                 {
-                    throw new RdfQueryException("Unexpected results type received while trying to build entities query");
-                }
-
-                List<string> selectColumns = new List<string>();
-                selectColumns.Add(subject.Name);
+                    subject.Name
+                };
                 SparqlParameterizedString entitiesQuery = new SparqlParameterizedString();
                 entitiesQuery.Namespaces.Import(getPredicatesQuery.Namespaces);
                 entitiesQuery.SetParameter("subject", subjectNode);
@@ -141,7 +140,7 @@ GROUP BY ?p";
                 int predicateIndex = 0;
                 StringBuilder optionalFilters = new StringBuilder();
                 Information = "Generating Entities Query...";
-                foreach (SparqlResult sparqlResult in sparqlResults)
+                foreach (ISparqlResult sparqlResult in sparqlResults)
                 {
                     if (!sparqlResult.HasBoundValue("p")) continue;
                     INode predicate = sparqlResult["p"];
@@ -198,8 +197,7 @@ WHERE
             if (node.NodeType != NodeType.Uri) return null;
             Uri u = ((IUriNode) node).Uri;
 
-            string qname;
-            if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
+            if (!namespaces.ReduceToQName(u.AbsoluteUri, out string qname))
             {
                 // Issue temporary namespaces
                 string tempNsPrefix = "ns" + _nextTempID;
@@ -214,8 +212,7 @@ WHERE
                     //Create a Slash Namespace Uri
                     nsUri = nsUri.Substring(0, nsUri.LastIndexOf("/") + 1);
                 }
-                Uri tempNsUri;
-                if (!Uri.TryCreate(nsUri, UriKind.Absolute, out tempNsUri)) tempNsUri = u;
+                if (!Uri.TryCreate(nsUri, UriKind.Absolute, out Uri tempNsUri)) tempNsUri = u;
                 while (namespaces.HasNamespace(tempNsPrefix))
                 {
                     _nextTempID++;

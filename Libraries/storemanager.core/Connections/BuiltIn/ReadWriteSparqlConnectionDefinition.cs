@@ -133,6 +133,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return "[SPARQL Query & Update] Query: " + QueryEndpointUri.ToSafeString() + " Update: " + UpdateEndpointUri.ToSafeString();

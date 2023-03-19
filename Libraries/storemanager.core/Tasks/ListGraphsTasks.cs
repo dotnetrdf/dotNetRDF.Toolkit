@@ -71,14 +71,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 return _manager.ListGraphs();
             }
-            if (_manager is IQueryableStorage)
+            if (_manager is IQueryableStorage storage)
             {
                 List<Uri> uris = new List<Uri>();
-                object results = ((IQueryableStorage)_manager).Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { } }");
-                if (results is SparqlResultSet)
+                object results = storage.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { } }");
+                if (results is SparqlResultSet rset)
                 {
-                    SparqlResultSet rset = (SparqlResultSet)results;
-                    foreach (SparqlResult res in rset)
+                    foreach (ISparqlResult res in rset)
                     {
                         if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
                         {

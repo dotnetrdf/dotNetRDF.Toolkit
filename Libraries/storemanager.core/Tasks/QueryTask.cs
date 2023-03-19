@@ -38,6 +38,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<object>
     {
         private readonly IQueryableStorage _storage;
+        /// <summary>
+        /// The parser to use for processing query strings
+        /// </summary>
         protected readonly SparqlQueryParser _parser = new SparqlQueryParser();
         private readonly GenericQueryProcessor _processor;
         private readonly bool _usePaging = false;
@@ -110,8 +113,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     switch (Query.QueryType)
                     {
                         case SparqlQueryType.Ask:
-                            SparqlResultSet blnResult = _processor.ProcessQuery(Query) as SparqlResultSet;
-                            if (blnResult == null) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK originalQuery as was expected");
+                            if (!(_processor.ProcessQuery(Query) is SparqlResultSet blnResult)) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK originalQuery as was expected");
                             return blnResult;
 
                         case SparqlQueryType.Construct:
@@ -128,7 +130,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                                     Query.Offset = offset;
                                 }
                                 object result = _processor.ProcessQuery(Query);
-                                totalTime += Query.QueryExecutionTime.HasValue ? Query.QueryExecutionTime.Value : TimeSpan.Zero;
+                                totalTime += Query.QueryExecutionTime ?? TimeSpan.Zero;
 
                                 if (!(result is IGraph)) throw new RdfQueryException("SPARQL Query did not return a RDF Graph as expected");
                                 IGraph temp = (IGraph) result;
@@ -164,7 +166,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                                         Query.Offset = offset;
                                     }
                                     object result = _processor.ProcessQuery(Query);
-                                    totalTime += Query.QueryExecutionTime.HasValue ? Query.QueryExecutionTime.Value : TimeSpan.Zero;
+                                    totalTime += Query.QueryExecutionTime ?? TimeSpan.Zero;
 
                                     if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
                                     SparqlResultSet rset = (SparqlResultSet) result;
@@ -178,7 +180,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                                     offset += _pageSize;
 
                                     //Merge the partial result into the final result
-                                    foreach (SparqlResult r in rset)
+                                    foreach (ISparqlResult r in rset)
                                     {
                                         handler.HandleResult(r);
                                     }

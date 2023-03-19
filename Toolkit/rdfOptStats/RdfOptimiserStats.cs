@@ -109,25 +109,25 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     {
                         FileLoader.Load(handler, _inputs[i]);
                     }
-                    catch (RdfParserSelectionException selEx)
+                    catch (RdfParserSelectionException)
                     {
                         ok = false;
                         Console.Error.WriteLine("rdfOptStats: Error: Unable to select a Parser to read input");
                         break;
                     }
-                    catch (RdfParseException parseEx)
+                    catch (RdfParseException)
                     {
                         ok = false;
                         Console.Error.WriteLine("rdfOptStats: Error: Parsing Error while reading input");
                         break;
                     }
-                    catch (RdfException parseEx)
+                    catch (RdfException)
                     {
                         ok = false;
                         Console.Error.WriteLine("rdfOptStats: Error: RDF Error while reading input");
                         break;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         ok = false;
                         Console.Error.WriteLine("rdfOptStats: Error: Unexpected Error while reading input");
@@ -152,13 +152,13 @@ namespace VDS.RDF.Utilities.OptimiserStats
                             h.GetStats(g);
                         }
                         IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(_file));
-                        if (writer is ICompressingWriter)
+                        if (writer is ICompressingWriter compressingWriter)
                         {
-                            ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
+                            compressingWriter.CompressionLevel = WriterCompressionLevel.High;
                         }
-                        if (writer is IHighSpeedWriter)
+                        if (writer is IHighSpeedWriter highSpeedWriter)
                         {
-                            ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
+                            highSpeedWriter.HighSpeedModePermitted = false;
                         }
                         writer.Save(g, _file);
 
@@ -278,8 +278,6 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     return true;
                 }
             }
-
-            return true;
         }
 
         private bool ParseInputs(string arg, string dir)
@@ -320,7 +318,6 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     return true;
                 }
             }
-            return true;
         }
 
         private void ShowUsage()

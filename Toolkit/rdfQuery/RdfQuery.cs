@@ -151,13 +151,13 @@ namespace VDS.RDF.Utilities.Query
                 if (!_print)
                 {
                     //Output the Results
-                    if (results is SparqlResultSet)
+                    if (results is SparqlResultSet resultSet)
                     {
-                        _resultsWriter.Save((SparqlResultSet)results, output);
+                        _resultsWriter.Save(resultSet, output);
                     }
-                    else if (results is IGraph)
+                    else if (results is IGraph resultGraph)
                     {
-                        _graphWriter.Save((IGraph)results, output);
+                        _graphWriter.Save(resultGraph, output);
                     }
                     else
                     {
@@ -285,9 +285,9 @@ namespace VDS.RDF.Utilities.Query
                     try
                     {
                         _mode = RdfQueryMode.Remote;
-                        if (_endpoint is FederatedSparqlRemoteEndpoint)
+                        if (_endpoint is FederatedSparqlRemoteEndpoint federatedEndpoint)
                         {
-                            ((FederatedSparqlRemoteEndpoint)_endpoint).AddEndpoint(new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1))));
+                            federatedEndpoint.AddEndpoint(new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1))));
                         }
                         else
                         {
@@ -359,8 +359,7 @@ namespace VDS.RDF.Utilities.Query
                 }
                 else if (arg.StartsWith("-timeout:"))
                 {
-                    long timeout;
-                    if (long.TryParse(arg.Substring(arg.IndexOf(':') + 1), out timeout))
+                    if (long.TryParse(arg.Substring(arg.IndexOf(':') + 1), out long timeout))
                     {
                         _timeout = timeout;
                     }
@@ -389,8 +388,7 @@ namespace VDS.RDF.Utilities.Query
                 {
                     if (arg.Contains(':'))
                     {
-                        bool partial;
-                        if (bool.TryParse(arg.Substring(arg.IndexOf(':') + 1), out partial))
+                        if (bool.TryParse(arg.Substring(arg.IndexOf(':') + 1), out bool partial))
                         {
                             _partialResults = partial;
                         }

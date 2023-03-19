@@ -26,5 +26,7 @@ jobs:
         echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
     - name: Restore Packages
       run: nuget restore
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
     - name: Build
       run: msbuild dotNetRDF.Toolkit.sln

@@ -50,7 +50,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <summary>
         /// Regular expression for Variables
         /// </summary>
-        protected String VariableRegexPattern = @"[?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*";
+        protected string VariableRegexPattern = @"[?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*";
 
         /// <summary>
         /// Creates a new auto-completer
@@ -68,39 +68,39 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             : base(editor)
         {
             //Alter the Regex patterns
-            this.PrefixRegexPattern = this.PrefixRegexPattern.Substring(1, this.PrefixRegexPattern.Length-6);
-            this.BlankNodePattern = @"_:(\p{L}|\d)(\p{L}|\p{N}|-|_)*";
+            PrefixRegexPattern = PrefixRegexPattern.Substring(1, PrefixRegexPattern.Length-6);
+            BlankNodePattern = @"_:(\p{L}|\d)(\p{L}|\p{N}|-|_)*";
 
             //Add Prefix Definitions to Keywords
-            this._keywords.Add(new SparqlStyleBaseDeclarationData());
-            this._keywords.Add(new SparqlStyleDefaultPrefixDeclarationData());
+            _keywords.Add(new SparqlStyleBaseDeclarationData());
+            _keywords.Add(new SparqlStyleDefaultPrefixDeclarationData());
             foreach (VocabularyDefinition vocab in AutoCompleteManager.Vocabularies)
             {
-                this._keywords.Add(new SparqlStylePrefixDeclarationData(vocab.Prefix, vocab.NamespaceUri));
+                _keywords.Add(new SparqlStylePrefixDeclarationData(vocab.Prefix, vocab.NamespaceUri));
             }
 
             //If not Query Syntax don't add any Query Keywords
             if (syntax == null) return;
 
             //Add Keywords relevant to the Syntax
-            this._syntax = (SparqlQuerySyntax)syntax;
-            foreach (String keyword in SparqlSpecsHelper.SparqlQuery10Keywords)
+            _syntax = (SparqlQuerySyntax)syntax;
+            foreach (string keyword in SparqlSpecsHelper.SparqlQuery10Keywords)
             {
-                this._keywords.Add(new KeywordData(keyword));
-                this._keywords.Add(new KeywordData(keyword.ToLower()));
+                _keywords.Add(new KeywordData(keyword));
+                _keywords.Add(new KeywordData(keyword.ToLower()));
             }
 
             if (syntax != SparqlQuerySyntax.Sparql_1_0)
             {
-                foreach (String keyword in SparqlSpecsHelper.SparqlQuery11Keywords)
+                foreach (string keyword in SparqlSpecsHelper.SparqlQuery11Keywords)
                 {
-                    this._keywords.Add(new KeywordData(keyword));
-                    this._keywords.Add(new KeywordData(keyword.ToLower()));
+                    _keywords.Add(new KeywordData(keyword));
+                    _keywords.Add(new KeywordData(keyword.ToLower()));
                 }
             }
 
             //Sort the Keywords
-            this._keywords.Sort();
+            _keywords.Sort();
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         protected override void DetectStateInternal()
         {
             base.DetectStateInternal();
-            this.DetectVariables();
+            DetectVariables();
         }
 
         /// <summary>
@@ -128,10 +128,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         protected virtual void DetectVariables()
         {
-            this._vars.Clear();
-            foreach (Match m in Regex.Matches(this._editor.Text, VariableRegexPattern))
+            _vars.Clear();
+            foreach (Match m in Regex.Matches(_editor.Text, VariableRegexPattern))
             {
-                this._vars.Add(new VariableData(m.Value));
+                _vars.Add(new VariableData(m.Value));
             }
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Starts declaration completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected override void StartDeclarationCompletion(String newText)
+        protected override void StartDeclarationCompletion(string newText)
         {
             //We don't start declarations like Turtle does so don't do anything here
             return;
@@ -149,16 +149,16 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Start alternate literal completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartAlternateLiteralCompletion(String newText)
+        protected virtual void StartAlternateLiteralCompletion(string newText)
         {
-            if (this.TemporaryState == AutoCompleteState.AlternateLiteral || this.TemporaryState == AutoCompleteState.AlternateLongLiteral)
+            if (TemporaryState == AutoCompleteState.AlternateLiteral || TemporaryState == AutoCompleteState.AlternateLongLiteral)
             {
-                this.TemporaryState = AutoCompleteState.None;
-                this.State = AutoCompleteState.None;
+                TemporaryState = AutoCompleteState.None;
+                State = AutoCompleteState.None;
             }
             else
             {
-                this.State = AutoCompleteState.AlternateLiteral;
+                State = AutoCompleteState.AlternateLiteral;
             }
         }
 
@@ -166,29 +166,29 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Start variable completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void StartVariableCompletion(String newText)
+        protected virtual void StartVariableCompletion(string newText)
         {
-            this.State = AutoCompleteState.Variable;
-            this._editor.Suggest(this._vars);
+            State = AutoCompleteState.Variable;
+            _editor.Suggest(_vars);
         }
 
         /// <summary>
         /// Try to auto-complete
         /// </summary>
         /// <param name="newText">New Text</param>
-        public override void TryAutoComplete(String newText)
+        public override void TryAutoComplete(string newText)
         {
             base.TryAutoComplete(newText);
 
             //Don't do anything if auto-complete not currently active
-            if (this.State == AutoCompleteState.Disabled || this.State == AutoCompleteState.Inserted) return;
+            if (State == AutoCompleteState.Disabled || State == AutoCompleteState.Inserted) return;
 
-            if (this.State == AutoCompleteState.None)
+            if (State == AutoCompleteState.None)
             {
                 if (newText.Length == 1)
                 {
                     char c = newText[0];
-                    if (Char.IsLetter(c))
+                    if (char.IsLetter(c))
                     {
                         StartKeywordOrQNameCompletion(newText);
                     }
@@ -221,44 +221,44 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                             case '.':
                             case ',':
                             case ';':
-                                this.State = AutoCompleteState.None;
+                                State = AutoCompleteState.None;
                                 break;
                         }
                     }
                 }
 
-                if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
+                if (State == AutoCompleteState.None || State == AutoCompleteState.Disabled) return;
             } 
 
             //If not currently auto-completing then do nothing - if the call to base.TryAutoComplete() couldn't
             //do anything and our start code didn't do anything we aren't doing auto-completion
-            if (this.State == AutoCompleteState.None) return;
+            if (State == AutoCompleteState.None) return;
 
             try
             {
 
                 //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
-                if (this.Length < 0)
+                if (Length < 0)
                 {
-                    this._editor.EndSuggestion();
-                    this.TryAutoComplete(newText);
+                    _editor.EndSuggestion();
+                    TryAutoComplete(newText);
                     return;
                 }
 
                 if (newText.Length > 0)
                 {
-                    switch (this.State)
+                    switch (State)
                     {
                         case AutoCompleteState.AlternateLiteral:
-                            this.TryAlternateLiteralCompletion(newText);
+                            TryAlternateLiteralCompletion(newText);
                             break;
 
                         case AutoCompleteState.AlternateLongLiteral:
-                            this.TryAlternateLongLiteralCompletion(newText);
+                            TryAlternateLongLiteralCompletion(newText);
                             break;
 
                         case AutoCompleteState.Variable:
-                            this.TryVariableCompletion(newText);
+                            TryVariableCompletion(newText);
                             break;
 
                         default:
@@ -270,8 +270,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             catch
             {
                 //If any kind of error occurs just abort auto-completion
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
         }
 
@@ -279,18 +279,18 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try alternate long literal completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryAlternateLongLiteralCompletion(String newText)
+        protected virtual void TryAlternateLongLiteralCompletion(string newText)
         {
             if (newText == "'")
             {
                 //Is this an escaped '?
-                if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
+                if (!CurrentText.Substring(CurrentText.Length - 2, 2).Equals("\\'"))
                 {
                     //Not escaped so terminate the literal if the buffer ends in 3 ' and the length is >= 6
-                    if (this.CurrentText.Length >= 6 && this.CurrentText.Substring(this.CurrentText.Length - 3, 3).Equals("'''"))
+                    if (CurrentText.Length >= 6 && CurrentText.Substring(CurrentText.Length - 3, 3).Equals("'''"))
                     {
-                        this.LastCompletion = AutoCompleteState.LongLiteral;
-                        this._editor.EndSuggestion();
+                        LastCompletion = AutoCompleteState.LongLiteral;
+                        _editor.EndSuggestion();
                     }
                 }
             }
@@ -300,49 +300,49 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try alternate literal completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryAlternateLiteralCompletion(String newText)
+        protected virtual void TryAlternateLiteralCompletion(string newText)
         {
-            if (this.IsNewLine(newText))
+            if (IsNewLine(newText))
             {
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
 
             if (newText == "'")
             {
-                if (this.CurrentText.Length == 2)
+                if (CurrentText.Length == 2)
                 {
                     //Might be a long literal so have to wait and see
                 }
-                else if (this.CurrentText.Length == 3)
+                else if (CurrentText.Length == 3)
                 {
-                    char last = this.CurrentText[this.CurrentText.Length - 1];
-                    if (this.CurrentText.ToString().Equals("'''"))
+                    char last = CurrentText[CurrentText.Length - 1];
+                    if (CurrentText.ToString().Equals("'''"))
                     {
                         //Switch to long literal mode
-                        this.State = AutoCompleteState.AlternateLongLiteral;
+                        State = AutoCompleteState.AlternateLongLiteral;
                     }
-                    else if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
+                    else if (char.IsWhiteSpace(last) || char.IsPunctuation(last))
                     {
                         //White Space/Punctuation means we've left the empty literal
-                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
-                        this._editor.EndSuggestion();
+                        LastCompletion = AutoCompleteState.AlternateLiteral;
+                        _editor.EndSuggestion();
                     }
-                    else if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
+                    else if (!CurrentText.Substring(CurrentText.Length - 2, 2).Equals("\\'"))
                     {
                         //Not an escape so ends the literal
-                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
-                        this._editor.EndSuggestion();
+                        LastCompletion = AutoCompleteState.AlternateLiteral;
+                        _editor.EndSuggestion();
                     }
                 }
                 else
                 {
                     //Is this an escaped '?
-                    if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
+                    if (!CurrentText.Substring(CurrentText.Length - 2, 2).Equals("\\'"))
                     {
                         //Not escaped so terminates the literal
-                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
-                        this._editor.EndSuggestion();
+                        LastCompletion = AutoCompleteState.AlternateLiteral;
+                        _editor.EndSuggestion();
                     }
                 }
             }
@@ -352,32 +352,32 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try variable completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected virtual void TryVariableCompletion(String newText)
+        protected virtual void TryVariableCompletion(string newText)
         {
-            if (this.IsNewLine(newText))
+            if (IsNewLine(newText))
             {
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
             }
 
             char c = newText[0];
-            if (this.Length > 1)
+            if (Length > 1)
             {
-                if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-'))
+                if (char.IsWhiteSpace(c) || (char.IsPunctuation(c) && c != '_' && c != '-'))
                 {
-                    this.LastCompletion = AutoCompleteState.Variable;
-                    this._editor.EndSuggestion();
-                    this.DetectVariables();
+                    LastCompletion = AutoCompleteState.Variable;
+                    _editor.EndSuggestion();
+                    DetectVariables();
                     return;
                 }
             }
 
-            if (!this.IsValidPartialVariableName(this.CurrentText.ToString()))
+            if (!IsValidPartialVariableName(CurrentText.ToString()))
             {
                 //Not a Variable so close the window
-                this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
-                this.DetectVariables();
+                State = AutoCompleteState.None;
+                _editor.EndSuggestion();
+                DetectVariables();
             }
         }
 
@@ -385,7 +385,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try declaration completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected override void TryDeclarationCompletion(String newText)
+        protected override void TryDeclarationCompletion(string newText)
         {
             //We don't do declarations like Turtle does so don't do anything here
             return;
@@ -395,7 +395,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try prefix completion
         /// </summary>
         /// <param name="newText">New Text</param>
-        protected override void TryPrefixCompletion(String newText)
+        protected override void TryPrefixCompletion(string newText)
         {
             //We don't do Prefix declarations like Turtle does so don't do anything here
             return;
@@ -408,7 +408,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         protected override bool IsValidPartialQName(string value)
         {
-            String ns, localname;
+            string ns, localname;
             if (value.Contains(':'))
             {
                 ns = value.Substring(0, value.IndexOf(':'));
@@ -417,11 +417,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             else
             {
                 ns = value;
-                localname = String.Empty;
+                localname = string.Empty;
             }
 
             //Namespace Validation
-            if (!ns.Equals(String.Empty))
+            if (!ns.Equals(string.Empty))
             {
                 //Allowed empty Namespace
                 if (ns.StartsWith("-"))
@@ -458,12 +458,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
 
             //Local Name Validation
-            if (!localname.Equals(String.Empty))
+            if (!localname.Equals(string.Empty))
             {
                 //Allowed empty Local Name
                 char[] lchars = localname.ToCharArray();
 
-                if (XmlSpecsHelper.IsNameStartChar(lchars[0]) || Char.IsNumber(lchars[0]))
+                if (XmlSpecsHelper.IsNameStartChar(lchars[0]) || char.IsNumber(lchars[0]))
                 {
                     if (lchars.Length > 1)
                     {
@@ -496,7 +496,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="value">Value</param>
         /// <returns></returns>
-        protected virtual bool IsValidPartialVariableName(String value)
+        protected virtual bool IsValidPartialVariableName(string value)
         {
             if (value.Length == 0) return false;
 
@@ -508,7 +508,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
             //First Character must be from PN_CHARS_U or a digit
             char first = cs[0];
-            if (Char.IsDigit(first) || SparqlSpecsHelper.IsPNCharsU(first))
+            if (char.IsDigit(first) || SparqlSpecsHelper.IsPNCharsU(first))
             {
                 if (cs.Length > 1)
                 {

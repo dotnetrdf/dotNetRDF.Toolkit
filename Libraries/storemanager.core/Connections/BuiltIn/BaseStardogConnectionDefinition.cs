@@ -50,7 +50,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Server URI", IsRequired = true, AllowEmptyString = false, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
          DefaultValue("http://localhost:5820/")]
-        public override String Server
+        public override string Server
         {
             get { return base.Server; }
             set { base.Server = value; }
@@ -60,7 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Store ID
         /// </summary>
         [Connection(DisplayName = "Store ID", DisplayOrder = 1, AllowEmptyString = false, IsRequired = true, PopulateFrom = ConfigurationLoader.PropertyStore)]
-        public String StoreID { get; set; }
+        public string StoreID { get; set; }
 
         /// <summary>
         /// Gets/Sets the Reasoning Mode for queries
@@ -73,13 +73,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Username
         /// </summary>
         [Connection(DisplayName = "Username", DisplayOrder = 3, IsRequired = false, AllowEmptyString = true, PopulateFrom = ConfigurationLoader.PropertyUser)]
-        public String Username { get; set; }
+        public string Username { get; set; }
 
         /// <summary>
         /// Gets/Sets the Password
         /// </summary>
         [Connection(DisplayName = "Password", DisplayOrder = 4, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password, PopulateFrom = ConfigurationLoader.PropertyPassword)]
-        public String Password { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Gets/Sets whether to use the Stardog anonymous account
@@ -88,10 +88,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
          DefaultValue(false)]
         public bool UseAnonymousAccount { get; set; }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            String mode = String.Empty;
-            switch (this.ReasoningMode)
+            string mode = string.Empty;
+            switch (ReasoningMode)
             {
                 case StardogReasoningMode.QL:
                     mode = " (OWL QL Reasoning)";
@@ -112,7 +113,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
                     mode = " (SL Reasoning)";
                     break;
             }
-            return "[Stardog] Knowledge Base '" + this.StoreID.ToSafeString() + "' on Server '" + this.Server.ToSafeString() + "'" + mode;
+            return "[Stardog] Knowledge Base '" + StoreID.ToSafeString() + "' on Server '" + Server.ToSafeString() + "'" + mode;
         }
     }
 }

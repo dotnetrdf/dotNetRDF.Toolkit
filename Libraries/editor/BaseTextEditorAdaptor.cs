@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="control">Text Editor control</param>
         public BaseTextEditorAdaptor(T control)
         {
-            this._control = control;
+            _control = control;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get 
             { 
-                return this._control; 
+                return _control; 
             }
         }
 
@@ -206,9 +206,9 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="offset">Offset</param>
         /// <param name="length">Length</param>
         /// <returns></returns>
-        public virtual String GetText(int offset, int length)
+        public virtual string GetText(int offset, int length)
         {
-            return this.Text.Substring(offset, length);
+            return Text.Substring(offset, length);
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns></returns>
         public virtual char GetCharAt(int offset)
         {
-            return this.Text[offset];
+            return Text[offset];
         }
 
         /// <summary>
@@ -228,8 +228,8 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="length">Length</param>
         public virtual void Select(int offset, int length)
         {
-            this.SelectionStart = offset;
-            this.SelectionLength = length;
+            SelectionStart = offset;
+            SelectionLength = length;
         }
 
         /// <summary>
@@ -238,10 +238,10 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="offset">Offset</param>
         /// <param name="length">Length</param>
         /// <param name="text">Replacement Text</param>
-        public virtual void Replace(int offset, int length, String text)
+        public virtual void Replace(int offset, int length, string text)
         {
-            String currText = this.Text;
-            this.Text = currText.Substring(0, offset - 1) + text + currText.Substring(offset + length);
+            string currText = Text;
+            Text = currText.Substring(0, offset - 1) + text + currText.Substring(offset + length);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace VDS.RDF.Utilities.Editor
         /// Sets the Highlighter to be used (if supported)
         /// </summary>
         /// <param name="name">Syntax Name</param>
-        public virtual void SetHighlighter(String name) { }
+        public virtual void SetHighlighter(string name) { }
 
         /// <summary>
         /// Clears any highlighted errors (if supported)
@@ -320,20 +320,20 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._completer;
+                return _completer;
             }
             set
             {
-                if (!ReferenceEquals(this._completer, value))
+                if (!ReferenceEquals(_completer, value))
                 {
-                    if (this._completer != null)
+                    if (_completer != null)
                     {
                         //End Suggestion on the existing completer
-                        this.EndSuggestion();
+                        EndSuggestion();
                     }
                     //Attach the New Completer
-                    this._completer = value;
-                    if (this._completer != null) this.AttachAutoCompleter();
+                    _completer = value;
+                    if (_completer != null) AttachAutoCompleter();
                 }
             }
         }
@@ -365,10 +365,10 @@ namespace VDS.RDF.Utilities.Editor
 
         private void RaiseEvent(TextEditorEventHandler<T> evt)
         {
-            this.RaiseEvent(this, evt);
+            RaiseEvent(this, evt);
         }
 
-        private void RaiseEvent(Object sender, TextEditorEventHandler<T> evt)
+        private void RaiseEvent(object sender, TextEditorEventHandler<T> evt)
         {
             if (evt != null)
             {
@@ -380,18 +380,18 @@ namespace VDS.RDF.Utilities.Editor
         /// Helper method that can be used to raise the TextChanged event
         /// </summary>
         /// <param name="sender">Sender for the event</param>
-        protected void RaiseTextChanged(Object sender)
+        protected void RaiseTextChanged(object sender)
         {
-            this.RaiseEvent(sender, this.TextChanged);
+            RaiseEvent(sender, TextChanged);
         }
 
         /// <summary>
         /// Helper method that can be used to raise the DoubleClick event
         /// </summary>
         /// <param name="sender">Sender for the event</param>
-        protected void RaiseDoubleClick(Object sender)
+        protected void RaiseDoubleClick(object sender)
         {
-            this.RaiseEvent(sender, this.DoubleClick);
+            RaiseEvent(sender, DoubleClick);
         }
 
         /// <summary>

@@ -31,24 +31,24 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 {
     public partial class EntityQueryGeneratorDialogue : Form
     {
-        public EntityQueryGeneratorDialogue(String query)
+        public EntityQueryGeneratorDialogue(string query)
         {
             InitializeComponent();
-            this.txtCurrentQuery.Text = query.Replace("\n", "\r\n");
+            txtCurrentQuery.Text = query.Replace("\n", "\r\n");
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.MinPredicateUsageLimit = (int) this.numValuesPerPredicateLimit.Value;
-            this.QueryString = this.txtCurrentQuery.Text;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            MinPredicateUsageLimit = (int) numValuesPerPredicateLimit.Value;
+            QueryString = txtCurrentQuery.Text;
+            Close();
         }
 
         /// <summary>
@@ -59,6 +59,6 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         /// <summary>
         /// Gets the Query String the user entered
         /// </summary>
-        public String QueryString { get; private set; }
+        public string QueryString { get; private set; }
     }
 }

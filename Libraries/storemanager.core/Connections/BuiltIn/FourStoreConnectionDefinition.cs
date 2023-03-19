@@ -62,11 +62,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            if (this.UseProxy)
+            if (UseProxy)
             {
-                return new FourStoreConnector(this.Server, this.EnableUpdates, this.GetProxy());   
+                return new FourStoreConnector(Server, EnableUpdates, GetProxy());   
             }
-            return new FourStoreConnector(this.Server, this.EnableUpdates);
+            return new FourStoreConnector(Server, EnableUpdates);
         }
 
         /// <summary>
@@ -75,18 +75,21 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            FourStoreConnectionDefinition definition = new FourStoreConnectionDefinition();
-            definition.Server = this.Server;
-            definition.EnableUpdates = this.EnableUpdates;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
+            FourStoreConnectionDefinition definition = new FourStoreConnectionDefinition
+            {
+                Server = Server,
+                EnableUpdates = EnableUpdates,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[4store] " + this.Server.ToSafeString();
+            return "[4store] " + Server.ToSafeString();
         }
     }
 }

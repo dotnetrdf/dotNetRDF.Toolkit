@@ -56,11 +56,12 @@ namespace VDS.RDF.Utilities.Sparql
         private LeviathanQueryProcessor _processor;
         private IRdfWriter _rdfwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
         private ISparqlResultsWriter _resultswriter = new SparqlHtmlWriter();
-        private String _rdfext = ".ttl";
-        private String _resultsext = ".html";
+        private string _rdfext = ".ttl";
+        private string _resultsext = ".html";
         private bool _noDataWarning = true, _logExplain = false;
-        private String _logfile;
+        private string _logfile;
         private long _tripleCount = 0;
+        private SparqlQuerySyntax _querySyntax = SparqlQuerySyntax.Sparql_1_1;
 
         //Full Text Indexing stuff
         private Lucene.Net.Store.Directory _ftIndex;
@@ -71,30 +72,28 @@ namespace VDS.RDF.Utilities.Sparql
         public fclsSparqlGui()
         {
             InitializeComponent();
-            Constants.WindowIcon = this.Icon;
-            this._store = new TripleStore();
-            this._dataset = new InMemoryQuadDataset(this._store);
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            Constants.WindowIcon = Icon;
+            _store = new TripleStore();
+            _dataset = new InMemoryQuadDataset(_store);
+            _processor = new LeviathanQueryProcessor(_dataset, GetProcessorOptions());
 
-            //Enable UTF-8 BOM setting if user set
-            Options.UseBomForUtf8 = false;
+            // Enable UTF-8 BOM setting if user set
             if (Properties.Settings.Default.UseUtf8Bom)
             {
-                Options.UseBomForUtf8 = true;
-                this.chkUseUtf8Bom.Checked = true;
+                chkUseUtf8Bom.Checked = true;
             }
 
-            String temp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            String sep = new String(new char[] { Path.DirectorySeparatorChar });
+            string temp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string sep = new string(new char[] { Path.DirectorySeparatorChar });
             if (!temp.EndsWith(sep)) temp += sep;
             temp = Path.Combine(temp, @"dotNetRDF\");
             if (!System.IO.Directory.Exists(temp)) System.IO.Directory.CreateDirectory(temp);
             temp = Path.Combine(temp, @"SparqlGUI\");
             if (!System.IO.Directory.Exists(temp)) System.IO.Directory.CreateDirectory(temp);
-            this._logfile = Path.Combine(temp, "SparqlGui-" + DateTime.Now.ToString("MMM-yyyy") + ".log");
+            _logfile = Path.Combine(temp, "SparqlGui-" + DateTime.Now.ToString("MMM-yyyy") + ".log");
 
-            this.ofdBrowse.Filter = MimeTypesHelper.GetFilenameFilter(true, true, false, false, false, true);
-            this.ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
+            ofdBrowse.Filter = MimeTypesHelper.GetFilenameFilter(true, true, false, false, false, true);
+            ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
         }
 
         private void fclsSparqlGui_Load(object sender, EventArgs e)
@@ -102,25 +101,25 @@ namespace VDS.RDF.Utilities.Sparql
             if (File.Exists("default.rq"))
             {
                 StreamReader reader = new StreamReader("default.rq");
-                String defaultQuery = reader.ReadToEnd();
-                this.txtQuery.Text = defaultQuery;
+                string defaultQuery = reader.ReadToEnd();
+                txtQuery.Text = defaultQuery;
                 reader.Close();
             }
-            this.cboGraphFormat.SelectedIndex = 5;
-            this.cboResultsFormat.SelectedIndex = 2;
+            cboGraphFormat.SelectedIndex = 5;
+            cboResultsFormat.SelectedIndex = 2;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+            if (ofdBrowse.ShowDialog() == DialogResult.OK)
             {
-                this.txtSourceFile.Text = this.ofdBrowse.FileName;
+                txtSourceFile.Text = ofdBrowse.FileName;
             }
         }
 
         private void btnImportFile_Click(object sender, EventArgs e)
         {
-            if (this.txtSourceFile.Text.Equals(string.Empty))
+            if (txtSourceFile.Text.Equals(string.Empty))
             {
                 MessageBox.Show("Please enter a File you wish to import RDF from...", "No File Specified");
             }
@@ -129,20 +128,20 @@ namespace VDS.RDF.Utilities.Sparql
                 try
                 {
                     //Try and get a Graph Parser and load
-                    IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text));
+                    IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(txtSourceFile.Text));
                     Graph g = new Graph();
-                    FileLoader.Load(g, this.txtSourceFile.Text);
-                    this.LogImportSuccess(this.txtSourceFile.Text, 1, g.Triples.Count);
+                    FileLoader.Load(g, txtSourceFile.Text);
+                    LogImportSuccess(txtSourceFile.Text, 1, g.Triples.Count);
 
                     //Add to Store
                     try
                     {
-                        this._tripleCount += g.Triples.Count;
-                        this._dataset.AddGraph(g);
+                        _tripleCount += g.Triples.Count;
+                        _dataset.AddGraph(g);
                     }
                     catch (Exception ex)
                     {
-                        this.LogImportFailure(this.txtSourceFile.Text, ex);
+                        LogImportFailure(txtSourceFile.Text, ex);
                         MessageBox.Show("An error occurred trying to add the RDF Graph to the Dataset:\n" + ex.Message, "File Import Error");
                         return;
                     }
@@ -152,57 +151,57 @@ namespace VDS.RDF.Utilities.Sparql
                     try
                     {
                         //Try and get a Store Parser and load
-                        IStoreReader storeparser = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text));
+                        IStoreReader storeparser = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(txtSourceFile.Text));
                         TripleStore store = new TripleStore();
-                        storeparser.Load(store, this.txtSourceFile.Text);
+                        storeparser.Load(store, txtSourceFile.Text);
 
                         foreach (IGraph g in store.Graphs)
                         {
-                            if (this._dataset.HasGraph(g.BaseUri))
+                            if (_dataset.HasGraph(g.Name))
                             {
-                                int triplesBefore = this._dataset[g.BaseUri].Triples.Count;
-                                this._dataset[g.BaseUri].Merge(g);
-                                this._tripleCount += this._dataset[g.BaseUri].Triples.Count - triplesBefore;
+                                int triplesBefore = _dataset[g.Name].Triples.Count;
+                                _dataset[g.Name].Merge(g);
+                                _tripleCount += _dataset[g.Name].Triples.Count - triplesBefore;
                             }
                             else
                             {
-                                this._dataset.AddGraph(g);
-                                this._tripleCount += g.Triples.Count;
+                                _dataset.AddGraph(g);
+                                _tripleCount += g.Triples.Count;
                             }
                         }
 
-                        this.LogImportSuccess(this.txtSourceFile.Text, store.Graphs.Count, store.Graphs.Sum(g => g.Triples.Count));
+                        LogImportSuccess(txtSourceFile.Text, store.Graphs.Count, store.Graphs.Sum(g => g.Triples.Count));
                     }
                     catch (RdfParserSelectionException selEx)
                     {
-                        this.LogImportFailure(this.txtSourceFile.Text, selEx);
+                        LogImportFailure(txtSourceFile.Text, selEx);
                         MessageBox.Show("The given file does not appear to be an RDF Graph/Dataset File Format the tool understands", "File Import Error");
                         return;
                     }
                     catch (Exception ex)
                     {
-                        this.LogImportFailure(this.txtSourceFile.Text, ex);
+                        LogImportFailure(txtSourceFile.Text, ex);
                         MessageBox.Show("An error occurred trying to read an RDF Dataset from the file:\n" + ex.Message, "File Import Error");
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.LogImportFailure(this.txtSourceFile.Text, ex);
+                    LogImportFailure(txtSourceFile.Text, ex);
                     MessageBox.Show("An error occurred trying to read an RDF Graph from the file:\n" + ex.Message, "File Import Error");
                     return;
                 }
 
-                this._dataset.Flush();
-                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
-                this.stsTriples.Text = this._tripleCount + " Triples";
+                _dataset.Flush();
+                stsGraphs.Text = _dataset.GraphNames.Count() + " Graphs";
+                stsTriples.Text = _tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "File Import Done");
             }
         }
 
         private void btnImportUri_Click(object sender, EventArgs e)
         {
-            if (this.txtSourceUri.Text.Equals(string.Empty))
+            if (txtSourceUri.Text.Equals(string.Empty))
             {
                 MessageBox.Show("Please enter a URI you wish to import RDF from...", "No URI Specified");
             }
@@ -211,27 +210,27 @@ namespace VDS.RDF.Utilities.Sparql
                 Graph g = new Graph();
                 try
                 {
-                    UriLoader.Load(g, new Uri(this.txtSourceUri.Text));
-
+                    var loader = new Loader();
+                    loader.LoadGraph(g, new Uri(txtSourceUri.Text));
                     try
                     {
-                        if (this._dataset.HasGraph(g.BaseUri))
+                        if (_dataset.HasGraph(g.Name))
                         {
-                            int triplesBefore = this._dataset[g.BaseUri].Triples.Count;
-                            this._dataset[g.BaseUri].Merge(g);
-                            this._tripleCount += this._dataset[g.BaseUri].Triples.Count - triplesBefore;
+                            int triplesBefore = _dataset[g.Name].Triples.Count;
+                            _dataset[g.Name].Merge(g);
+                            _tripleCount += _dataset[g.Name].Triples.Count - triplesBefore;
                         }
                         else
                         {
-                            this._dataset.AddGraph(g);
-                            this._tripleCount += g.Triples.Count;
+                            _dataset.AddGraph(g);
+                            _tripleCount += g.Triples.Count;
                         }
 
-                        this.LogImportSuccess(new Uri(this.txtSourceUri.Text), 1, g.Triples.Count);
+                        LogImportSuccess(new Uri(txtSourceUri.Text), 1, g.Triples.Count);
                     }
                     catch (Exception ex)
                     {
-                        this.LogImportFailure(new Uri(this.txtSourceUri.Text), ex);
+                        LogImportFailure(new Uri(txtSourceUri.Text), ex);
                         MessageBox.Show("An error occurred trying to add the RDF Graph to the Dataset:\n" + ex.Message, "URI Import Error");
                         return;
                     }
@@ -242,38 +241,38 @@ namespace VDS.RDF.Utilities.Sparql
                 }
                 catch (Exception ex)
                 {
-                    this.LogImportFailure(new Uri(this.txtSourceUri.Text), ex);
+                    LogImportFailure(new Uri(txtSourceUri.Text), ex);
                     MessageBox.Show("An error occurred while loading RDF from the given URI:\n" + ex.Message, "URI Import Error");
                     return;
                 }
 
-                this._dataset.Flush();
-                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
-                this.stsTriples.Text = this._tripleCount + " Triples";
+                _dataset.Flush();
+                stsGraphs.Text = _dataset.GraphNames.Count() + " Graphs";
+                stsTriples.Text = _tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "URI Import Done");
             }
         }
 
         private void btnClearDataset_Click(object sender, EventArgs e)
         {
-            this._dataset = new InMemoryQuadDataset();
-            this._processor = new LeviathanQueryProcessor(this._dataset);
-            if (this.chkFullTextIndexing.Checked) this.EnableFullTextIndex();
-            this._tripleCount = 0;
-            this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
-            this.stsTriples.Text = this._tripleCount + " Triples";
+            _dataset = new InMemoryQuadDataset();
+            _processor = new LeviathanQueryProcessor(_dataset, GetProcessorOptions());
+            if (chkFullTextIndexing.Checked) EnableFullTextIndex();
+            _tripleCount = 0;
+            stsGraphs.Text = _dataset.GraphNames.Count() + " Graphs";
+            stsTriples.Text = _tripleCount + " Triples";
         }
 
         private void btnQuery_Click(object sender, EventArgs e)
         {
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
-                SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
-                query.Timeout = (long)this.numTimeout.Value;
-                query.PartialResultsOnTimeout = this.chkPartialResults.Checked;
+                SparqlQueryParser parser = getQueryParser();
+                SparqlQuery query = parser.ParseFromString(txtQuery.Text);
+                query.Timeout = (long)numTimeout.Value;
+                query.PartialResultsOnTimeout = chkPartialResults.Checked;
 
-                if (this._tripleCount == 0 && this._noDataWarning)
+                if (_tripleCount == 0 && _noDataWarning)
                 {
                     switch (MessageBox.Show("You have no data loaded to query over - do you wish to run this query anyway?  Press Abort if you'd like to load data first, Retry to continue anyway or Ignore to continue anyway and suppress this message during this session", "Continue Query without Data", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question))
                     {
@@ -281,7 +280,7 @@ namespace VDS.RDF.Utilities.Sparql
                             return;
                         case DialogResult.Ignore:
                             //Set the Ignore flag then continue anyway
-                            this._noDataWarning = false;
+                            _noDataWarning = false;
                             break;
                         default:
                             //Continue anyway
@@ -289,15 +288,15 @@ namespace VDS.RDF.Utilities.Sparql
                     }
                 }
 
-                this.LogStartQuery(query);
+                LogStartQuery(query);
 
                 //Evaluate the Query
-                Object results;
-                if (this._logExplain)
+                object results;
+                if (_logExplain)
                 {
-                    using (StreamWriter writer = new StreamWriter(this._logfile, true, Encoding.UTF8))
+                    using (StreamWriter writer = new StreamWriter(_logfile, true, Encoding.UTF8))
                     {
-                        ExplainQueryProcessor explainer = new ExplainQueryProcessor(this._dataset, (ExplanationLevel.OutputToTrace | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll ) ^ ExplanationLevel.ShowThreadID);
+                        ExplainQueryProcessor explainer = new ExplainQueryProcessor(_dataset, (ExplanationLevel.OutputToTrace | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll ) ^ ExplanationLevel.ShowThreadID);
                         TextWriterTraceListener listener = new TextWriterTraceListener(writer, "SparqlGUI");
                         Trace.Listeners.Add(listener);
                         try
@@ -314,74 +313,79 @@ namespace VDS.RDF.Utilities.Sparql
                 }
                 else
                 {
-                    results = this._processor.ProcessQuery(query);
+                    results = _processor.ProcessQuery(query);
                 }
 
                 //Process the Results
                 if (results is IGraph)
                 {
-                    this.LogEndQuery(query, (IGraph)results);
+                    LogEndQuery(query, (IGraph)results);
 
-                    if (this.chkViewResultsInApp.Checked)
+                    if (chkViewResultsInApp.Checked)
                     {
                         GraphViewerForm graphViewer = new GraphViewerForm((IGraph)results, "SPARQL GUI");
                         graphViewer.Show();
                     }
                     else
                     {
-                        this._rdfwriter.Save((IGraph)results, "temp" + this._rdfext);
-                        System.Diagnostics.Process.Start("temp" + this._rdfext);
+                        _rdfwriter.Save((IGraph)results, getTextWriter("temp" + _rdfext));
+                        System.Diagnostics.Process.Start("temp" + _rdfext);
                     }
                 }
                 else if (results is SparqlResultSet)
                 {
-                    this.LogEndQuery(query, (SparqlResultSet)results);
+                    LogEndQuery(query, (SparqlResultSet)results);
 
-                    if (this.chkViewResultsInApp.Checked)
+                    if (chkViewResultsInApp.Checked)
                     {
                         ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results,query.NamespaceMap, "SPARQL GUI");
                         resultSetViewer.Show();
                     }
                     else
                     {
-                        this._resultswriter.Save((SparqlResultSet)results, "temp" + this._resultsext);
-                        System.Diagnostics.Process.Start("temp" + this._resultsext);
+                        _resultswriter.Save((SparqlResultSet)results, getTextWriter("temp" + _resultsext));
+                        System.Diagnostics.Process.Start("temp" + _resultsext);
                     }
                 }
                 else
                 {
                     throw new RdfException("Unexpected Result Type");
                 }
-                this.stsLastQuery.Text = "Last Query took " + query.QueryExecutionTime;
+                stsLastQuery.Text = "Last Query took " + query.QueryExecutionTime;
             }
             catch (RdfParseException parseEx)
             {
-                this.LogMalformedQuery(parseEx);
+                LogMalformedQuery(parseEx);
                 MessageBox.Show("Query failed to parse:\n" + parseEx.Message, "Query Failed");
             }
             catch (RdfQueryException queryEx)
             {
-                this.LogFailedQuery(queryEx);
+                LogFailedQuery(queryEx);
                 MessageBox.Show("Query failed during Execution:\n" + queryEx.Message, "Query Failed");
             }
             catch (Exception ex)
             {
-                this.LogFailedQuery(ex);
+                LogFailedQuery(ex);
                 MessageBox.Show("Query failed:\n" + ex.Message + "\n" + ex.StackTrace, "Query Failed");
             }
+        }
+
+        private TextWriter getTextWriter(string outputPath)
+        {
+            return new StreamWriter(outputPath, false, new UTF8Encoding(chkUseUtf8Bom.Checked));
         }
 
         private void btnInspect_Click(object sender, EventArgs e)
         {
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = getQueryParser();
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
-                SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
+                SparqlQuery query = parser.ParseFromString(txtQuery.Text);
                 timer.Stop();
 
-                fclsInspect inspect = new fclsInspect(query, timer.ElapsedMilliseconds, this.txtQuery.Text);
+                fclsInspect inspect = new fclsInspect(query, timer.ElapsedMilliseconds, txtQuery.Text);
                 inspect.Show();
             }
             catch (RdfParseException parseEx)
@@ -400,38 +404,38 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void radSparql10_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparql10.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_0;
+            if (radSparql10.Checked) _querySyntax = SparqlQuerySyntax.Sparql_1_0;
         }
 
         private void radSparql11_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparql11.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
+            if (radSparql11.Checked) _querySyntax = SparqlQuerySyntax.Sparql_1_1;
         }
 
         private void radSparqlExtended_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.radSparqlExtended.Checked) Options.QueryDefaultSyntax = SparqlQuerySyntax.Extended;
+            if (radSparqlExtended.Checked) _querySyntax = SparqlQuerySyntax.Extended;
         }
 
         private void chkWebDemand_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkWebDemand.Checked)
+            if (chkWebDemand.Checked)
             {
-                this.EnableWebDemand();
+                EnableWebDemand();
             }
             else
             {
-                this.DisableWebDemand();
+                DisableWebDemand();
             }
         }
 
         private void cboGraphFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (this.cboGraphFormat.SelectedIndex)
+            switch (cboGraphFormat.SelectedIndex)
             {
                 case 0:
-                    this._rdfwriter = new CsvWriter();
-                    this._rdfext = ".csv";
+                    _rdfwriter = new CsvWriter();
+                    _rdfext = ".csv";
                     break;
                 case 1:
                     fclsStylesheetPicker stylesheetPicker = new fclsStylesheetPicker("CSS (Optional)");
@@ -439,49 +443,49 @@ namespace VDS.RDF.Utilities.Sparql
                     {
                         HtmlWriter temp = new HtmlWriter();
                         temp.Stylesheet = stylesheetPicker.StylesheetUri;
-                        this._rdfwriter = temp;
+                        _rdfwriter = temp;
                     }
                     else
                     {
-                        this._rdfwriter = new HtmlWriter();
+                        _rdfwriter = new HtmlWriter();
                     }
-                    this._rdfext = ".html";
+                    _rdfext = ".html";
                     break;
                 case 2:
-                    this._rdfwriter = new Notation3Writer();
-                    this._rdfext = ".n3";
+                    _rdfwriter = new Notation3Writer();
+                    _rdfext = ".n3";
                     break;
                 case 3:
-                    this._rdfwriter = new NTriplesWriter();
-                    this._rdfext = ".nt";
+                    _rdfwriter = new NTriplesWriter();
+                    _rdfext = ".nt";
                     break;
                 case 4:
-                    this._rdfwriter = new RdfJsonWriter();
-                    this._rdfext = ".json";
+                    _rdfwriter = new RdfJsonWriter();
+                    _rdfext = ".json";
                     break;
                 case 5:
-                    this._rdfwriter = new RdfXmlWriter();
-                    this._rdfext = ".rdf";
+                    _rdfwriter = new RdfXmlWriter();
+                    _rdfext = ".rdf";
                     break;
                 case 6:
-                    this._rdfwriter = new CompressingTurtleWriter();
-                    this._rdfext = ".ttl";
+                    _rdfwriter = new CompressingTurtleWriter();
+                    _rdfext = ".ttl";
                     break;
                 case 7:
-                    this._rdfwriter = new TsvWriter();
-                    this._rdfext = ".tsv";
+                    _rdfwriter = new TsvWriter();
+                    _rdfext = ".tsv";
                     break;
             }
 
-            if (this._rdfwriter is ICompressingWriter)
+            if (_rdfwriter is ICompressingWriter)
             {
-                ((ICompressingWriter)this._rdfwriter).CompressionLevel = WriterCompressionLevel.High;
+                ((ICompressingWriter)_rdfwriter).CompressionLevel = WriterCompressionLevel.High;
             }
 
-            if (this.cboResultsFormat.SelectedIndex == 1)
+            if (cboResultsFormat.SelectedIndex == 1)
             {
-                this._resultswriter = new SparqlRdfWriter(this._rdfwriter);
-                this._resultsext = this._rdfext;
+                _resultswriter = new SparqlRdfWriter(_rdfwriter);
+                _resultsext = _rdfext;
             }
         }
 
@@ -489,19 +493,19 @@ namespace VDS.RDF.Utilities.Sparql
         {
             fclsStylesheetPicker stylesheetPicker;
 
-            switch (this.cboResultsFormat.SelectedIndex)
+            switch (cboResultsFormat.SelectedIndex)
             {
                 case 0:
-                    this._resultswriter = new SparqlCsvWriter();
-                    this._resultsext = ".csv";
+                    _resultswriter = new SparqlCsvWriter();
+                    _resultsext = ".csv";
                     break;
                 case 1:
-                    this._resultswriter = new SparqlRdfWriter(this._rdfwriter);
-                    this._resultsext = this._rdfext;
+                    _resultswriter = new SparqlRdfWriter(_rdfwriter);
+                    _resultsext = _rdfext;
                     break;
                 case 2:
-                    this._resultswriter = new SparqlHtmlWriter();
-                    this._resultsext = ".html";
+                    _resultswriter = new SparqlHtmlWriter();
+                    _resultsext = ".html";
                     break;
                 case 3:
                     stylesheetPicker = new fclsStylesheetPicker("CSS");
@@ -509,26 +513,26 @@ namespace VDS.RDF.Utilities.Sparql
                     {
                         SparqlHtmlWriter temp = new SparqlHtmlWriter();
                         temp.Stylesheet = stylesheetPicker.StylesheetUri;
-                        this._resultswriter = temp;
+                        _resultswriter = temp;
                     } 
                     else 
                     {
-                        this._resultswriter = new SparqlHtmlWriter();
+                        _resultswriter = new SparqlHtmlWriter();
                     }
-                    this._resultsext = ".html";
+                    _resultsext = ".html";
                     break;
                     
                 case 4:
-                    this._resultswriter = new SparqlJsonWriter();
-                    this._resultsext = ".json";
+                    _resultswriter = new SparqlJsonWriter();
+                    _resultsext = ".json";
                     break;
                 case 5:
-                    this._resultswriter = new SparqlTsvWriter();
-                    this._resultsext = ".tsv";
+                    _resultswriter = new SparqlTsvWriter();
+                    _resultsext = ".tsv";
                     break;
                 case 6:
-                    this._resultswriter = new SparqlXmlWriter();
-                    this._resultsext = ".srx";
+                    _resultswriter = new SparqlXmlWriter();
+                    _resultsext = ".srx";
                     break;
                 case 7:
                     stylesheetPicker = new fclsStylesheetPicker("XSLT");
@@ -536,22 +540,22 @@ namespace VDS.RDF.Utilities.Sparql
                     {
                         try
                         {
-                            this._resultswriter = new SparqlXsltWriter(stylesheetPicker.StylesheetUri);
-                            this._resultsext = ".xml";
+                            _resultswriter = new SparqlXsltWriter(stylesheetPicker.StylesheetUri);
+                            _resultsext = ".xml";
                         }
                         catch (Exception ex)
                         {
                             MessageBox.Show("Unable to use the selected XSLT Stylesheet due to the following error:\n" + ex.Message, "Invalid Stylesheet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            this.cboResultsFormat.SelectedIndex = 2;
-                            this._resultswriter = new SparqlHtmlWriter();
-                            this._resultsext = ".html";
+                            cboResultsFormat.SelectedIndex = 2;
+                            _resultswriter = new SparqlHtmlWriter();
+                            _resultsext = ".html";
                         }
                     }
                     else
                     {
-                        this.cboResultsFormat.SelectedIndex = 2;
-                        this._resultswriter = new SparqlHtmlWriter();
-                        this._resultsext = ".html";
+                        cboResultsFormat.SelectedIndex = 2;
+                        _resultswriter = new SparqlHtmlWriter();
+                        _resultsext = ".html";
                     }
                     break;
             }
@@ -559,51 +563,29 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void btnSaveQuery_Click(object sender, EventArgs e)
         {
-            if (this.sfdQuery.ShowDialog() == DialogResult.OK)
+            if (sfdQuery.ShowDialog() == DialogResult.OK)
             {
-                using (StreamWriter writer = new StreamWriter(this.sfdQuery.FileName))
+                using (StreamWriter writer = new StreamWriter(sfdQuery.FileName))
                 {
-                    writer.Write(this.txtQuery.Text);
+                    writer.Write(txtQuery.Text);
                 }
             }
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            if (this.ofdQuery.ShowDialog() == DialogResult.OK)
+            if (ofdQuery.ShowDialog() == DialogResult.OK)
             {
-                using (StreamReader reader = new StreamReader(this.ofdQuery.FileName))
+                using (StreamReader reader = new StreamReader(ofdQuery.FileName))
                 {
-                    this.txtQuery.Text = reader.ReadToEnd();
+                    txtQuery.Text = reader.ReadToEnd();
                 }
             }
         }
 
-        private void chkAllowUnknownFunctions_CheckedChanged(object sender, EventArgs e)
+        private void Log(string action, string information)
         {
-            Options.QueryAllowUnknownFunctions = this.chkAllowUnknownFunctions.Checked;
-        }
-
-        private void chkQueryOptimisation_CheckedChanged(object sender, EventArgs e)
-        {
-            Options.QueryOptimisation = this.chkQueryOptimisation.Checked;
-        }
-
-        private void chkAlgebraOptimisation_CheckedChanged(object sender, EventArgs e)
-        {
-            Options.AlgebraOptimisation = this.chkAlgebraOptimisation.Checked;
-        }
-
-        private void chkUseUtf8Bom_CheckedChanged(object sender, EventArgs e)
-        {
-            Options.UseBomForUtf8 = this.chkUseUtf8Bom.Checked;
-            Properties.Settings.Default.UseUtf8Bom = this.chkUseUtf8Bom.Checked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void Log(String action, String information)
-        {
-            using (StreamWriter writer = new StreamWriter(this._logfile, true, System.Text.Encoding.UTF8))
+            using (StreamWriter writer = new StreamWriter(_logfile, true, System.Text.Encoding.UTF8))
             {
                 writer.Write("[" + DateTime.Now + "] " + action);
                 if (information.Contains('\n') || information.Contains('\r'))
@@ -620,60 +602,60 @@ namespace VDS.RDF.Utilities.Sparql
             }
         }
 
-        private void LogImportSuccess(String file, int graphs, int triples)
+        private void LogImportSuccess(string file, int graphs, int triples)
         {
-            this.Log("IMPORT", "Import from File '" + file + "' - " + graphs + " Graphs with " + triples + " Triples");
+            Log("IMPORT", "Import from File '" + file + "' - " + graphs + " Graphs with " + triples + " Triples");
         }
 
         private void LogImportSuccess(Uri u, int graphs, int triples)
         {
-            this.Log("IMPORT", "Import from URI '" + u.AbsoluteUri + "' - " + graphs + " Graphs with " + triples + " Triples");
+            Log("IMPORT", "Import from URI '" + u.AbsoluteUri + "' - " + graphs + " Graphs with " + triples + " Triples");
         }
 
-        private void LogImportFailure(String file, Exception ex)
+        private void LogImportFailure(string file, Exception ex)
         {
-            this.Log("IMPORT FAILURE", "Import from File '" + file + "' failed\n" + this.GetFullErrorTrace(ex));
+            Log("IMPORT FAILURE", "Import from File '" + file + "' failed\n" + GetFullErrorTrace(ex));
         }
 
         private void LogImportFailure(Uri u, Exception ex)
         {
-            this.Log("IMPORT FAILURE", "Import from URI '" + u.AbsoluteUri + "' failed\n" + this.GetFullErrorTrace(ex));
+            Log("IMPORT FAILURE", "Import from URI '" + u.AbsoluteUri + "' failed\n" + GetFullErrorTrace(ex));
         }
 
         private void LogMalformedQuery(Exception ex)
         {
-            this.Log("QUERY PARSING FAILURE", "Failed to Parse Query\n" + this.GetFullErrorTrace(ex));
+            Log("QUERY PARSING FAILURE", "Failed to Parse Query\n" + GetFullErrorTrace(ex));
         }
 
         private void LogStartQuery(SparqlQuery q)
         {
             SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
-            this.Log("QUERY START", formatter.Format(q));
+            Log("QUERY START", formatter.Format(q));
         }
 
         private void LogFailedQuery(Exception ex)
         {
-            this.Log("QUERY FAILED", "Query Failed during Execution\n" + this.GetFullErrorTrace(ex));
+            Log("QUERY FAILED", "Query Failed during Execution\n" + GetFullErrorTrace(ex));
         }
 
         private void LogEndQuery(SparqlQuery q, SparqlResultSet results)
         {
             if (results.ResultsType == SparqlResultsType.Boolean)
             {
-                this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Boolean Result of " + results.Result);
+                Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Boolean Result of " + results.Result);
             }
             else
             {
-                this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Result Set containing " + results.Count + " Results");
+                Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Result Set containing " + results.Count + " Results");
             }
         }
 
         private void LogEndQuery(SparqlQuery q, IGraph g)
         {
-            this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Graph contaning " + g.Triples.Count + " Triples");
+            Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Graph contaning " + g.Triples.Count + " Triples");
         }
 
-        private String GetFullErrorTrace(Exception ex)
+        private string GetFullErrorTrace(Exception ex)
         {
             StringBuilder output = new StringBuilder();
             output.AppendLine(ex.Message);
@@ -692,11 +674,11 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void btnViewLog_Click(object sender, EventArgs e)
         {
-            if (File.Exists(this._logfile))
+            if (File.Exists(_logfile))
             {
                 try
                 {
-                    Process.Start(this._logfile);
+                    Process.Start(_logfile);
                 }
                 catch
                 {
@@ -711,16 +693,16 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void chkLogExplanation_CheckedChanged(object sender, EventArgs e)
         {
-            this._logExplain = this.chkLogExplanation.Checked;
+            _logExplain = chkLogExplanation.Checked;
         }
 
         private void btnClearLog_Click(object sender, EventArgs e)
         {
-            if (File.Exists(this._logfile))
+            if (File.Exists(_logfile))
             {
                 try
                 {
-                    File.Delete(this._logfile);
+                    File.Delete(_logfile);
                 }
                 catch (Exception ex)
                 {
@@ -733,10 +715,10 @@ namespace VDS.RDF.Utilities.Sparql
         {
             try
             {
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = getQueryParser();
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
-                SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
+                SparqlQuery query = parser.ParseFromString(txtQuery.Text);
                 timer.Stop();
 
                 fclsExplanation explain = new fclsExplanation(query, timer.ElapsedMilliseconds);
@@ -756,15 +738,22 @@ namespace VDS.RDF.Utilities.Sparql
             }
         }
 
+        private SparqlQueryParser getQueryParser()
+        {
+            return new SparqlQueryParser(_querySyntax) { 
+                AllowUnknownFunctions = chkAllowUnknownFunctions.Checked,
+                QueryOptimisation = chkQueryOptimisation.Checked
+            };
+        }
         private void chkFullTextIndexing_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkFullTextIndexing.Checked)
+            if (chkFullTextIndexing.Checked)
             {
-                this.EnableFullTextIndex();
+                EnableFullTextIndex();
             }
             else
             {
-                this.DisableFullTextIndex();
+                DisableFullTextIndex();
             }
         }
 
@@ -772,131 +761,142 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void EnableFullTextIndex()
         {
-            if (this._dataset is FullTextIndexedDataset)
+            if (_dataset is FullTextIndexedDataset)
             {
                 //Nothing to do
             }
-            else if (this._dataset is WebDemandDataset)
+            else if (_dataset is WebDemandDataset)
             {
-                WebDemandDataset ds = (WebDemandDataset)this._dataset;
-                this._dataset = ds.UnderlyingDataset;
-                this.EnableFullTextIndex();
-                this._dataset = new WebDemandDataset(this._dataset);
+                WebDemandDataset ds = (WebDemandDataset)_dataset;
+                _dataset = ds.UnderlyingDataset;
+                EnableFullTextIndex();
+                _dataset = new WebDemandDataset(_dataset);
             }
             else
             {
                 //Create and ensure index ready for use
-                this._ftIndex = new RAMDirectory();
-                
-                var writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
+                _ftIndex = new RAMDirectory();
+
+                var writer =
+                    new IndexWriter(_ftIndex, new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48)));
+
                 writer.Dispose();
 
                 //Create Indexer and wrap dataset
-                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), new DefaultIndexSchema());
-                if (this._dataset is WebDemandDataset)
+                _ftIndexer = new LuceneObjectsIndexer(_ftIndex, new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48), new DefaultIndexSchema());
+                if (_dataset is WebDemandDataset)
                 {
                     //Web Demand needs to go around Full Text as we want to index on demand loaded content
-                    this._dataset = new WebDemandDataset(new FullTextIndexedDataset(((WebDemandDataset)this._dataset).UnderlyingDataset, this._ftIndexer, true));
+                    _dataset = new WebDemandDataset(new FullTextIndexedDataset(((WebDemandDataset)_dataset).UnderlyingDataset, _ftIndexer, true));
                 }
                 else
                 {
-                    this._dataset = new FullTextIndexedDataset(this._dataset, this._ftIndexer, true);
+                    _dataset = new FullTextIndexedDataset(_dataset, _ftIndexer, true);
                 }
 
                 //Create and Register Optimizer
-                this._ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.Version.LUCENE_29, this._ftIndex);
-                this._ftOptimiser = new FullTextOptimiser(this._ftSearcher);
-                SparqlOptimiser.AddOptimiser(this._ftOptimiser);
+                _ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.LuceneVersion.LUCENE_48, _ftIndex);
+                _ftOptimiser = new FullTextOptimiser(_ftSearcher);
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            _processor = new LeviathanQueryProcessor(_dataset, GetProcessorOptions());
         }
 
         private void DisableFullTextIndex()
         {
-            if (this._dataset is WebDemandDataset)
+            if (_dataset is WebDemandDataset)
             {
-                WebDemandDataset ds = (WebDemandDataset)this._dataset;
+                WebDemandDataset ds = (WebDemandDataset)_dataset;
                 if (ds.UnderlyingDataset is FullTextIndexedDataset)
                 {
-                    this._dataset = ds.UnderlyingDataset;
-                    this.DisableFullTextIndex();
-                    this._dataset = new WebDemandDataset(this._dataset);
+                    _dataset = ds.UnderlyingDataset;
+                    DisableFullTextIndex();
+                    _dataset = new WebDemandDataset(_dataset);
                 }
             }
-            else if (this._dataset is FullTextIndexedDataset)
+            else if (_dataset is FullTextIndexedDataset)
             {
-                SparqlOptimiser.RemoveOptimiser(this._ftOptimiser);
-                this._ftOptimiser = null;
-                this._ftSearcher.Dispose();
-                this._ftSearcher = null;
-                this._dataset = ((FullTextIndexedDataset)this._dataset).UnderlyingDataset;
-                this._ftIndexer.Dispose();
-                this._ftIndexer = null;
-                this._ftIndex.Dispose();
-                this._ftIndex = null;
+                _ftOptimiser = null;
+                _ftSearcher.Dispose();
+                _ftSearcher = null;
+                _dataset = ((FullTextIndexedDataset)_dataset).UnderlyingDataset;
+                _ftIndexer.Dispose();
+                _ftIndexer = null;
+                _ftIndex.Dispose();
+                _ftIndex = null;
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            _processor = new LeviathanQueryProcessor(_dataset, GetProcessorOptions());
         }
 
         private void EnableWebDemand()
         {
-            if (this._dataset is WebDemandDataset)
+            if (_dataset is WebDemandDataset)
             {
                 //Nothing to do
             }
             else
             {
                 //Wrap dataset in a WebDemandDataset
-                this._dataset = new WebDemandDataset(this._dataset);
+                _dataset = new WebDemandDataset(_dataset);
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            _processor = new LeviathanQueryProcessor(_dataset);
         }
 
         private void DisableWebDemand()
         {
-            if (this._dataset is WebDemandDataset)
+            if (_dataset is WebDemandDataset)
             {
-                this._dataset = ((WebDemandDataset)this._dataset).UnderlyingDataset;
+                _dataset = ((WebDemandDataset)_dataset).UnderlyingDataset;
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            _processor = new LeviathanQueryProcessor(_dataset);
         }
 
         #endregion
 
         private void chkUnsafeOptimisation_CheckedChanged(object sender, EventArgs e)
         {
-            Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
+            // TODO: This option no longer has any effect
+            // Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
         }
 
-        private void chkParallelEval_CheckedChanged(object sender, EventArgs e)
+        private LeviathanQueryOptions GetProcessorOptions()
         {
-            Options.UsePLinqEvaluation = this.chkParallelEval.Checked;
+            LeviathanQueryOptions options = new LeviathanQueryOptions();
+            options.UsePLinqEvaluation = chkParallelEval.Checked;
+            options.AlgebraOptimisation = chkAlgebraOptimisation.Checked;
+            if (_ftOptimiser != null)
+            {
+                var optimisers = options.AlgebraOptimisers.ToList();
+                if (!optimisers.OfType<FullTextOptimiser>().Any()) { 
+                    optimisers.Add(_ftOptimiser);
+                    options.AlgebraOptimisers = optimisers;
+                }
+            }
+            return options;
         }
-
 
         private void chkDefaultUnionGraph_CheckedChanged(object sender, EventArgs e)
         {
-            bool unionDefaultGraph = this.chkDefaultUnionGraph.Checked;
-            if (this._dataset is WebDemandDataset)
+            bool unionDefaultGraph = chkDefaultUnionGraph.Checked;
+            if (_dataset is WebDemandDataset)
             {
-                if (((WebDemandDataset)this._dataset).UnderlyingDataset is FullTextIndexedDataset)
+                if (((WebDemandDataset)_dataset).UnderlyingDataset is FullTextIndexedDataset)
                 {
-                    this._dataset = new FullTextIndexedDataset(new WebDemandDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph)), this._ftIndexer, false);
+                    _dataset = new FullTextIndexedDataset(new WebDemandDataset(new InMemoryQuadDataset(_store, unionDefaultGraph)), _ftIndexer, false);
                 }
                 else
                 {
-                    this._dataset = new WebDemandDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph));
+                    _dataset = new WebDemandDataset(new InMemoryQuadDataset(_store, unionDefaultGraph));
                 }
             }
-            else if (this._dataset is FullTextIndexedDataset)
+            else if (_dataset is FullTextIndexedDataset)
             {
-                this._dataset = new FullTextIndexedDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph), this._ftIndexer, false);
+                _dataset = new FullTextIndexedDataset(new InMemoryQuadDataset(_store, unionDefaultGraph), _ftIndexer, false);
             }
             else
             {
-                this._dataset = new InMemoryQuadDataset(this._store, unionDefaultGraph);
+                _dataset = new InMemoryQuadDataset(_store, unionDefaultGraph);
             }
-            this._processor = new LeviathanQueryProcessor(this._dataset);
+            _processor = new LeviathanQueryProcessor(_dataset);
         }
     }
 }

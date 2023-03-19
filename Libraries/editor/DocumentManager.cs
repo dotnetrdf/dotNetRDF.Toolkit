@@ -48,8 +48,8 @@ namespace VDS.RDF.Utilities.Editor
         private int _current = 0;
         private ManagerOptions<TControl> _options = new ManagerOptions<TControl>();
         private VisualOptions<TFont, TColor> _visualOptions;
-        private String _defaultTitle = "Untitled";
-        private String _defaultSyntax = "None";
+        private string _defaultTitle = "Untitled";
+        private string _defaultSyntax = "None";
         private int _nextID = 0;
 
         //Default Callbacks
@@ -63,21 +63,21 @@ namespace VDS.RDF.Utilities.Editor
         public DocumentManager(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
-            this._factory = factory;
+            _factory = factory;
 
-            if (this._factory is IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)
+            if (_factory is IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)
             {
-                this._visualOptions = ((IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)this._factory).GetDefaultVisualOptions();
+                _visualOptions = ((IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)_factory).GetDefaultVisualOptions();
             }
 
             //Wire Up Events
-            this._options.HighlightingToggled += this.HandleHighlightingToggled;
-            this._options.HighlightErrorsToggled += this.HandleHighlightErrorsToggled;
-            this._options.AutoCompleteToggled += this.HandleAutoCompleteToggled;
-            this._options.SymbolSelectorChanged += this.HandleSymbolSelectorChanged;
-            if (this._visualOptions != null)
+            _options.HighlightingToggled += HandleHighlightingToggled;
+            _options.HighlightErrorsToggled += HandleHighlightErrorsToggled;
+            _options.AutoCompleteToggled += HandleAutoCompleteToggled;
+            _options.SymbolSelectorChanged += HandleSymbolSelectorChanged;
+            if (_visualOptions != null)
             {
-                this._visualOptions.Changed += this.HandleVisualOptionsChanged;
+                _visualOptions.Changed += HandleVisualOptionsChanged;
             }
         }
 
@@ -86,30 +86,30 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the default title for documents
         /// </summary>
-        public String DefaultTitle
+        public string DefaultTitle
         {
             get
             {
-                return this._defaultTitle;
+                return _defaultTitle;
             }
             set
             {
-                this._defaultTitle = value;
+                _defaultTitle = value;
             }
         }
 
         /// <summary>
         /// Gets/Sets the default syntax for documents
         /// </summary>
-        public String DefaultSyntax
+        public string DefaultSyntax
         {
             get
             {
-                return this._defaultSyntax;
+                return _defaultSyntax;
             }
             set
             {
-                this._defaultSyntax = value;
+                _defaultSyntax = value;
             }
         }
 
@@ -120,7 +120,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._options;
+                return _options;
             }
         }
 
@@ -131,11 +131,11 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._visualOptions;
+                return _visualOptions;
             }
             set
             {
-                this._visualOptions = value;
+                _visualOptions = value;
             }
         }
 
@@ -146,9 +146,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._documents.Count > 0)
+                if (_documents.Count > 0)
                 {
-                    return this._documents[this._current];
+                    return _documents[_current];
                 }
                 else
                 {
@@ -164,9 +164,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._documents.Count > 0)
+                if (_documents.Count > 0)
                 {
-                    return this._current;
+                    return _current;
                 }
                 else
                 {
@@ -185,9 +185,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (index >= 0 && index < this._documents.Count)
+                if (index >= 0 && index < _documents.Count)
                 {
-                    return this._documents[index];
+                    return _documents[index];
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._documents;
+                return _documents;
             }
         }
 
@@ -214,7 +214,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._documents.Count;
+                return _documents.Count;
             }
         }
 
@@ -229,13 +229,13 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._defaultSaveChangesCallback;
+                return _defaultSaveChangesCallback;
             }
             set
             {
                 if (value != null)
                 {
-                    this._defaultSaveChangesCallback = value;
+                    _defaultSaveChangesCallback = value;
                 }
             }
         }
@@ -247,13 +247,13 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._defaultSaveAsCallback;
+                return _defaultSaveAsCallback;
             }
             set
             {
                 if (value != null)
                 {
-                    this._defaultSaveAsCallback = value;
+                    _defaultSaveAsCallback = value;
                 }
             }
         }
@@ -270,17 +270,17 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void CorrectIndex()
         {
-            if (this._documents.Count > 0)
+            if (_documents.Count > 0)
             {
-                if (this._current >= this._documents.Count)
+                if (_current >= _documents.Count)
                 {
-                    this._current = this._documents.Count - 1;
+                    _current = _documents.Count - 1;
                 }
-                else if (this._current < 0)
+                else if (_current < 0)
                 {
-                    this._current = this._documents.Count - 1;
+                    _current = _documents.Count - 1;
                 }
-                this.RaiseActiveDocumentChanged(this.ActiveDocument);
+                RaiseActiveDocumentChanged(ActiveDocument);
             }
         }
 
@@ -290,7 +290,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> New()
         {
-            return this.New(this._defaultTitle + (++this._nextID));
+            return New(_defaultTitle + (++_nextID));
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> New(bool switchTo)
         {
-            return this.New(this._defaultTitle + (++this._nextID), switchTo);
+            return New(_defaultTitle + (++_nextID), switchTo);
         }
 
         /// <summary>
@@ -308,9 +308,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="title">Title</param>
         /// <returns>New Document</returns>
-        public Document<TControl> New(String title)
+        public Document<TControl> New(string title)
         {
-            return this.New(title, false);
+            return New(title, false);
         }
 
         /// <summary>
@@ -319,22 +319,22 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="title">Title</param>
         /// <param name="switchTo">Whether to make the new document the active document</param>
         /// <returns>New Document</returns>
-        public Document<TControl> New(String title, bool switchTo)
+        public Document<TControl> New(string title, bool switchTo)
         {
-            Document<TControl> doc = new Document<TControl>(this._factory.CreateAdaptor(), null, title);
+            Document<TControl> doc = new Document<TControl>(_factory.CreateAdaptor(), null, title);
 
             //Add the document to the collection of documents
             //Register for appropriate events on the document
-            this._documents.Add(doc);
-            this.RaiseDocumentCreated(doc);
-            doc.ValidatorChanged += new DocumentChangedHandler<TControl>(this.HandleValidatorChanged);
-            doc.Opened += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
-            doc.TextChanged += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
+            _documents.Add(doc);
+            RaiseDocumentCreated(doc);
+            doc.ValidatorChanged += new DocumentChangedHandler<TControl>(HandleValidatorChanged);
+            doc.Opened += new DocumentChangedHandler<TControl>(HandleTextChanged);
+            doc.TextChanged += new DocumentChangedHandler<TControl>(HandleTextChanged);
 
             //Apply relevant global options to the Document
-            doc.Syntax = this._defaultSyntax;
-            doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
-            doc.IsAutoCompleteEnabled = this._options.IsAutoCompletionEnabled;
+            doc.Syntax = _defaultSyntax;
+            doc.IsHighlightingEnabled = _options.IsSyntaxHighlightingEnabled;
+            doc.IsAutoCompleteEnabled = _options.IsAutoCompletionEnabled;
             if (doc.IsAutoCompleteEnabled && doc.TextEditor.CanAutoComplete)
             {
                 doc.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<TControl>(doc.Syntax, doc.TextEditor);
@@ -343,14 +343,14 @@ namespace VDS.RDF.Utilities.Editor
             {
                 doc.TextEditor.AutoCompleter = null;
             }
-            if (this._visualOptions != null) doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
-            doc.TextEditor.SymbolSelector = this._options.CurrentSymbolSelector;
+            if (_visualOptions != null) doc.TextEditor.Apply<TFont, TColor>(_visualOptions);
+            doc.TextEditor.SymbolSelector = _options.CurrentSymbolSelector;
 
             //Switch to the new document if required
             if (switchTo)
             {
-                this._current = this._documents.Count - 1;
-                this.RaiseActiveDocumentChanged(this.ActiveDocument);
+                _current = _documents.Count - 1;
+                RaiseActiveDocumentChanged(ActiveDocument);
             }
             return doc;
         }
@@ -361,7 +361,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> NewFromActive()
         {
-            return this.NewFromExisting(this.ActiveDocument, false);
+            return NewFromExisting(ActiveDocument, false);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> NewFromActive(bool switchTo)
         {
-            return this.NewFromExisting(this.ActiveDocument, switchTo);
+            return NewFromExisting(ActiveDocument, switchTo);
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> NewFromExisting(Document<TControl> doc)
         {
-            return this.NewFromExisting(doc, false);
+            return NewFromExisting(doc, false);
         }
 
         /// <summary>
@@ -392,13 +392,13 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>New Document</returns>
         public Document<TControl> NewFromExisting(Document<TControl> doc, bool switchTo)
         {
-            Document<TControl> clonedDoc = this.New();
+            Document<TControl> clonedDoc = New();
             clonedDoc.Text = doc.Text;
             clonedDoc.Syntax = doc.Syntax;
             if (switchTo)
             {
-                this._current = this._documents.Count - 1;
-                this.RaiseActiveDocumentChanged(this.ActiveDocument);
+                _current = _documents.Count - 1;
+                RaiseActiveDocumentChanged(ActiveDocument);
             }
             return clonedDoc;
         }
@@ -409,7 +409,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close()
         {
-            return this.Close(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+            return Close(_defaultSaveChangesCallback, _defaultSaveAsCallback);
         }
 
         /// <summary>
@@ -420,11 +420,11 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close(SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
-            if (this._documents.Count > 0)
+            if (_documents.Count > 0)
             {
-                if (!this.Close(this.ActiveDocument, saveChanges, saveAs)) return false;
-                this._documents.RemoveAt(this._current);
-                this.CorrectIndex();
+                if (!Close(ActiveDocument, saveChanges, saveAs)) return false;
+                _documents.RemoveAt(_current);
+                CorrectIndex();
                 return true;
             }
             else
@@ -440,7 +440,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close(int index)
         {
-            return this.Close(index, this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+            return Close(index, _defaultSaveChangesCallback, _defaultSaveAsCallback);
         }
 
         /// <summary>
@@ -452,12 +452,12 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close(int index, SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
-            if (index >= 0 && index < this._documents.Count)
+            if (index >= 0 && index < _documents.Count)
             {
-                Document<TControl> doc = this._documents[index];
-                if (!this.Close(doc, saveChanges, saveAs)) return false;
-                this._documents.RemoveAt(index);
-                this.CorrectIndex();
+                Document<TControl> doc = _documents[index];
+                if (!Close(doc, saveChanges, saveAs)) return false;
+                _documents.RemoveAt(index);
+                CorrectIndex();
                 return true;
             }
             else
@@ -486,14 +486,14 @@ namespace VDS.RDF.Utilities.Editor
                         //Do nothing
                         return true;
                     case SaveChangesMode.Save:
-                        if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+                        if (doc.Filename != null && !doc.Filename.Equals(string.Empty))
                         {
                             doc.Save();
                         }
                         else
                         {
-                            String filename = saveAs(doc);
-                            if (filename != null && !filename.Equals(String.Empty))
+                            string filename = saveAs(doc);
+                            if (filename != null && !filename.Equals(string.Empty))
                             {
                                 doc.SaveAs(filename);
                             }
@@ -515,7 +515,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <returns>True if all documents are closed, false otherwise.  May be false if the application cancels one/more of the close operations</returns>
         public bool CloseAll()
         {
-            return this.CloseAll(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+            return CloseAll(_defaultSaveChangesCallback, _defaultSaveAsCallback);
         }
 
         /// <summary>
@@ -527,17 +527,17 @@ namespace VDS.RDF.Utilities.Editor
         public bool CloseAll(SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
             int i = 0;
-            while (i < this._documents.Count)
+            while (i < _documents.Count)
             {
                 //Get Confirmation to save/discard changes - allows application to cancel close
-                if (!this.Close(i, saveChanges, saveAs))
+                if (!Close(i, saveChanges, saveAs))
                 {
                     //If the document was not closed increment the counter
                     //Otherwise we will be stuck trying to close the same document forever
                     i++;
                 }
             }
-            return this._documents.Count == 0;
+            return _documents.Count == 0;
         }
 
         /// <summary>
@@ -545,7 +545,7 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void ReloadAll()
         {
-            this._documents.ForEach(d => d.Reload());
+            _documents.ForEach(d => d.Reload());
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void SaveAll()
         {
-            this.SaveAll(this._defaultSaveAsCallback);
+            SaveAll(_defaultSaveAsCallback);
         }
 
         /// <summary>
@@ -562,16 +562,16 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="saveAs">Save As callback</param>
         public void SaveAll(SaveAsCallback<TControl> saveAs)
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
-                if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+                if (doc.Filename != null && !doc.Filename.Equals(string.Empty))
                 {
                     doc.Save();
                 }
                 else
                 {
-                    String filename = saveAs(doc);
-                    if (filename != null && !filename.Equals(String.Empty))
+                    string filename = saveAs(doc);
+                    if (filename != null && !filename.Equals(string.Empty))
                     {
                         doc.SaveAs(filename);
                     }
@@ -586,12 +586,12 @@ namespace VDS.RDF.Utilities.Editor
         /// <exception cref="IndexOutOfRangeException">Thrown if the given index is not valid</exception>
         public void SwitchTo(int index)
         {
-            if (index >= 0 && index < this._documents.Count)
+            if (index >= 0 && index < _documents.Count)
             {
-                if (index != this._current)
+                if (index != _current)
                 {
-                    this._current = index;
-                    this.RaiseActiveDocumentChanged(this.ActiveDocument);
+                    _current = index;
+                    RaiseActiveDocumentChanged(ActiveDocument);
                 }
             }
             else
@@ -605,10 +605,10 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void PrevDocument()
         {
-            if (this._documents.Count > 1)
+            if (_documents.Count > 1)
             {
-                this._current--;
-                this.CorrectIndex();
+                _current--;
+                CorrectIndex();
             }
         }
 
@@ -617,10 +617,10 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public void NextDocument()
         {
-            if (this._documents.Count > 1)
+            if (_documents.Count > 1)
             {
-                this._current++;
-                this.CorrectIndex();
+                _current++;
+                CorrectIndex();
             }
         }
 
@@ -633,13 +633,13 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Arguments</param>
-        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TControl> args)
+        private void HandleValidatorChanged(object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
-            if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
+            if (args.Document.SyntaxValidator != null && _options.IsValidateAsYouTypeEnabled)
             {
                 ISyntaxValidationResults results = args.Document.Validate();
-                if (results != null && this._options.IsHighlightErrorsEnabled)
+                if (results != null && _options.IsHighlightErrorsEnabled)
                 {
                     if (results.Error != null && !results.IsValid)
                     {
@@ -663,14 +663,14 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Arguments</param>
-        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<TControl> args)
+        private void HandleTextChanged(object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
-            if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
+            if (args.Document.SyntaxValidator != null && _options.IsValidateAsYouTypeEnabled)
             {
                 args.Document.TextEditor.ClearErrorHighlights();
                 ISyntaxValidationResults results = args.Document.Validate();
-                if (results != null && this._options.IsHighlightErrorsEnabled)
+                if (results != null && _options.IsHighlightErrorsEnabled)
                 {
                     if (results.Error != null && !results.IsValid)
                     {
@@ -685,9 +685,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleHighlightingToggled()
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
-                doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+                doc.IsHighlightingEnabled = _options.IsSyntaxHighlightingEnabled;
             }
         }
 
@@ -696,7 +696,7 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleHighlightErrorsToggled()
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
                 doc.TextEditor.Refresh();
             }
@@ -707,9 +707,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleAutoCompleteToggled()
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
-                doc.IsAutoCompleteEnabled = this._options.IsAutoCompletionEnabled;
+                doc.IsAutoCompleteEnabled = _options.IsAutoCompletionEnabled;
             }
         }
 
@@ -718,9 +718,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleSymbolSelectionToggled()
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
-                doc.TextEditor.SymbolSelector = (this.Options.IsSymbolSelectionEnabled ? this.Options.CurrentSymbolSelector : null);
+                doc.TextEditor.SymbolSelector = (Options.IsSymbolSelectionEnabled ? Options.CurrentSymbolSelector : null);
             }
         }
 
@@ -729,9 +729,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleSymbolSelectorChanged()
         {
-            foreach (Document<TControl> doc in this._documents)
+            foreach (Document<TControl> doc in _documents)
             {
-                doc.TextEditor.SymbolSelector = (this.Options.IsSymbolSelectionEnabled ? this.Options.CurrentSymbolSelector : null);
+                doc.TextEditor.SymbolSelector = (Options.IsSymbolSelectionEnabled ? Options.CurrentSymbolSelector : null);
             }
         }
 
@@ -740,11 +740,11 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         private void HandleVisualOptionsChanged()
         {
-            if (this._visualOptions != null)
+            if (_visualOptions != null)
             {
-                foreach (Document<TControl> doc in this._documents)
+                foreach (Document<TControl> doc in _documents)
                 {
-                    doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
+                    doc.TextEditor.Apply<TFont, TColor>(_visualOptions);
                 }
             }
         }
@@ -755,7 +755,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private void RaiseActiveDocumentChanged(Document<TControl> doc)
         {
-            DocumentChangedHandler<TControl> d = this.ActiveDocumentChanged;
+            DocumentChangedHandler<TControl> d = ActiveDocumentChanged;
             if (d != null)
             {
                 d(this, new DocumentChangedEventArgs<TControl>(doc));
@@ -764,7 +764,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private void RaiseDocumentCreated(Document<TControl> doc)
         {
-            DocumentChangedHandler<TControl> d = this.DocumentCreated;
+            DocumentChangedHandler<TControl> d = DocumentCreated;
             if (d != null)
             {
                 d(this, new DocumentChangedEventArgs<TControl>(doc));

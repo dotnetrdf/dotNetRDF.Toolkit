@@ -37,7 +37,7 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
         public BaseInput(IRdfHandler handler)
         {
-            this.ConversionHandler = handler;
+            ConversionHandler = handler;
         }
 
         public IRdfHandler ConversionHandler

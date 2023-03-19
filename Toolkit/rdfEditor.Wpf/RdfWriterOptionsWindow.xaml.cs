@@ -58,85 +58,85 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 ComboBoxItem item = new ComboBoxItem();
                 item.Content = field.Name;
                 item.Tag = field.GetValue(null);
-                this.cboCompressionLevel.Items.Add(item);
+                cboCompressionLevel.Items.Add(item);
                 if (field.Name.Equals("Default"))
                 {
-                    this.cboCompressionLevel.SelectedItem = item;
+                    cboCompressionLevel.SelectedItem = item;
                 }
             }
-            if (this.cboCompressionLevel.SelectedItem == null && this.cboCompressionLevel.Items.Count > 0)
+            if (cboCompressionLevel.SelectedItem == null && cboCompressionLevel.Items.Count > 0)
             {
-                this.cboCompressionLevel.SelectedItem = this.cboCompressionLevel.Items[0];
+                cboCompressionLevel.SelectedItem = cboCompressionLevel.Items[0];
             }
 
             //Enable/Disable relevant controls
-            this.cboCompressionLevel.IsEnabled = (writer is ICompressingWriter);
-            this.chkHighSpeed.IsEnabled = (writer is IHighSpeedWriter);
-            this.chkPrettyPrint.IsEnabled = (writer is IPrettyPrintingWriter);
-            this.chkUseAttributes.IsEnabled = (writer is IAttributeWriter);
-            this.chkUseDtds.IsEnabled = (writer is IDtdWriter);
-            this.stkHtmlWriter.IsEnabled = (writer is IHtmlWriter);
-            this.stkXmlWriter.IsEnabled = (writer is IDtdWriter || writer is IAttributeWriter);
+            cboCompressionLevel.IsEnabled = (writer is ICompressingWriter);
+            chkHighSpeed.IsEnabled = (writer is IHighSpeedWriter);
+            chkPrettyPrint.IsEnabled = (writer is IPrettyPrintingWriter);
+            chkUseAttributes.IsEnabled = (writer is IAttributeWriter);
+            chkUseDtds.IsEnabled = (writer is IDtdWriter);
+            stkHtmlWriter.IsEnabled = (writer is IHtmlWriter);
+            stkXmlWriter.IsEnabled = (writer is IDtdWriter || writer is IAttributeWriter);
 
-            this._writer = writer;
+            _writer = writer;
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             //Apply the selected Options
-            if (this._writer is ICompressingWriter)
+            if (_writer is ICompressingWriter)
             {
                 try
                 {
-                    int? cLevel = ((ComboBoxItem)this.cboCompressionLevel.SelectedItem).Tag as int?;
-                    if (cLevel != null) ((ICompressingWriter)this._writer).CompressionLevel = cLevel.Value;
+                    int? cLevel = ((ComboBoxItem)cboCompressionLevel.SelectedItem).Tag as int?;
+                    if (cLevel != null) ((ICompressingWriter)_writer).CompressionLevel = cLevel.Value;
                 }
                 catch
                 {
                     //Can't set Compression Level so skip
                 }
             }
-            if (this._writer is IHighSpeedWriter)
+            if (_writer is IHighSpeedWriter)
             {
-                ((IHighSpeedWriter)this._writer).HighSpeedModePermitted = this.chkHighSpeed.IsChecked.Value;
+                ((IHighSpeedWriter)_writer).HighSpeedModePermitted = chkHighSpeed.IsChecked.Value;
             }
-            if (this._writer is IPrettyPrintingWriter)
+            if (_writer is IPrettyPrintingWriter)
             {
-                ((IPrettyPrintingWriter)this._writer).PrettyPrintMode = this.chkPrettyPrint.IsChecked.Value;
+                ((IPrettyPrintingWriter)_writer).PrettyPrintMode = chkPrettyPrint.IsChecked.Value;
             }
-            if (this._writer is IAttributeWriter)
+            if (_writer is IAttributeWriter)
             {
-                ((IAttributeWriter)this._writer).UseAttributes = this.chkUseAttributes.IsChecked.Value;
+                ((IAttributeWriter)_writer).UseAttributes = chkUseAttributes.IsChecked.Value;
             }
-            if (this._writer is IDtdWriter)
+            if (_writer is IDtdWriter)
             {
-                ((IDtdWriter)this._writer).UseDtd = this.chkUseDtds.IsChecked.Value;
+                ((IDtdWriter)_writer).UseDtd = chkUseDtds.IsChecked.Value;
             }
-            if (this._writer is IHtmlWriter)
+            if (_writer is IHtmlWriter)
             {
-                IHtmlWriter htmlWriter = (IHtmlWriter)this._writer;
-                htmlWriter.Stylesheet = this.txtStylesheet.Text;
-                htmlWriter.CssClassBlankNode = this.ToUnsafeString(this.txtCssClassBNodes.Text);
-                htmlWriter.CssClassDatatype = this.ToUnsafeString(this.txtCssClassDatatypes.Text);
-                htmlWriter.CssClassLangSpec = this.ToUnsafeString(this.txtCssClassLangSpec.Text);
-                htmlWriter.CssClassLiteral = this.ToUnsafeString(this.txtCssClassLiterals.Text);
-                htmlWriter.CssClassUri = this.ToUnsafeString(this.txtCssClassUri.Text);
-                htmlWriter.UriPrefix = this.txtPrefixUris.Text;
+                IHtmlWriter htmlWriter = (IHtmlWriter)_writer;
+                htmlWriter.Stylesheet = txtStylesheet.Text;
+                htmlWriter.CssClassBlankNode = ToUnsafeString(txtCssClassBNodes.Text);
+                htmlWriter.CssClassDatatype = ToUnsafeString(txtCssClassDatatypes.Text);
+                htmlWriter.CssClassLangSpec = ToUnsafeString(txtCssClassLangSpec.Text);
+                htmlWriter.CssClassLiteral = ToUnsafeString(txtCssClassLiterals.Text);
+                htmlWriter.CssClassUri = ToUnsafeString(txtCssClassUri.Text);
+                htmlWriter.UriPrefix = txtPrefixUris.Text;
             }
 
-            this.DialogResult = true;
-            this.Close();
+            DialogResult = true;
+            Close();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
         }
 
-        private String ToUnsafeString(String value)
+        private string ToUnsafeString(string value)
         {
-            return (value.Equals(String.Empty) ? null : value);
+            return (value.Equals(string.Empty) ? null : value);
         }
     }
 }

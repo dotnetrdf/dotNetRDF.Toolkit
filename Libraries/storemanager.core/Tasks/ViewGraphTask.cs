@@ -35,18 +35,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<IGraph>
     {
         private readonly IStorageProvider _manager;
-        private readonly String _graphUri;
+        private readonly string _graphUri;
 
         /// <summary>
         /// Creates a new view graph task
         /// </summary>
         /// <param name="manager">Storage Provider</param>
         /// <param name="graphUri">URI of the Graph to view</param>
-        public ViewGraphTask(IStorageProvider manager, String graphUri)
+        public ViewGraphTask(IStorageProvider manager, string graphUri)
             : base("View Graph")
         {
-            this._manager = manager;
-            this._graphUri = graphUri;
+            _manager = manager;
+            _graphUri = graphUri;
         }
 
         /// <summary>
@@ -55,18 +55,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override IGraph RunTaskInternal()
         {
-            if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
+            if (_graphUri != null && !_graphUri.Equals(string.Empty))
             {
-                this.Information = "Loading Graph " + this._graphUri + "...";
+                Information = "Loading Graph " + _graphUri + "...";
             }
             else
             {
-                this.Information = "Loading Default Graph...";
+                Information = "Loading Default Graph...";
             }
 
             Graph g = new Graph();
-            this._manager.LoadGraph(g, this._graphUri);
-            this.Information = "Loaded Graph contains " + g.Triples.Count + " Triple(s)";
+            _manager.LoadGraph(g, _graphUri);
+            Information = "Loaded Graph contains " + g.Triples.Count + " Triple(s)";
             return g;
         }
     }

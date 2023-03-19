@@ -40,18 +40,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<TaskResult>
     {
         private readonly IStorageServer _server;
-        private readonly String _id;
+        private readonly string _id;
 
         /// <summary>
         /// Gets a Store
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public DeleteStoreTask(IStorageServer server, String id)
+        public DeleteStoreTask(IStorageServer server, string id)
             : base("Delete Store")
         {
-            this._server = server;
-            this._id = id;
+            _server = server;
+            _id = id;
         }
 
         /// <summary>
@@ -60,10 +60,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
-            this.Information = "Deleting Store " + this._id + "...";
-            if (this._server != null)
+            Information = "Deleting Store " + _id + "...";
+            if (_server != null)
             {
-                this._server.DeleteStore(this._id);
+                _server.DeleteStore(_id);
                 return new TaskResult(true);
             }
             else

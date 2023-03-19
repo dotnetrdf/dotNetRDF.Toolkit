@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         /// <param name="var">Variable</param>
-        public VariableData(String var)
+        public VariableData(string var)
             : base(var, var, "Variable " + var) { }
     }
 }

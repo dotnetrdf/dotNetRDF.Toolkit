@@ -58,8 +58,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         public ConnectionSettingsGrid(IConnectionDefinition def)
             : this()
         {
-            this.Render(def);
-            this._def = def;
+            Render(def);
+            _def = def;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// <param name="def">Definition</param>
         private void Render(IConnectionDefinition def)
         {
-            this.lblDescrip.Text = def.StoreDescription;
+            lblDescrip.Text = def.StoreDescription;
 
             int i = 0;
             tblSettings.Controls.Clear();
@@ -88,8 +88,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                     case ConnectionSettingType.Password:
                         //String/Password so show a Textbox
                         TextBox box = new TextBox();
-                        String s = (String)setting.Key.GetValue(def, null);
-                        box.Text = s ?? String.Empty;
+                        string s = (string)setting.Key.GetValue(def, null);
+                        box.Text = s ?? string.Empty;
                         box.Width = 225;
                         box.Tag = setting.Key;
                         if (setting.Value.Type == ConnectionSettingType.Password) box.PasswordChar = '*';
@@ -102,7 +102,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                             };
 
                         //Show DisplaySuffix if relevant
-                        if (!String.IsNullOrEmpty(setting.Value.DisplaySuffix))
+                        if (!string.IsNullOrEmpty(setting.Value.DisplaySuffix))
                         {
                             FlowLayoutPanel flow = new FlowLayoutPanel();
                             flow.Margin = new Padding(0);
@@ -140,8 +140,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                                 if (propertyInfo != null) propertyInfo.SetValue(def, check.Checked, null);
                             };
 
-                        this.tblSettings.SetColumnSpan(check, 2);
-                        this.tblSettings.Controls.Add(check, 0, i);
+                        tblSettings.SetColumnSpan(check, 2);
+                        tblSettings.Controls.Add(check, 0, i);
                         break;
 
                     case ConnectionSettingType.Integer:
@@ -157,8 +157,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                         }
                         else
                         {
-                            num.Minimum = Int32.MinValue;
-                            num.Maximum = Int32.MaxValue;
+                            num.Minimum = int.MinValue;
+                            num.Maximum = int.MaxValue;
                         }
                         num.Value = val;
                         num.Tag = setting.Key;
@@ -193,7 +193,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
                     case ConnectionSettingType.File:
                         //File so show a TextBox and a Browse Button
-                        String file = (String)setting.Key.GetValue(def, null);
+                        string file = (string)setting.Key.GetValue(def, null);
                         FlowLayoutPanel fileFlow = new FlowLayoutPanel();
                         fileFlow.Margin = new Padding(0);
                         fileFlow.WrapContents = false;
@@ -202,7 +202,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
                         TextBox fileBox = new TextBox();
                         fileBox.Width = 225;
-                        fileBox.Text = file ?? String.Empty;
+                        fileBox.Text = file ?? string.Empty;
                         fileBox.Width = 225;
                         fileBox.Tag = setting.Key;
                         fileFlow.Controls.Add(fileBox);
@@ -224,11 +224,11 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
                             {
                                 ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
                                 if (attr == null) return;
-                                this.ofdBrowse.Title = string.Format(Resources.BrowseFor, attr.DisplayName);
-                                this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
-                                if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                                ofdBrowse.Title = string.Format(Resources.BrowseFor, attr.DisplayName);
+                                ofdBrowse.Filter = (string.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
+                                if (ofdBrowse.ShowDialog() == DialogResult.OK)
                                 {
-                                    fileBox.Text = this.ofdBrowse.FileName;
+                                    fileBox.Text = ofdBrowse.FileName;
                                 }
                             };
 
@@ -248,13 +248,13 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         {
             get
             {
-                return this._def;
+                return _def;
             }
             set
             {
-                if (ReferenceEquals(this._def, value)) return;
-                this._def = value;
-                this.Render(value);
+                if (ReferenceEquals(_def, value)) return;
+                _def = value;
+                Render(value);
             }
         }
 
@@ -267,13 +267,13 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         {
             try
             {
-                this._connection = new Connection(this._def.Copy());
-                this._connection.Open(this.chkForceReadOnly.Checked);
-                this.RaiseConnected();
+                _connection = new Connection(_def.Copy());
+                _connection.Open(chkForceReadOnly.Checked);
+                RaiseConnected();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, string.Format(Resources.Connection_Failed, this._def.StoreName), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, string.Format(Resources.Connection_Failed, _def.StoreName), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -287,10 +287,10 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// </summary>
         private void RaiseConnected()
         {
-            Connected d = this.Connected;
+            Connected d = Connected;
             if (d != null)
             {
-                d(this, new ConnectedEventArgs(this._connection));
+                d(this, new ConnectedEventArgs(_connection));
             }
         }
     }

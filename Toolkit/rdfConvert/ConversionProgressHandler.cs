@@ -44,50 +44,60 @@ namespace VDS.RDF.Utilities.Convert
 
         public ConversionProgressHandler(IRdfHandler handler)
         {
-            this._handler = handler;
+            _handler = handler;
         }
 
         protected override void StartRdfInternal()
         {
-            this._handler.StartRdf();
-            this._count = 0;
-            this._timer.Stop();
-            this._timer.Reset();
-            this._timer.Start();
+            _handler.StartRdf();
+            _count = 0;
+            _timer.Stop();
+            _timer.Reset();
+            _timer.Start();
         }
 
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
-            this._timer.Stop();
-            long triples = ((ReportingInterval * this._batches) + this._count);
-            Console.WriteLine("rdfConvert: Info: Converted " + triples + " triple(s) in " + this._timer.Elapsed);
-            double speed = ((double)triples / (double)this._timer.ElapsedMilliseconds) * 1000;
+            _handler.EndRdf(ok);
+            _timer.Stop();
+            long triples = ((ReportingInterval * _batches) + _count);
+            Console.WriteLine("rdfConvert: Info: Converted " + triples + " triple(s) in " + _timer.Elapsed);
+            double speed = ((double)triples / (double)_timer.ElapsedMilliseconds) * 1000;
             Console.WriteLine("rdfConvert: Info: Average Conversion Speed was " + speed + " Triples/second");
         }
 
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._count++;
-            if (this._count >= ReportingInterval)
-            {
-                this._batches++;
-                this._count = 0;
-                Console.WriteLine("rdfConvert: Info: Converted " + (this._batches * ReportingInterval) + " triples in " + this._timer.Elapsed + " so far..." + (this._handler is WriteToFileHandler ? String.Empty : "(NB - Due to options/target format actual conversion to output format will happen at end of input parsing)"));
-            }
-            return this._handler.HandleTriple(t);
+            Report();
+            return _handler.HandleTriple(t);
         }
 
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            Report();
+            return _handler.HandleQuad(t, graph);
+        }
+
+        private void Report()
+        {
+            _count++;
+            if (_count >= ReportingInterval)
+            {
+                _batches++;
+                _count = 0;
+                Console.WriteLine("rdfConvert: Info: Converted " + (_batches * ReportingInterval) + " triples in " + _timer.Elapsed + " so far..." + (_handler is WriteToFileHandler ? string.Empty : "(NB - Due to options/target format actual conversion to output format will happen at end of input parsing)"));
+            }
+        }
         public override bool AcceptsAll
         {
             get 
@@ -100,7 +110,7 @@ namespace VDS.RDF.Utilities.Convert
         {
             get
             {
-                return new IRdfHandler[] { this._handler };
+                return new IRdfHandler[] { _handler };
             }
         }
     }

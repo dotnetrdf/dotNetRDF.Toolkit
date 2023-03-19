@@ -53,17 +53,17 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="file">File on disk to which the graph should be saved</param>
-        protected BaseConnectionsGraph(IGraph g, String file)
+        protected BaseConnectionsGraph(IGraph g, string file)
         {
             if (ReferenceEquals(g, null)) throw new ArgumentNullException("g");
             if (ReferenceEquals(file, null)) throw new ArgumentNullException("file");
 
-            this.File = file;
-            this.Graph = g;
-            this._handler = this.HandlePropertyChanged;
+            File = file;
+            Graph = g;
+            _handler = HandlePropertyChanged;
 
             // Load in connections
-            this.Load();
+            Load();
         }
 
         /// <summary>
@@ -73,13 +73,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="e">Event arguments</param>
         protected virtual void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaiseChanged();
+            RaiseChanged();
         }
 
         /// <summary>
         /// Gets the file on disk where this graph is saved
         /// </summary>
-        public String File { get; private set; }
+        public string File { get; private set; }
 
         /// <summary>
         /// Gets the underlying graph
@@ -91,7 +91,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public IEnumerable<Connection> Connections
         {
-            get { return this._connections; }
+            get { return _connections; }
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public int Count
         {
-            get { return this._connections.Count; }
+            get { return _connections.Count; }
         }
 
         /// <summary>
@@ -108,15 +108,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         public virtual void Add(Connection connection)
         {
-            if (this._connections.Contains(connection)) return;
+            if (_connections.Contains(connection)) return;
             if (!ConnectionInstancePool.Contains(connection))
             {
                 ConnectionInstancePool.Add(connection);
             }
-            this._connections.Add(connection);
-            connection.PropertyChanged += this._handler;
-            this.RaiseAdded(connection);
-            this.Save();
+            _connections.Add(connection);
+            connection.PropertyChanged += _handler;
+            RaiseAdded(connection);
+            Save();
         }
 
         /// <summary>
@@ -125,11 +125,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         public virtual void Remove(Connection connection)
         {
-            if (!this._connections.Contains(connection)) return;
-            this._connections.Remove(connection);
-            connection.PropertyChanged -= this._handler;
-            this.RaiseRemoved(connection);
-            this.Save();
+            if (!_connections.Contains(connection)) return;
+            _connections.Remove(connection);
+            connection.PropertyChanged -= _handler;
+            RaiseRemoved(connection);
+            Save();
         }
 
         /// <summary>
@@ -137,10 +137,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public virtual void Clear()
         {
-            this._connections.ForEach(c => c.PropertyChanged -= this._handler);
-            this._connections.Clear();
-            this.RaiseCleared();
-            this.Save();
+            _connections.ForEach(c => c.PropertyChanged -= _handler);
+            _connections.Clear();
+            RaiseCleared();
+            Save();
         }
 
         /// <summary>
@@ -148,8 +148,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected virtual void Load()
         {
-            this._connections.Clear();
-            if (this.Graph.Triples.Count == 0) return;
+            _connections.Clear();
+            if (Graph.Triples.Count == 0) return;
 
             SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
@@ -159,7 +159,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             Graph g = new Graph();
             query.SetParameter("type", g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
 
-            SparqlResultSet results = this.Graph.ExecuteQuery(query) as SparqlResultSet;
+            SparqlResultSet results = Graph.ExecuteQuery(query) as SparqlResultSet;
             if (results == null) return;
             foreach (SparqlResult r in results)
             {
@@ -170,11 +170,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                 Connection connection;
                 if (!ConnectionInstancePool.TryGetInstance(connectionUri, out connection))
                 {
-                    connection = new Connection(this.Graph, connectionUri);
+                    connection = new Connection(Graph, connectionUri);
                     ConnectionInstancePool.Add(connection);
                 }
-                this._connections.Add(connection);
-                connection.PropertyChanged += this._handler;
+                _connections.Add(connection);
+                connection.PropertyChanged += _handler;
             }
         }
 
@@ -184,12 +184,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         protected virtual void Save()
         {
             // Only clear the graph if there are no connections or the derived implementation specifically requires
-            if (this._connections.Count == 0 || this.RequiresClearOnSave) this.Graph.Clear();
-            foreach (Connection connection in this._connections)
+            if (_connections.Count == 0 || RequiresClearOnSave) Graph.Clear();
+            foreach (Connection connection in _connections)
             {
-                connection.SaveConfiguration(this.Graph);
+                connection.SaveConfiguration(Graph);
             }
-            this.Graph.SaveToFile(this.File);
+            Graph.SaveToFile(File);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         protected void RaiseAdded(Connection connection)
         {
-            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            NotifyCollectionChangedEventHandler d = CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, connection));
         }
 
@@ -213,7 +213,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         protected void RaiseRemoved(Connection connection)
         {
-            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            NotifyCollectionChangedEventHandler d = CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, connection));
         }
 
@@ -222,7 +222,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected void RaiseChanged()
         {
-            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            NotifyCollectionChangedEventHandler d = CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -231,7 +231,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected void RaiseCleared()
         {
-            NotifyCollectionChangedEventHandler d = this.CollectionChanged;
+            NotifyCollectionChangedEventHandler d = CollectionChanged;
             if (d != null) d(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 

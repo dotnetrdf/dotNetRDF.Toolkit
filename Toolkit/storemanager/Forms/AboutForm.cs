@@ -39,9 +39,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public AboutForm()
         {
             InitializeComponent();
-            this.lblAppVersionActual.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.lblCoreVersionActual.Text = Assembly.GetAssembly(typeof(IConnectionDefinition)).GetName().Version.ToString();
-            this.lblApiVersionActual.Text = Assembly.GetAssembly(typeof(IGraph)).GetName().Version.ToString();
+            lblAppVersionActual.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            lblCoreVersionActual.Text = Assembly.GetAssembly(typeof(IConnectionDefinition)).GetName().Version.ToString();
+            lblApiVersionActual.Text = Assembly.GetAssembly(typeof(IGraph)).GetName().Version.ToString();
 
             ShowDetectedAssemblies();
         }
@@ -54,10 +54,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 Assembly assm = Assembly.GetAssembly(t);
                 if (!ReferenceEquals(current, assm))
                 {
-                    if (!this._assemblies.Contains(assm))
+                    if (!_assemblies.Contains(assm))
                     {
-                        this._assemblies.Add(assm);
-                        this.lstPlugins.Items.Add(assm.ToString());
+                        _assemblies.Add(assm);
+                        lstPlugins.Items.Add(assm.ToString());
                     }
                 }
             }
@@ -65,12 +65,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void btnRescan_Click(object sender, EventArgs e)
         {
-            this._assemblies.Clear();
-            this.lstPlugins.BeginUpdate();
-            this.lstPlugins.Items.Clear();
+            _assemblies.Clear();
+            lstPlugins.BeginUpdate();
+            lstPlugins.Items.Clear();
             ConnectionDefinitionManager.ScanPlugins();
-            this.ShowDetectedAssemblies();
-            this.lstPlugins.EndUpdate();
+            ShowDetectedAssemblies();
+            lstPlugins.EndUpdate();
         }
 
         private void AboutForm_Load(object sender, EventArgs e)

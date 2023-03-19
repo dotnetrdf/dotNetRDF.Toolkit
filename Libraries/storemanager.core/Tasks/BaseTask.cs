@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : ITask<TResult> where TResult : class
     {
         private TaskState _state = TaskState.Unknown;
-        private String _information;
+        private string _information;
         private readonly RunTaskInternalDelegate _delegate;
         private Exception _error;
         private TaskCallback<TResult> _callback;
@@ -48,11 +48,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// Creates a new Base Task
         /// </summary>
         /// <param name="name">Task Name</param>
-        protected BaseTask(String name)
+        protected BaseTask(string name)
         {
-            this.Name = name;
-            this._state = TaskState.NotRun;
-            this._delegate = new BaseTask<TResult>.RunTaskInternalDelegate(this.RunTaskInternal);
+            Name = name;
+            _state = TaskState.NotRun;
+            _delegate = new BaseTask<TResult>.RunTaskInternalDelegate(RunTaskInternal);
         }
 
         /// <summary>
@@ -60,11 +60,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public TaskState State
         {
-            get { return this._state; }
+            get { return _state; }
             protected set
             {
-                this._state = value;
-                this.RaiseStateChanged();
+                _state = value;
+                RaiseStateChanged();
             }
         }
 
@@ -76,13 +76,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <summary>
         /// Gets/Sets the Task Information
         /// </summary>
-        public String Information
+        public string Information
         {
-            get { return this._information; }
+            get { return _information; }
             set
             {
-                this._information = value;
-                this.RaiseStateChanged();
+                _information = value;
+                RaiseStateChanged();
             }
         }
 
@@ -91,11 +91,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public Exception Error
         {
-            get { return this._error; }
+            get { return _error; }
             protected set
             {
-                this._error = value;
-                this.RaiseStateChanged();
+                _error = value;
+                RaiseStateChanged();
             }
         }
 
@@ -106,9 +106,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                if (this._start == null) return null;
-                if (this._end != null) return (this._end.Value - this._start.Value);
-                return (DateTime.Now - this._start.Value);
+                if (_start == null) return null;
+                if (_end != null) return (_end.Value - _start.Value);
+                return (DateTime.Now - _start.Value);
             }
         }
 
@@ -123,11 +123,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="callback">Callback</param>
         public void RunTask(TaskCallback<TResult> callback)
         {
-            this._start = DateTime.Now;
-            this._callback = callback;
-            this.State = TaskState.Starting;
-            this._delegate.BeginInvoke(new AsyncCallback(this.CompleteTask), null);
-            this.State = TaskState.Running;
+            _start = DateTime.Now;
+            _callback = callback;
+            State = TaskState.Starting;
+            _delegate.BeginInvoke(new AsyncCallback(CompleteTask), null);
+            State = TaskState.Running;
         }
 
         /// <summary>
@@ -151,21 +151,21 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             try
             {
                 //End the Invoke saving the Result
-                this.Result = this._delegate.EndInvoke(result);
-                this.State = TaskState.Completed;
+                Result = _delegate.EndInvoke(result);
+                State = TaskState.Completed;
             }
             catch (Exception ex)
             {
                 //Invoke errored so save the Error
-                this.State = TaskState.CompletedWithErrors;
-                this.Information = "Error - " + ex.Message;
-                this.Error = ex;
+                State = TaskState.CompletedWithErrors;
+                Information = "Error - " + ex.Message;
+                Error = ex;
             }
             finally
             {
-                this._end = DateTime.Now;
+                _end = DateTime.Now;
                 //Invoke the Callback
-                this._callback(this);
+                _callback(this);
             }
         }
 
@@ -189,7 +189,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected void RaiseStateChanged()
         {
-            TaskStateChanged d = this.StateChanged;
+            TaskStateChanged d = StateChanged;
             if (d != null)
             {
                 d();
@@ -208,7 +208,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// Creates a new Task
         /// </summary>
         /// <param name="name">Task Name</param>
-        protected CancellableTask(String name)
+        protected CancellableTask(string name)
             : base(name)
         {
             HasBeenCancelled = false;
@@ -219,7 +219,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public override sealed bool IsCancellable
         {
-            get { return this.State != TaskState.Completed && this.State != TaskState.CompletedWithErrors; }
+            get { return State != TaskState.Completed && State != TaskState.CompletedWithErrors; }
         }
 
         /// <summary>
@@ -227,9 +227,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public override sealed void Cancel()
         {
-            this.HasBeenCancelled = true;
-            this.State = TaskState.RunningCancelled;
-            this.CancelInternal();
+            HasBeenCancelled = true;
+            State = TaskState.RunningCancelled;
+            CancelInternal();
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// Creates a new Task
         /// </summary>
         /// <param name="name">Name</param>
-        protected NonCancellableTask(String name)
+        protected NonCancellableTask(string name)
             : base(name)
         {
         }

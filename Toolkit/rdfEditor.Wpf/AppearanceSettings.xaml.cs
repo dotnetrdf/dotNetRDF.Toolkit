@@ -50,18 +50,18 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class AppearanceSettings
         : Window
     {
-        private List<String> _colours = new List<String>();
+        private List<string> _colours = new List<string>();
         private VisualOptions<FontFamily, Color> _options;
 
-        private List<String> _decorations;
+        private List<string> _decorations;
 
         private static ITextRunConstructionContext _colourContext = new FakeTextRunContext();
 
         public AppearanceSettings(VisualOptions<FontFamily, Color> options)
         {
-            this._options = options;
+            _options = options;
 
-            this._decorations = new List<string>()
+            _decorations = new List<string>()
             {
                 "None",
                 "Baseline",
@@ -81,7 +81,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     try
                     {
                         Color c = (Color)ColorConverter.ConvertFromString(p.Name);
-                        this._colours.Add(c.ToString());
+                        _colours.Add(c.ToString());
                     }
                     catch
                     {
@@ -91,64 +91,64 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
 
             //Show current settings
-            this.ShowSettings();
+            ShowSettings();
         }
 
         #region Display Settings
 
-        public IEnumerable<String> Decorations
+        public IEnumerable<string> Decorations
         {
             get
             {
-                return this._decorations;
+                return _decorations;
             }
         }
 
         private void ShowSettings()
         {
             //Show Editor Settings
-            FontFamily font = (Properties.Settings.Default.EditorFontFace == null) ? this._options.FontFace : Properties.Settings.Default.EditorFontFace;
-            this.cboFont.SelectedItem = font;
-            this.fontSizeSlider.Value = Math.Round(Properties.Settings.Default.EditorFontSize);
-            this.ShowColour(this.cboEditorForeground, Properties.Settings.Default.EditorForeground);
-            this.ShowColour(this.cboEditorBackground, Properties.Settings.Default.EditorBackground);
+            FontFamily font = (Properties.Settings.Default.EditorFontFace == null) ? _options.FontFace : Properties.Settings.Default.EditorFontFace;
+            cboFont.SelectedItem = font;
+            fontSizeSlider.Value = Math.Round(Properties.Settings.Default.EditorFontSize);
+            ShowColour(cboEditorForeground, Properties.Settings.Default.EditorForeground);
+            ShowColour(cboEditorBackground, Properties.Settings.Default.EditorBackground);
 
             //Show Syntax Highlighting Settings
-            this.ShowColour(this.cboColourXmlAttrName, Properties.Settings.Default.SyntaxColourXmlAttrName);
-            this.ShowColour(this.cboColourXmlAttrValue, Properties.Settings.Default.SyntaxColourXmlAttrValue);
-            this.ShowColour(this.cboColourXmlBrokenEntities, Properties.Settings.Default.SyntaxColourXmlBrokenEntity);
-            this.ShowColour(this.cboColourXmlCData, Properties.Settings.Default.SyntaxColourXmlCData);
-            this.ShowColour(this.cboColourXmlComments, Properties.Settings.Default.SyntaxColourXmlComments);
-            this.ShowColour(this.cboColourXmlDocType, Properties.Settings.Default.SyntaxColourXmlDocType);
-            this.ShowColour(this.cboColourXmlEntities, Properties.Settings.Default.SyntaxColourXmlEntity);
-            this.ShowColour(this.cboColourXmlTags, Properties.Settings.Default.SyntaxColourXmlTag);
+            ShowColour(cboColourXmlAttrName, Properties.Settings.Default.SyntaxColourXmlAttrName);
+            ShowColour(cboColourXmlAttrValue, Properties.Settings.Default.SyntaxColourXmlAttrValue);
+            ShowColour(cboColourXmlBrokenEntities, Properties.Settings.Default.SyntaxColourXmlBrokenEntity);
+            ShowColour(cboColourXmlCData, Properties.Settings.Default.SyntaxColourXmlCData);
+            ShowColour(cboColourXmlComments, Properties.Settings.Default.SyntaxColourXmlComments);
+            ShowColour(cboColourXmlDocType, Properties.Settings.Default.SyntaxColourXmlDocType);
+            ShowColour(cboColourXmlEntities, Properties.Settings.Default.SyntaxColourXmlEntity);
+            ShowColour(cboColourXmlTags, Properties.Settings.Default.SyntaxColourXmlTag);
 
-            this.ShowColour(this.cboColourBNode, Properties.Settings.Default.SyntaxColourBNode);
-            this.ShowColour(this.cboColourComments, Properties.Settings.Default.SyntaxColourComment);
-            this.ShowColour(this.cboColourEscapedChars, Properties.Settings.Default.SyntaxColourEscapedChar);
-            this.ShowColour(this.cboColourKeywords, Properties.Settings.Default.SyntaxColourKeyword);
-            this.ShowColour(this.cboColourLangSpec, Properties.Settings.Default.SyntaxColourLangSpec);
-            this.ShowColour(this.cboColourNumbers, Properties.Settings.Default.SyntaxColourNumbers);
-            this.ShowColour(this.cboColourPunctuation, Properties.Settings.Default.SyntaxColourPunctuation);
-            this.ShowColour(this.cboColourQNames, Properties.Settings.Default.SyntaxColourQName);
-            this.ShowColour(this.cboColourStrings, Properties.Settings.Default.SyntaxColourString);
-            this.ShowColour(this.cboColourURIs, Properties.Settings.Default.SyntaxColourURI);
-            this.ShowColour(this.cboColourVariable, Properties.Settings.Default.SyntaxColourVariables);
+            ShowColour(cboColourBNode, Properties.Settings.Default.SyntaxColourBNode);
+            ShowColour(cboColourComments, Properties.Settings.Default.SyntaxColourComment);
+            ShowColour(cboColourEscapedChars, Properties.Settings.Default.SyntaxColourEscapedChar);
+            ShowColour(cboColourKeywords, Properties.Settings.Default.SyntaxColourKeyword);
+            ShowColour(cboColourLangSpec, Properties.Settings.Default.SyntaxColourLangSpec);
+            ShowColour(cboColourNumbers, Properties.Settings.Default.SyntaxColourNumbers);
+            ShowColour(cboColourPunctuation, Properties.Settings.Default.SyntaxColourPunctuation);
+            ShowColour(cboColourQNames, Properties.Settings.Default.SyntaxColourQName);
+            ShowColour(cboColourStrings, Properties.Settings.Default.SyntaxColourString);
+            ShowColour(cboColourURIs, Properties.Settings.Default.SyntaxColourURI);
+            ShowColour(cboColourVariable, Properties.Settings.Default.SyntaxColourVariables);
 
             //Show Error Highlighting Settings
-            font = (Properties.Settings.Default.EditorFontFace == null) ? this._options.FontFace : Properties.Settings.Default.ErrorHighlightFontFamily;
-            this.cboErrorFont.SelectedItem = font;
-            this.ShowDecoration(this.cboErrorDecoration, Properties.Settings.Default.ErrorHighlightDecoration);
-            this.ShowColour(this.cboColourErrorFont, Properties.Settings.Default.ErrorHighlightForeground);
-            this.ShowColour(this.cboColourErrorBackground, Properties.Settings.Default.ErrorHighlightBackground);
+            font = (Properties.Settings.Default.EditorFontFace == null) ? _options.FontFace : Properties.Settings.Default.ErrorHighlightFontFamily;
+            cboErrorFont.SelectedItem = font;
+            ShowDecoration(cboErrorDecoration, Properties.Settings.Default.ErrorHighlightDecoration);
+            ShowColour(cboColourErrorFont, Properties.Settings.Default.ErrorHighlightForeground);
+            ShowColour(cboColourErrorBackground, Properties.Settings.Default.ErrorHighlightBackground);
         }
 
         private void ShowColour(ComboBox combo, Color c)
         {
-            String s = c.ToString();
-            for (int i = 0; i < this._colours.Count; i++)
+            string s = c.ToString();
+            for (int i = 0; i < _colours.Count; i++)
             {
-                if (s.Equals(this._colours[i]))
+                if (s.Equals(_colours[i]))
                 {
                     combo.SelectedIndex = i;
                     return;
@@ -160,13 +160,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             try
             {
-                if (combo.SelectedIndex < 0 || combo.SelectedIndex >= this._colours.Count)
+                if (combo.SelectedIndex < 0 || combo.SelectedIndex >= _colours.Count)
                 {
                     return def;
                 }
                 else
                 {
-                    return (Color)ColorConverter.ConvertFromString(this._colours[combo.SelectedIndex]);
+                    return (Color)ColorConverter.ConvertFromString(_colours[combo.SelectedIndex]);
                 }
             }
             catch
@@ -175,15 +175,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        private void ShowDecoration(ComboBox combo, String decoration)
+        private void ShowDecoration(ComboBox combo, string decoration)
         {
-            if (decoration == null || decoration.Equals(String.Empty))
+            if (decoration == null || decoration.Equals(string.Empty))
             {
                 decoration = "None";
             }
-            for (int i = 0; i < this._decorations.Count; i++)
+            for (int i = 0; i < _decorations.Count; i++)
             {
-                if (decoration.Equals(this._decorations[i]))
+                if (decoration.Equals(_decorations[i]))
                 {
                     combo.SelectedIndex = i;
                     return;
@@ -191,7 +191,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        private String GetDecoration(ComboBox combo)
+        private string GetDecoration(ComboBox combo)
         {
             if (combo.SelectedItem == null || combo.SelectedIndex < 0)
             {
@@ -210,39 +210,39 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             try
             {
                 //First save general Editor Appearance Settings
-                Properties.Settings.Default.EditorFontFace = (FontFamily)this.cboFont.SelectedItem;
-                Properties.Settings.Default.EditorFontSize = this.fontSizeSlider.Value;
-                Properties.Settings.Default.EditorForeground = this.GetColour(Properties.Settings.Default.EditorForeground, this.cboEditorForeground);
-                Properties.Settings.Default.EditorBackground = this.GetColour(Properties.Settings.Default.EditorBackground, this.cboEditorBackground);
+                Properties.Settings.Default.EditorFontFace = (FontFamily)cboFont.SelectedItem;
+                Properties.Settings.Default.EditorFontSize = fontSizeSlider.Value;
+                Properties.Settings.Default.EditorForeground = GetColour(Properties.Settings.Default.EditorForeground, cboEditorForeground);
+                Properties.Settings.Default.EditorBackground = GetColour(Properties.Settings.Default.EditorBackground, cboEditorBackground);
                 Properties.Settings.Default.Save();
 
                 //Then save Syntax Highlighting Settings
-                Properties.Settings.Default.SyntaxColourXmlAttrName = this.GetColour(Properties.Settings.Default.SyntaxColourXmlAttrName, this.cboColourXmlAttrName);
-                Properties.Settings.Default.SyntaxColourXmlAttrValue = this.GetColour(Properties.Settings.Default.SyntaxColourXmlAttrValue, this.cboColourXmlAttrValue);
-                Properties.Settings.Default.SyntaxColourXmlBrokenEntity = this.GetColour(Properties.Settings.Default.SyntaxColourXmlBrokenEntity, this.cboColourXmlBrokenEntities);
-                Properties.Settings.Default.SyntaxColourXmlCData = this.GetColour(Properties.Settings.Default.SyntaxColourXmlCData, this.cboColourXmlCData);
-                Properties.Settings.Default.SyntaxColourXmlComments = this.GetColour(Properties.Settings.Default.SyntaxColourXmlComments, this.cboColourXmlComments);
-                Properties.Settings.Default.SyntaxColourXmlDocType = this.GetColour(Properties.Settings.Default.SyntaxColourXmlDocType, this.cboColourXmlDocType);
-                Properties.Settings.Default.SyntaxColourXmlEntity = this.GetColour(Properties.Settings.Default.SyntaxColourXmlEntity, this.cboColourXmlEntities);
-                Properties.Settings.Default.SyntaxColourXmlTag = this.GetColour(Properties.Settings.Default.SyntaxColourXmlTag, this.cboColourXmlTags);
+                Properties.Settings.Default.SyntaxColourXmlAttrName = GetColour(Properties.Settings.Default.SyntaxColourXmlAttrName, cboColourXmlAttrName);
+                Properties.Settings.Default.SyntaxColourXmlAttrValue = GetColour(Properties.Settings.Default.SyntaxColourXmlAttrValue, cboColourXmlAttrValue);
+                Properties.Settings.Default.SyntaxColourXmlBrokenEntity = GetColour(Properties.Settings.Default.SyntaxColourXmlBrokenEntity, cboColourXmlBrokenEntities);
+                Properties.Settings.Default.SyntaxColourXmlCData = GetColour(Properties.Settings.Default.SyntaxColourXmlCData, cboColourXmlCData);
+                Properties.Settings.Default.SyntaxColourXmlComments = GetColour(Properties.Settings.Default.SyntaxColourXmlComments, cboColourXmlComments);
+                Properties.Settings.Default.SyntaxColourXmlDocType = GetColour(Properties.Settings.Default.SyntaxColourXmlDocType, cboColourXmlDocType);
+                Properties.Settings.Default.SyntaxColourXmlEntity = GetColour(Properties.Settings.Default.SyntaxColourXmlEntity, cboColourXmlEntities);
+                Properties.Settings.Default.SyntaxColourXmlTag = GetColour(Properties.Settings.Default.SyntaxColourXmlTag, cboColourXmlTags);
 
-                Properties.Settings.Default.SyntaxColourBNode = this.GetColour(Properties.Settings.Default.SyntaxColourBNode, this.cboColourBNode);
-                Properties.Settings.Default.SyntaxColourComment = this.GetColour(Properties.Settings.Default.SyntaxColourComment, this.cboColourComments);
-                Properties.Settings.Default.SyntaxColourEscapedChar = this.GetColour(Properties.Settings.Default.SyntaxColourEscapedChar, this.cboColourEscapedChars);
-                Properties.Settings.Default.SyntaxColourKeyword = this.GetColour(Properties.Settings.Default.SyntaxColourKeyword, this.cboColourKeywords);
-                Properties.Settings.Default.SyntaxColourLangSpec = this.GetColour(Properties.Settings.Default.SyntaxColourLangSpec, this.cboColourLangSpec);
-                Properties.Settings.Default.SyntaxColourNumbers = this.GetColour(Properties.Settings.Default.SyntaxColourNumbers, this.cboColourNumbers);
-                Properties.Settings.Default.SyntaxColourPunctuation = this.GetColour(Properties.Settings.Default.SyntaxColourPunctuation, this.cboColourPunctuation);
-                Properties.Settings.Default.SyntaxColourQName = this.GetColour(Properties.Settings.Default.SyntaxColourQName, this.cboColourQNames);
-                Properties.Settings.Default.SyntaxColourString = this.GetColour(Properties.Settings.Default.SyntaxColourString, this.cboColourStrings);
-                Properties.Settings.Default.SyntaxColourURI = this.GetColour(Properties.Settings.Default.SyntaxColourURI, this.cboColourURIs);
-                Properties.Settings.Default.SyntaxColourVariables = this.GetColour(Properties.Settings.Default.SyntaxColourVariables, this.cboColourVariable);
+                Properties.Settings.Default.SyntaxColourBNode = GetColour(Properties.Settings.Default.SyntaxColourBNode, cboColourBNode);
+                Properties.Settings.Default.SyntaxColourComment = GetColour(Properties.Settings.Default.SyntaxColourComment, cboColourComments);
+                Properties.Settings.Default.SyntaxColourEscapedChar = GetColour(Properties.Settings.Default.SyntaxColourEscapedChar, cboColourEscapedChars);
+                Properties.Settings.Default.SyntaxColourKeyword = GetColour(Properties.Settings.Default.SyntaxColourKeyword, cboColourKeywords);
+                Properties.Settings.Default.SyntaxColourLangSpec = GetColour(Properties.Settings.Default.SyntaxColourLangSpec, cboColourLangSpec);
+                Properties.Settings.Default.SyntaxColourNumbers = GetColour(Properties.Settings.Default.SyntaxColourNumbers, cboColourNumbers);
+                Properties.Settings.Default.SyntaxColourPunctuation = GetColour(Properties.Settings.Default.SyntaxColourPunctuation, cboColourPunctuation);
+                Properties.Settings.Default.SyntaxColourQName = GetColour(Properties.Settings.Default.SyntaxColourQName, cboColourQNames);
+                Properties.Settings.Default.SyntaxColourString = GetColour(Properties.Settings.Default.SyntaxColourString, cboColourStrings);
+                Properties.Settings.Default.SyntaxColourURI = GetColour(Properties.Settings.Default.SyntaxColourURI, cboColourURIs);
+                Properties.Settings.Default.SyntaxColourVariables = GetColour(Properties.Settings.Default.SyntaxColourVariables, cboColourVariable);
 
                 //Then save the Error Highlighting Settings
-                Properties.Settings.Default.ErrorHighlightBackground = this.GetColour(Properties.Settings.Default.ErrorHighlightBackground, this.cboColourErrorBackground);
-                Properties.Settings.Default.ErrorHighlightDecoration = this.GetDecoration(this.cboErrorDecoration);
-                Properties.Settings.Default.ErrorHighlightFontFamily = (FontFamily)this.cboErrorFont.SelectedItem;
-                Properties.Settings.Default.ErrorHighlightForeground = this.GetColour(Properties.Settings.Default.ErrorHighlightForeground, this.cboColourErrorFont);
+                Properties.Settings.Default.ErrorHighlightBackground = GetColour(Properties.Settings.Default.ErrorHighlightBackground, cboColourErrorBackground);
+                Properties.Settings.Default.ErrorHighlightDecoration = GetDecoration(cboErrorDecoration);
+                Properties.Settings.Default.ErrorHighlightFontFamily = (FontFamily)cboErrorFont.SelectedItem;
+                Properties.Settings.Default.ErrorHighlightForeground = GetColour(Properties.Settings.Default.ErrorHighlightForeground, cboColourErrorFont);
 
                 //Finally save the updated settings
                 Properties.Settings.Default.Save();
@@ -250,8 +250,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //Force the Syntax Manager to update colours appropriately
                 AppearanceSettings.UpdateHighlightingColours();
 
-                this.DialogResult = true;
-                this.Close();
+                DialogResult = true;
+                Close();
             }
             catch (Exception ex)
             {
@@ -266,7 +266,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 FontFamilyConverter converter = new FontFamilyConverter();
                 FontFamily consolas = (FontFamily)converter.ConvertFromString("Consolas");
                 Properties.Settings.Default.EditorFontFace = consolas;
-                this.fontSizeSlider.Value = 13d;
+                fontSizeSlider.Value = 13d;
                 Properties.Settings.Default.EditorForeground = Colors.Black;
                 Properties.Settings.Default.EditorBackground = Colors.White;
                 Properties.Settings.Default.Save();
@@ -276,14 +276,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //Can't reset settings
             }
             //Show settings
-            this.ShowSettings();
+            ShowSettings();
         }
 
         private void lnkAdvancedSettings_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                System.Diagnostics.Process.Start(this.lnkAdvancedSettings.NavigateUri.AbsoluteUri);
+                System.Diagnostics.Process.Start(lnkAdvancedSettings.NavigateUri.AbsoluteUri);
             }
             catch
             {
@@ -320,14 +320,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 //Can't reset settings
             }
-            this.ShowSettings();
+            ShowSettings();
             //SyntaxManager.UpdateHighlightingColours();
         }
 
         private void btnAbandon_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
         }
 
         private void btnErrorReset_Click(object sender, RoutedEventArgs e)
@@ -343,7 +343,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 //Can't reset settings
             }
-            this.ShowSettings();
+            ShowSettings();
         }
 
         private void btnResetAll_Click(object sender, RoutedEventArgs e)

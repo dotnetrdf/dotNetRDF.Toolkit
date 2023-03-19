@@ -34,39 +34,37 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         public OptionsDialogue()
         {
             InitializeComponent();
-            this.LoadOptions();
+            LoadOptions();
         }
 
         private void LoadOptions()
         {
-            this.chkAlwaysEdit.Checked = Settings.Default.AlwaysEdit;
-            this.chkAlwaysRestoreActiveConnections.Checked = Settings.Default.AlwaysRestoreActiveConnections;
-            this.chkEditorDetectUrls.Checked = Settings.Default.EditorDetectUrls;
-            this.chkEditorHighlighting.Checked = Settings.Default.EditorHighlighting;
-            this.chkEditorWordWrap.Checked = Settings.Default.EditorWordWrap;
-            this.chkPromptRestoreActiveConnections.Checked = Settings.Default.PromptRestoreActiveConnections;
-            this.chkShowStartPage.Checked = Settings.Default.ShowStartPage;
-            this.chkUtf8Bom.Checked = Settings.Default.UseUtf8Bom;
-            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
+            chkAlwaysEdit.Checked = Settings.Default.AlwaysEdit;
+            chkAlwaysRestoreActiveConnections.Checked = Settings.Default.AlwaysRestoreActiveConnections;
+            chkEditorDetectUrls.Checked = Settings.Default.EditorDetectUrls;
+            chkEditorHighlighting.Checked = Settings.Default.EditorHighlighting;
+            chkEditorWordWrap.Checked = Settings.Default.EditorWordWrap;
+            chkPromptRestoreActiveConnections.Checked = Settings.Default.PromptRestoreActiveConnections;
+            chkShowStartPage.Checked = Settings.Default.ShowStartPage;
+            chkUtf8Bom.Checked = Settings.Default.UseUtf8Bom;
 
-            this.numMaxRecentConnections.Value = Settings.Default.MaxRecentConnections;
-            this.numPreviewSize.Value = Settings.Default.PreviewSize;
+            numMaxRecentConnections.Value = Settings.Default.MaxRecentConnections;
+            numPreviewSize.Value = Settings.Default.PreviewSize;
         }
 
         private void SaveOptions()
         {
-            Settings.Default.AlwaysEdit = this.chkAlwaysEdit.Checked;
-            Settings.Default.AlwaysRestoreActiveConnections = this.chkAlwaysRestoreActiveConnections.Checked;
-            Settings.Default.EditorDetectUrls = this.chkEditorDetectUrls.Checked;
-            Settings.Default.EditorHighlighting = this.chkEditorHighlighting.Checked;
-            Settings.Default.EditorWordWrap = this.chkEditorWordWrap.Checked;
-            Settings.Default.PromptRestoreActiveConnections = this.chkPromptRestoreActiveConnections.Checked;
-            Settings.Default.ShowStartPage = this.chkShowStartPage.Checked;
-            Settings.Default.UseUtf8Bom = this.chkUtf8Bom.Checked;
-            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
+            Settings.Default.AlwaysEdit = chkAlwaysEdit.Checked;
+            Settings.Default.AlwaysRestoreActiveConnections = chkAlwaysRestoreActiveConnections.Checked;
+            Settings.Default.EditorDetectUrls = chkEditorDetectUrls.Checked;
+            Settings.Default.EditorHighlighting = chkEditorHighlighting.Checked;
+            Settings.Default.EditorWordWrap = chkEditorWordWrap.Checked;
+            Settings.Default.PromptRestoreActiveConnections = chkPromptRestoreActiveConnections.Checked;
+            Settings.Default.ShowStartPage = chkShowStartPage.Checked;
+            Settings.Default.UseUtf8Bom = chkUtf8Bom.Checked;
 
-            Settings.Default.MaxRecentConnections = (int) this.numMaxRecentConnections.Value;
-            Settings.Default.PreviewSize = (int) this.numPreviewSize.Value;
+            Settings.Default.MaxRecentConnections = (int) numMaxRecentConnections.Value;
+            Settings.Default.PreviewSize = (int) numPreviewSize.Value;
 
             Settings.Default.Save();
         }
@@ -78,28 +76,28 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                 Settings.Default.Reset();
                 Settings.Default.Save();
             }
-            this.LoadOptions();
+            LoadOptions();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            this.SaveOptions();
-            this.Close();
+            SaveOptions();
+            Close();
         }
 
         private void btnResetDefault_Click(object sender, EventArgs e)
         {
-            this.ResetOptions(true);
+            ResetOptions(true);
         }
 
         private void btnResetCurrent_Click(object sender, EventArgs e)
         {
-            this.ResetOptions(false);
+            ResetOptions(false);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

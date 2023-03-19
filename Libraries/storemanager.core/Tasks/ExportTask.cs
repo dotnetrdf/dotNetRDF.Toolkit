@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ExportTask
         : CancellableTask<TaskResult>
     {
-        private readonly String _file;
+        private readonly string _file;
         private readonly IStorageProvider _manager;
 
         /// <summary>
@@ -48,12 +48,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="manager">Storage Provider</param>
         /// <param name="file">File to export to</param>
-        public ExportTask(IStorageProvider manager, String file)
+        public ExportTask(IStorageProvider manager, string file)
             : base("Export Store") 
         {
             if (file == null) throw new ArgumentNullException("file", "Cannot Export the Store to a null File");
-            this._file = file;
-            this._manager = manager;
+            _file = file;
+            _manager = manager;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
-            MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._file)).FirstOrDefault(d => d.CanWriteRdfDatasets);
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(_file)).FirstOrDefault(d => d.CanWriteRdfDatasets);
             if (def == null)
             {
                 throw new RdfOutputException("Cannot Export the Store to the selected File since dotNetRDF was unable to select a writer to use based on the File Extension");
@@ -75,35 +75,37 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
 
             TripleStore store = new TripleStore();
-            List<Uri> graphUris = this.ListGraphs().ToList();
+            List<IRefNode> graphUris = ListGraphs().ToList();
 
             if (writer is TriXWriter)
             {
                 //For TriX must load all into memory and then write out all at once
 
                 // Make sure we always include the default graph in the export
-                if (!graphUris.Contains(null)) graphUris.Add(null);
-
-                foreach (Uri u in graphUris)
+                if (!graphUris.Contains(null))
                 {
-                    Graph g = new Graph();
-                    this._manager.LoadGraph(g, u);
-                    g.BaseUri = u;
+                    graphUris.Add(null);
+                }
+
+                foreach (IRefNode u in graphUris)
+                {
+                    Graph g = new Graph(u);
+                    _manager.LoadGraph(g, u?.ToString());
                     store.Add(g);
-                    this.Information = "Loading into memory prior to export, loaded " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) so far...";
-                    if (this.HasBeenCancelled)
+                    Information = "Loading into memory prior to export, loaded " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) so far...";
+                    if (HasBeenCancelled)
                     {
-                        this.Information = "Export Cancelled";
+                        Information = "Export Cancelled";
                         return new TaskResult(true);
                     }
                 }
-                this.Information = "Exporting Data all at once, have " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) to export...";
-                writer.Save(store, new StreamWriter(this._file));
-                this.Information = "Exported " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s)";
+                Information = "Exporting Data all at once, have " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) to export...";
+                writer.Save(store, new StreamWriter(_file));
+                Information = "Exported " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s)";
             }
             else
             {
-                if (File.Exists(this._file)) File.Delete(this._file);
+                if (File.Exists(_file)) File.Delete(_file);
 
                 //For non-TriX formats assume it is safe to append one Graph at a time to the file
                 int graphCount = 0, tripleCount = 0;
@@ -112,36 +114,34 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 if (!graphUris.Contains(null)) graphUris.Add(null);
 
                 // Write each graph out
-                foreach (Uri u in graphUris)
+                foreach (IRefNode u in graphUris)
                 {
-                    using (FileStream stream = new FileStream(this._file, FileMode.Append))
+                    using (FileStream stream = new FileStream(_file, FileMode.Append))
                     {
                         if (writer is IFormatterBasedWriter)
                         {
                             //Stream via a WriteThroughHandler
-                            this.Information = "Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default");
+                            Information = "Stream Exporting Graph " + (u != null ? u.ToString() : "Default");
                             IRdfHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
                             if (u != null) handler = new GraphUriRewriteHandler(handler, u);
                             ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
-                            this._manager.LoadGraph(progHandler, u);
+                            _manager.LoadGraph(progHandler, u.ToString());
                             graphCount++;
                             tripleCount = progHandler.TripleCount;
 
-                            this.Information = "Finished Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                            Information = "Finished Stream Exporting Graph " + (u != null ? u.ToString() : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                         }
                         else
                         {
                             //Load Graph into memory
-                            Graph g = new Graph();
-                            g.BaseUri = u;
-                            this.Information = "Loading Graph " + (u != null ? u.AbsoluteUri : "Default");
-                            this._manager.LoadGraph(g, u);
-                            g.BaseUri = u;
+                            Graph g = new Graph(u);
+                            Information = "Loading Graph " + (u != null ? u.ToString() : "Default");
+                            _manager.LoadGraph(g, u?.ToString());
 
-                            if (this.HasBeenCancelled)
+                            if (HasBeenCancelled)
                             {
                                 stream.Close();
-                                this.Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
+                                Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
                                 return new TaskResult(true);
                             }
 
@@ -153,41 +153,41 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             writer.Save(store, new StreamWriter(stream, def.Encoding));
                             store.Remove(u);
 
-                            this.Information = "Exporting Data graph by graph, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                            Information = "Exporting Data graph by graph, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                         }
 
                         //Check for cancellation
-                        if (this.HasBeenCancelled)
+                        if (HasBeenCancelled)
                         {
                             stream.Close();
-                            this.Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
+                            Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
                             return new TaskResult(true);
                         }
                     }
                 }
-                this.Information = "Exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
+                Information = "Exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
             }
  
             return new TaskResult(true);
         }
 
-        private IEnumerable<Uri> ListGraphs()
+        private IEnumerable<IRefNode> ListGraphs()
         {
-            if (this._manager.ListGraphsSupported)
+            if (_manager.ListGraphsSupported)
             {
-                return this._manager.ListGraphs();
+                return _manager.ListGraphNames().Select(u => new UriNode(new Uri(u)));
             }
-            if (!(this._manager is IQueryableStorage)) throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
+            if (!(_manager is IQueryableStorage)) throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
 
-            List<Uri> uris = new List<Uri>();
-            Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+            var uris = new List<IRefNode>();
+            object results = ((IQueryableStorage)_manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
             if (!(results is SparqlResultSet)) throw new RdfStorageException("Store failed to list graphs so unable to do a Graph by Graph export");
             SparqlResultSet rset = (SparqlResultSet)results;
             foreach (SparqlResult res in rset)
             {
                 if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
                 {
-                    uris.Add(((IUriNode)res["g"]).Uri);
+                    uris.Add((IUriNode)res["g"]);
                 }
             }
             return uris;
@@ -211,9 +211,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="initCount">Initial Count</param>
         public ExportProgressHandler(IRdfHandler handler, ExportTask task, int initCount)
         {
-            this._handler = handler;
-            this._task = task;
-            this.TripleCount = initCount;
+            _handler = handler;
+            _task = task;
+            TripleCount = initCount;
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                return this._handler.AsEnumerable();
+                return _handler.AsEnumerable();
             }
         }
 
@@ -243,7 +243,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._handler.StartRdf();
+            _handler.StartRdf();
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="ok">Whether parsing completed OK</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
+            _handler.EndRdf(ok);
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -283,13 +283,25 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this.TripleCount++;
-            if (this.TripleCount % 1000 == 0)
+            if (_task.HasBeenCancelled) return false;
+            Report();
+            return _handler.HandleTriple(t);
+        }
+
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            if (_task.HasBeenCancelled) return false;
+            Report();
+            return _handler.HandleQuad(t, graph);
+        }
+
+        private void Report()
+        {
+            TripleCount++;
+            if (TripleCount % 1000 == 0)
             {
-                if (this._task.HasBeenCancelled) return false;
-                this._task.Information = "Exported " + this.TripleCount + " triples so far...";
+                _task.Information = "Exported " + TripleCount + " triples so far...";
             }
-            return this._handler.HandleTriple(t);
         }
 
         /// <summary>

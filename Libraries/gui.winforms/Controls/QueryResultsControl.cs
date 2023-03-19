@@ -10,7 +10,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
     /// </summary>
     public partial class QueryResultsControl : UserControl
     {
-        private Object _dataSource;
+        private object _dataSource;
         private bool _allowDetach = true;
 
         /// <summary>
@@ -19,25 +19,25 @@ namespace VDS.RDF.GUI.WinForms.Controls
         public QueryResultsControl()
         {
             InitializeComponent();
-            this.splPanel.Panel1Collapsed = true;
-            this.splResults.Visible = false;
+            splPanel.Panel1Collapsed = true;
+            splResults.Visible = false;
 
             // Only detachable if allowed and not already top level control on the form
-            this.btnDetach.Visible = this.AllowDetach && !(this.Parent is Form);
+            btnDetach.Visible = AllowDetach && !(Parent is Form);
         }
 
         private void btnToggleQuery_Click(object sender, EventArgs e)
         {
-            this.splPanel.Panel1Collapsed = !this.splPanel.Panel1Collapsed;
-            this.btnToggleQuery.Text = this.splPanel.Panel1Collapsed ? "Show &Query" : "Hide &Query";
-            this.btnToggleResults.Text = this.splPanel.Panel2Collapsed ? "Show &Results" : "Hide &Results";
+            splPanel.Panel1Collapsed = !splPanel.Panel1Collapsed;
+            btnToggleQuery.Text = splPanel.Panel1Collapsed ? "Show &Query" : "Hide &Query";
+            btnToggleResults.Text = splPanel.Panel2Collapsed ? "Show &Results" : "Hide &Results";
         }
 
         private void btnToggleResults_Click(object sender, EventArgs e)
         {
-            this.splPanel.Panel2Collapsed = !this.splPanel.Panel2Collapsed;
-            this.btnToggleQuery.Text = this.splPanel.Panel1Collapsed ? "Show &Query" : "Hide &Query";
-            this.btnToggleResults.Text = this.splPanel.Panel2Collapsed ? "Show &Results" : "Hide &Results";
+            splPanel.Panel2Collapsed = !splPanel.Panel2Collapsed;
+            btnToggleQuery.Text = splPanel.Panel1Collapsed ? "Show &Query" : "Hide &Query";
+            btnToggleResults.Text = splPanel.Panel2Collapsed ? "Show &Results" : "Hide &Results";
         }
 
         /// <summary>
@@ -46,11 +46,11 @@ namespace VDS.RDF.GUI.WinForms.Controls
         [DefaultValue(true)]
         public bool AllowDetach
         {
-            get { return this._allowDetach; }
+            get { return _allowDetach; }
             set
             {
-                this._allowDetach = value;
-                this.btnDetach.Visible = this._allowDetach;
+                _allowDetach = value;
+                btnDetach.Visible = _allowDetach;
             }
         }
 
@@ -62,45 +62,45 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <summary>
         /// Gets/Sets the query string
         /// </summary>
-        public String QueryString
+        public string QueryString
         {
-            get { return this.txtQuery.Text; }
-            set { this.txtQuery.Text = value.Replace("\n", "\r\n"); }
+            get { return txtQuery.Text; }
+            set { txtQuery.Text = value.Replace("\n", "\r\n"); }
         }
 
         /// <summary>
         /// Gets/Sets the data source
         /// </summary>
-        public Object DataSource
+        public object DataSource
         {
-            get { return this._dataSource; }
+            get { return _dataSource; }
             set
             {
                 if (value == null)
                 {
-                    this.splResults.Visible = false;
+                    splResults.Visible = false;
                     return;
                 }
                 if (value is SparqlResultSet)
                 {
-                    this._dataSource = value;
-                    this.splResults.SuspendLayout();
-                    this.splResults.Panel1Collapsed = false;
-                    this.splResults.Panel2Collapsed = true;
-                    this.resultsViewer.DisplayResultSet((SparqlResultSet) value, this.Namespaces);
-                    this.splResults.ResumeLayout();
-                    this.splResults.Visible = true;
+                    _dataSource = value;
+                    splResults.SuspendLayout();
+                    splResults.Panel1Collapsed = false;
+                    splResults.Panel2Collapsed = true;
+                    resultsViewer.DisplayResultSet((SparqlResultSet) value, Namespaces);
+                    splResults.ResumeLayout();
+                    splResults.Visible = true;
                 }
                 else if (value is IGraph)
                 {
-                    this._dataSource = value;
-                    this.splResults.SuspendLayout();
-                    this.splResults.Panel1Collapsed = true;
-                    this.splResults.Panel2Collapsed = false;
+                    _dataSource = value;
+                    splResults.SuspendLayout();
+                    splResults.Panel1Collapsed = true;
+                    splResults.Panel2Collapsed = false;
                     IGraph g = (IGraph) value;
-                    this.graphViewer.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, this.Namespaces));
-                    this.splResults.ResumeLayout();
-                    this.splResults.Visible = true;
+                    graphViewer.DisplayGraph(g, MergeNamespaceMaps(g.NamespaceMap, Namespaces));
+                    splResults.ResumeLayout();
+                    splResults.Visible = true;
                 }
                 else
                 {
@@ -119,18 +119,18 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.RaiseCloseRequested();
+            RaiseCloseRequested();
         }
 
 
         private void btnDetach_Click(object sender, EventArgs e)
         {
-            this.RaiseDetachRequested();
+            RaiseDetachRequested();
         }
 
         protected void RaiseCloseRequested()
         {
-            ResultCloseRequested d = this.CloseRequested;
+            ResultCloseRequested d = CloseRequested;
             if (d == null) return;
             d(this);
         }
@@ -147,7 +147,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
 
         protected void RaiseDetachRequested()
         {
-            ResultDetachRequested d = this.DetachRequested;
+            ResultDetachRequested d = DetachRequested;
             if (d == null) return;
             d(this);
         }

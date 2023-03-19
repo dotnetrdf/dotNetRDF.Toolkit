@@ -37,7 +37,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<TaskResult>
     {
         private readonly IStorageProvider _manager;
-        private readonly String _update;
+        private readonly string _update;
         private SparqlUpdateCommandSet _cmds;
 
         /// <summary>
@@ -45,11 +45,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="manager">Storage Provider</param>
         /// <param name="update">SPARQL Update</param>
-        public UpdateTask(IStorageProvider manager, String update)
+        public UpdateTask(IStorageProvider manager, string update)
             : base("SPARQL Update")
         {
-            this._manager = manager;
-            this._update = update;
+            _manager = manager;
+            _update = update;
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         protected override TaskResult RunTaskInternal()
         {
             SparqlUpdateParser parser = new SparqlUpdateParser();
-            this._cmds = parser.ParseFromString(this._update);
-            GenericUpdateProcessor processor = new GenericUpdateProcessor(this._manager);
-            processor.ProcessCommandSet(this._cmds);
+            _cmds = parser.ParseFromString(_update);
+            GenericUpdateProcessor processor = new GenericUpdateProcessor(_manager);
+            processor.ProcessCommandSet(_cmds);
             return new TaskResult(true);
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                return this._cmds;
+                return _cmds;
             }
         }
     }

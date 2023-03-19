@@ -33,21 +33,21 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
     public partial class TaskErrorTraceForm<T> 
         : CrossThreadForm where T : class
     {
-        public TaskErrorTraceForm(ITask<T> task, String subtitle)
+        public TaskErrorTraceForm(ITask<T> task, string subtitle)
         {
             InitializeComponent();
 
-            this.Text = String.Format(this.Text, task.Name, subtitle);
-            this.ShowErrorTrace(task);
+            Text = string.Format(Text, task.Name, subtitle);
+            ShowErrorTrace(task);
 
-            task.StateChanged += () => this.ShowErrorTrace(task);
+            task.StateChanged += () => ShowErrorTrace(task);
 
-            this.btnClose.Focus();
+            btnClose.Focus();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void ShowErrorTrace(ITask<T> task)
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                     ex = ex.InnerException;
                 }
             }
-            CrossThreadSetText(this.txtErrorTrace, writer.ToString());
+            CrossThreadSetText(txtErrorTrace, writer.ToString());
         }
     }
 }

@@ -38,14 +38,10 @@ namespace VDS.RDF.Utilities.Convert
         {
             //Disable URI Interning as this will otherwise cause us to use way too much
             //memory when doing large streaming conversions
-            Options.InternUris = false;
+            UriFactory.InternUris = false;
 
-            //Also turn off UTF-8 BOM by default for maximum compatibility and portability
-            //of the data we output
-            Options.UseBomForUtf8 = false;
-
-            //Set Console Output Encoding to UTF-8
-            Console.OutputEncoding = Encoding.UTF8;
+            //Set Console Output Encoding to UTF-8 with no BOM
+            Console.OutputEncoding = new UTF8Encoding(false);
 
             // Set use of TLS 1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

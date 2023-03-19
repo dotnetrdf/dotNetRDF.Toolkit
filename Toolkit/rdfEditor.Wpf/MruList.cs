@@ -33,81 +33,81 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 {
     public class MruList
     {
-        private List<String> _files = new List<string>();
-        private String _file;
+        private List<string> _files = new List<string>();
+        private string _file;
         private int _size;
 
         public const int DefaultSize = 9;
         public const int DefaultShortFilenameLength = 50;
 
-        public MruList(String file, int size)
+        public MruList(string file, int size)
         {
             if (file == null) throw new ArgumentNullException("file");
-            this._file = file;
-            this._size = Math.Max(1, size);
-            this.Load();
+            _file = file;
+            _size = Math.Max(1, size);
+            Load();
         }
 
-        public MruList(String file)
+        public MruList(string file)
             : this(file, DefaultSize) { }
 
-        public IEnumerable<String> Files
+        public IEnumerable<string> Files
         {
             get
             {
-                return (from i in Enumerable.Range(0, this._files.Count).Reverse()
-                        select this._files[i]);
+                return (from i in Enumerable.Range(0, _files.Count).Reverse()
+                        select _files[i]);
             }
         }
 
         public void Load()
         {
-            if (File.Exists(this._file))
+            if (File.Exists(_file))
             {
-                using (StreamReader reader = new StreamReader(this._file))
+                using (StreamReader reader = new StreamReader(_file))
                 {
                     while (!reader.EndOfStream)
                     {
-                        String line = reader.ReadLine();
-                        if (line.Equals(String.Empty)) continue;
+                        string line = reader.ReadLine();
+                        if (line.Equals(string.Empty)) continue;
                         if (File.Exists(line))
                         {
-                            this._files.Add(line);
+                            _files.Add(line);
                         }
                     }
                     reader.Close();
                 }
 
-                while (this._files.Count > this._size)
+                while (_files.Count > _size)
                 {
-                    this._files.RemoveAt(0);
+                    _files.RemoveAt(0);
                 }
             }
         }
 
-        public void Add(String file)
+        public void Add(string file)
         {
-            this._files.Remove(file);
-            this._files.Add(file);
-            this.Save();
+            _files.Remove(file);
+            _files.Add(file);
+            Save();
         }
 
-        public void Remove(String file)
+        public void Remove(string file)
         {
-            this._files.Remove(file);
-            this.Save();
+            _files.Remove(file);
+            Save();
         }
 
         public void Save()
         {
-            while (this._files.Count > this._size)
+            while (_files.Count > _size)
             {
-                this._files.RemoveAt(0);
+                _files.RemoveAt(0);
             }
 
-            using (StreamWriter writer = new StreamWriter(this._file))
+            using (StreamWriter writer = new StreamWriter(_file))
             {
-                foreach (String file in this._files)
+                foreach (string file in _files)
                 {
                     writer.WriteLine(file);
                 }
@@ -117,16 +117,16 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         public void Clear()
         {
-            this._files.Clear();
-            this.Save();
+            _files.Clear();
+            Save();
         }
 
-        public static String ShortenFilename(String file)
+        public static string ShortenFilename(string file)
         {
             return ShortenFilename(file, DefaultShortFilenameLength);
         }
 
-        public static String ShortenFilename(String file, int maxLength)
+        public static string ShortenFilename(string file, int maxLength)
         {
             if (file.Length <= maxLength)
             {
@@ -135,12 +135,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             else
             {
                 StringBuilder shortFile = new StringBuilder();
-                String filename = Path.GetFileName(file);
+                string filename = Path.GetFileName(file);
 
-                String sepChar = new String(new char[] { Path.DirectorySeparatorChar });
-                String path = file.Substring(0, file.Length - filename.Length);
+                string sepChar = new string(new char[] { Path.DirectorySeparatorChar });
+                string path = file.Substring(0, file.Length - filename.Length);
                 if (path.Length == 0) return filename;
-                String[] dirs = path.Split(new char[] { Path.DirectorySeparatorChar });
+                string[] dirs = path.Split(new char[] { Path.DirectorySeparatorChar });
 
                 int i = -1;
                 while (i < dirs.Length && shortFile.Length + filename.Length < maxLength)

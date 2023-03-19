@@ -60,7 +60,7 @@
     <MSBuild Projects="CopyBinaries.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration)" />
   </Target>
   <Target Name="HeatPackage" DependsOnTargets="CopyBinaries">
-    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType)" />
+    <MSBuild Projects="Heat.proj" Targets="Build" Properties="PackageDir=$(PackageDir);Configuration=$(Configuration);WixToolPath=$(WixToolPath);WixTargetsPath=$(WixTargetsPath);OutputPath=$(OutputPath);OutputName=$(OutputName);OutputType=$(OutputType);RunAsSeparateProcess=true" />
   </Target>
   <!--
   <ItemGroup>

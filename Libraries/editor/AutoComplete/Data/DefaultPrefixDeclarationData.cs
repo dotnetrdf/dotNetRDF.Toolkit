@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="prefix">Prefix</param>
         /// <param name="postfix">Postfix</param>
-        public BaseDefaultPrefixDeclarationData(String prefix, String postfix)
+        public BaseDefaultPrefixDeclarationData(string prefix, string postfix)
             : base("<New Default Prefix Declaration>", prefix + ": <Enter Default Namespace URI here>" + postfix, "Inserts a new Default Prefix declaration", 100.0d) { }
     }
 
@@ -68,6 +68,6 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         public SparqlStyleDefaultPrefixDeclarationData()
-            : base("PREFIX ", String.Empty) { }
+            : base("PREFIX ", string.Empty) { }
     }
 }

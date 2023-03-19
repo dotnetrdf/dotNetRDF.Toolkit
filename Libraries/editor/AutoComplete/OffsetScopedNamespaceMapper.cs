@@ -37,7 +37,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
     public class OffsetScopedNamespaceMapper 
         : INamespaceMapper
     {
-        private Dictionary<String, List<OffsetMapping>> _uris = new Dictionary<string, List<OffsetMapping>>();
+        private Dictionary<string, List<OffsetMapping>> _uris = new Dictionary<string, List<OffsetMapping>>();
         private Dictionary<int, List<OffsetMapping>> _prefixes = new Dictionary<int, List<OffsetMapping>>();
         private int _offset = 0;
 
@@ -57,9 +57,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (!empty)
             {
                 //Add Standard Namespaces
-                this.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-                this.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-                this.AddNamespace("xsd", new Uri(NamespaceMapper.XMLSCHEMA));
+                AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
+                AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
+                AddNamespace("xsd", new Uri(NamespaceMapper.XMLSCHEMA));
             }
         }
 
@@ -70,37 +70,37 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <param name="uri">URI</param>
         public void AddNamespace(string prefix, Uri uri)
         {
-            OffsetMapping mapping = new OffsetMapping(prefix, uri, this._offset);
-            if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<OffsetMapping>());
+            OffsetMapping mapping = new OffsetMapping(prefix, uri, _offset);
+            if (!_prefixes.ContainsKey(uri.GetEnhancedHashCode())) _prefixes.Add(uri.GetEnhancedHashCode(), new List<OffsetMapping>());
 
-            if (this._uris.ContainsKey(prefix))
+            if (_uris.ContainsKey(prefix))
             {
                 //Is it defined at the current offset level?
-                if (this._uris[prefix].Any(m => m.Offset == this._offset))
+                if (_uris[prefix].Any(m => m.Offset == _offset))
                 {
                     //If it is then we override it
-                    this._uris[prefix].RemoveAll(m => m.Offset == this._offset);
-                    this._prefixes[uri.GetEnhancedHashCode()].RemoveAll(m => m.Offset == this._offset);
+                    _uris[prefix].RemoveAll(m => m.Offset == _offset);
+                    _prefixes[uri.GetEnhancedHashCode()].RemoveAll(m => m.Offset == _offset);
 
-                    this._uris[prefix].Add(mapping);
-                    this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                    this.OnNamespaceModified(prefix, uri);
+                    _uris[prefix].Add(mapping);
+                    _prefixes[uri.GetEnhancedHashCode()].Add(mapping);
+                    OnNamespaceModified(prefix, uri);
                 }
                 else
                 {
                     //If not we simply add it
-                    this._uris[prefix].Add(mapping);
-                    this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                    this.OnNamespaceAdded(prefix, uri);
+                    _uris[prefix].Add(mapping);
+                    _prefixes[uri.GetEnhancedHashCode()].Add(mapping);
+                    OnNamespaceAdded(prefix, uri);
                 }
             }
             else
             {
                 //Not yet defined so add it
-                this._uris.Add(prefix, new List<OffsetMapping>());
-                this._uris[prefix].Add(mapping);
-                this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                this.OnNamespaceAdded(prefix, uri);
+                _uris.Add(prefix, new List<OffsetMapping>());
+                _uris[prefix].Add(mapping);
+                _prefixes[uri.GetEnhancedHashCode()].Add(mapping);
+                OnNamespaceAdded(prefix, uri);
             }
         }
 
@@ -109,8 +109,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         public void Clear()
         {
-            this._uris.Clear();
-            this._prefixes.Clear();
+            _uris.Clear();
+            _prefixes.Clear();
         }
 
         /// <summary>
@@ -120,11 +120,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         public Uri GetNamespaceUri(string prefix)
         {
-            if (this._uris.ContainsKey(prefix))
+            if (_uris.ContainsKey(prefix))
             {
-                if (this._uris[prefix].Any(m => m.Offset < this._offset))
+                if (_uris[prefix].Any(m => m.Offset < _offset))
                 {
-                    return this._uris[prefix].Last(m => m.Offset < this._offset).Uri;
+                    return _uris[prefix].Last(m => m.Offset < _offset).Uri;
                 }
                 else
                 {
@@ -145,11 +145,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         public string GetPrefix(Uri uri)
         {
             int hash = uri.GetEnhancedHashCode();
-            if (this._prefixes.ContainsKey(hash))
+            if (_prefixes.ContainsKey(hash))
             {
-                if (this._prefixes[hash].Any(m => m.Offset < this._offset))
+                if (_prefixes[hash].Any(m => m.Offset < _offset))
                 {
-                    return this._prefixes[hash].Last(m => m.Offset < this._offset).Prefix;
+                    return _prefixes[hash].Last(m => m.Offset < _offset).Prefix;
                 }
                 else
                 {
@@ -169,9 +169,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <returns></returns>
         public bool HasNamespace(string prefix)
         {
-            if (this._uris.ContainsKey(prefix))
+            if (_uris.ContainsKey(prefix))
             {
-                return this._uris[prefix].Any(m => m.Offset < this._offset);
+                return _uris[prefix].Any(m => m.Offset < _offset);
             }
             else
             {
@@ -185,27 +185,27 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <param name="nsmap"></param>
         public void Import(INamespaceMapper nsmap)
         {
-            String tempPrefix = "ns0";
+            string tempPrefix = "ns0";
             int tempPrefixID = 0;
-            foreach (String prefix in nsmap.Prefixes)
+            foreach (string prefix in nsmap.Prefixes)
             {
-                if (!this._uris.ContainsKey(prefix))
+                if (!_uris.ContainsKey(prefix))
                 {
                     //Non-colliding Namespaces get copied across
-                    this.AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
+                    AddNamespace(prefix, nsmap.GetNamespaceUri(prefix));
                 }
                 else
                 {
                     //Colliding Namespaces get remapped to new prefixes
                     //Assuming the prefixes aren't already used for the same Uri
-                    if (!this.GetNamespaceUri(prefix).AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
+                    if (!GetNamespaceUri(prefix).AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
-                        while (this._uris.ContainsKey(tempPrefix))
+                        while (_uris.ContainsKey(tempPrefix))
                         {
                             tempPrefixID++;
                             tempPrefix = "ns" + tempPrefixID;
                         }
-                        this.AddNamespace(tempPrefix, nsmap.GetNamespaceUri(prefix));
+                        AddNamespace(tempPrefix, nsmap.GetNamespaceUri(prefix));
                     }
                 }
             }
@@ -218,11 +218,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             get
             {
-                return this._offset;
+                return _offset;
             }
             set
             {
-                this._offset = value;
+                _offset = value;
             }
         }
 
@@ -246,9 +246,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        protected virtual void OnNamespaceAdded(String prefix, Uri uri)
+        protected virtual void OnNamespaceAdded(string prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceAdded;
+            NamespaceChanged handler = NamespaceAdded;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -260,9 +260,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        protected virtual void OnNamespaceModified(String prefix, Uri uri)
+        protected virtual void OnNamespaceModified(string prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceModified;
+            NamespaceChanged handler = NamespaceModified;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -274,9 +274,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        protected virtual void OnNamespaceRemoved(String prefix, Uri uri)
+        protected virtual void OnNamespaceRemoved(string prefix, Uri uri)
         {
-            NamespaceChanged handler = this.NamespaceRemoved;
+            NamespaceChanged handler = NamespaceRemoved;
             if (handler != null)
             {
                 handler(prefix, uri);
@@ -290,8 +290,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             get 
             {
-                return (from prefix in this._uris.Keys
-                        where this.HasNamespace(prefix)
+                return (from prefix in _uris.Keys
+                        where HasNamespace(prefix)
                         select prefix);
             }
         }
@@ -301,12 +301,13 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="uri">URI</param>
         /// <param name="qname">Resulting QName</param>
+        /// <param name="validationFunction">An optional validation function that returns true if the provided QName string is acceptable.</param>
         /// <returns>True if reduction succeeds, false otherwise</returns>
-        public bool ReduceToQName(string uri, out string qname)
+        public bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
         {
-            foreach (Uri u in this._uris.Values.Select(l => l.Last(m => m.Offset < this._offset).Uri))
+            foreach (Uri u in _uris.Values.Select(l => l.Last(m => m.Offset < _offset).Uri))
             {
-                String baseuri = u.AbsoluteUri;
+                string baseuri = u.AbsoluteUri;
 
                 //Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -314,15 +315,16 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     //Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
                     //Add the Prefix back onto the front plus the colon to give a QName
-                    qname = this.GetPrefix(u) + ":" + qname;
+                    qname = GetPrefix(u) + ":" + qname;
                     if (qname.Equals(":")) continue;
                     if (qname.Contains("/") || qname.Contains("#")) continue;
+                    if (validationFunction != null && !validationFunction(qname)) continue;
                     return true;
                 }
             }
 
             //Failed to find a Reduction
-            qname = String.Empty;
+            qname = string.Empty;
             return false;
         }
 
@@ -340,8 +342,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         public void Dispose()
         {
-            this._prefixes.Clear();
-            this._uris.Clear();
+            _prefixes.Clear();
+            _uris.Clear();
         }
     }
 
@@ -351,7 +353,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
     class OffsetMapping
     {
         private int _offset;
-        private String _prefix;
+        private string _prefix;
         private Uri _uri;
 
         /// <summary>
@@ -360,11 +362,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// <param name="prefix">Prefix</param>
         /// <param name="uri">URI</param>
         /// <param name="offset">Offset</param>
-        public OffsetMapping(String prefix, Uri uri, int offset)
+        public OffsetMapping(string prefix, Uri uri, int offset)
         {
-            this._prefix = prefix;
-            this._uri = uri;
-            this._offset = offset;
+            _prefix = prefix;
+            _uri = uri;
+            _offset = offset;
         }
 
         /// <summary>
@@ -372,7 +374,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// </summary>
         /// <param name="prefix">Prefix</param>
         /// <param name="uri">URI</param>
-        public OffsetMapping(String prefix, Uri uri)
+        public OffsetMapping(string prefix, Uri uri)
             : this(prefix, uri, 0) { }
 
         /// <summary>
@@ -382,18 +384,18 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             get 
             {
-                return this._offset;
+                return _offset;
             }
         }
 
         /// <summary>
         /// Gets the prefix
         /// </summary>
-        public String Prefix
+        public string Prefix
         {
             get 
             {
-                return this._prefix;
+                return _prefix;
             }
         }
 
@@ -404,7 +406,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             get
             {
-                return this._uri;
+                return _uri;
             }
         }
     }

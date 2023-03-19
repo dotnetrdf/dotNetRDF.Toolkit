@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Server
         /// </summary>
         [Connection(DisplayName = "Protocol Server", DisplayOrder = 1, IsRequired = true, AllowEmptyString = false, PopulateFrom = ConfigurationLoader.PropertyServer)]
-        public String Server
+        public string Server
         {
             get;
             set;
@@ -61,11 +61,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            if (this.UseProxy)
+            if (UseProxy)
             {
-                return new SparqlHttpProtocolConnector(this.Server, this.GetProxy());
+                return new SparqlHttpProtocolConnector(Server, GetProxy());
             }
-            return new SparqlHttpProtocolConnector(this.Server);
+            return new SparqlHttpProtocolConnector(Server);
         }
 
         /// <summary>
@@ -74,17 +74,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            SparqlGraphStoreConnectionDefinition definition = new SparqlGraphStoreConnectionDefinition();
-            definition.Server = this.Server;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
+            SparqlGraphStoreConnectionDefinition definition = new SparqlGraphStoreConnectionDefinition
+            {
+                Server = Server,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[SPARQL Graph Store HTTP Protocol] " + this.Server.ToSafeString();
+            return "[SPARQL Graph Store HTTP Protocol] " + Server.ToSafeString();
         }
     }
 }

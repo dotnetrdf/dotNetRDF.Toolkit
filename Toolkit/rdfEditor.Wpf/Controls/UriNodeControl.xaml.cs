@@ -53,8 +53,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Controls
         {
             InitializeComponent();
 
-            this.lnkUri.Text = formatter.Format(u);
-            this._u = u.Uri;
+            lnkUri.Text = formatter.Format(u);
+            _u = u.Uri;
         }
 
         public UriNodeControl(UriNode u)
@@ -64,7 +64,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Controls
         {
             try
             {
-                Process.Start(this._u.AbsoluteUri);
+                Process.Start(_u.AbsoluteUri);
             }
             catch
             {

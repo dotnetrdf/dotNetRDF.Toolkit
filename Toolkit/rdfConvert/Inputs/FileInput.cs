@@ -33,9 +33,9 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 {
     class FileInput : BaseInput, IFileConversionInput
     {
-        public FileInput(String file)
+        public FileInput(string file)
         {
-            this.SourceFile = file;
+            SourceFile = file;
         }
 
         public string SourceFile
@@ -46,21 +46,21 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
         public override void Convert()
         {
-            if (this.ConversionHandler == null) throw new Exception("Cannot convert the Input File '" + this.SourceFile + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
+            if (ConversionHandler == null) throw new Exception("Cannot convert the Input File '" + SourceFile + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
 
             try
             {
-                FileLoader.Load(this.ConversionHandler, this.SourceFile);
+                FileLoader.Load(ConversionHandler, SourceFile);
             }
             catch
             {
-                FileLoader.LoadDataset(this.ConversionHandler, this.SourceFile);
+                FileLoader.LoadDataset(ConversionHandler, SourceFile);
             }
         }
 
         public override string ToString()
         {
-            return "File '" + this.SourceFile + "'";
+            return "File '" + SourceFile + "'";
         }
     }
 }

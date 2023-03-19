@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     /// </summary>
     public partial class FileAssociations : Window
     {
-        public const String RegistryProgramID = "rdfEditor.exe";
+        public const string RegistryProgramID = "rdfEditor.exe";
 
         private List<FileAssociationInfo> _associations = new List<FileAssociationInfo>()
         {
@@ -61,14 +61,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             new FileAssociationInfo(".nq")
         };
 
-        private HashSet<String> _currentAssociations = new HashSet<string>();
+        private HashSet<string> _currentAssociations = new HashSet<string>();
 
         [RegistryPermission(SecurityAction.Demand, Unrestricted=true)]
         public FileAssociations()
         {
             InitializeComponent();
 
-            this.chkAlwaysCheckFileAssociations.IsChecked = Properties.Settings.Default.AlwaysCheckFileAssociations;
+            chkAlwaysCheckFileAssociations.IsChecked = Properties.Settings.Default.AlwaysCheckFileAssociations;
 
             RegistryHelper.UseCurrentUser = true;
 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 if (!info.Exists)
                 {
                     //If no association exists then we'll aim to create it
-                    this.SetAssociationsChecked(info.Extension);
+                    SetAssociationsChecked(info.Extension);
                 }
                 else
                 {
@@ -109,13 +109,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     if (info.ProgID.Equals(RegistryProgramID))
                     {
                         //Prog ID is equal to ours to we are associated with this extension
-                        this._currentAssociations.Add(info.Extension);
-                        this.SetAssociationsChecked(info.Extension);
+                        _currentAssociations.Add(info.Extension);
+                        SetAssociationsChecked(info.Extension);
                     }
-                    else if (info.ProgID.Equals(String.Empty))
+                    else if (info.ProgID.Equals(string.Empty))
                     {
                         //No Prog ID specified so we'll aim to create it
-                        this.SetAssociationsChecked(info.Extension);
+                        SetAssociationsChecked(info.Extension);
                     }
                     else
                     {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                         if (!progInfo.Exists)
                         {
                             //No program association exists so we'll aim to create it
-                            this.SetAssociationsChecked(info.Extension);
+                            SetAssociationsChecked(info.Extension);
                         }
                         else
                         {
@@ -137,7 +137,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                                 }
                             }
                             //No Open Verb so we'll try to associated with ourselves
-                            if (!hasExistingOpen) this.SetAssociationsChecked(info.Extension);
+                            if (!hasExistingOpen) SetAssociationsChecked(info.Extension);
                         }
                     }
                 }
@@ -148,11 +148,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return (this._currentAssociations.Count == _associations.Count);
+                return (_currentAssociations.Count == _associations.Count);
             }
         }
 
-        private void SetAssociationsChecked(String ext)
+        private void SetAssociationsChecked(string ext)
         {
             foreach (CheckBox cb in stackAssociations.Children.OfType<CheckBox>())
             {
@@ -160,7 +160,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        private bool IsAssociationChecked(String ext)
+        private bool IsAssociationChecked(string ext)
         {
             foreach (CheckBox cb in stackAssociations.Children.OfType<CheckBox>())
             {
@@ -182,14 +182,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         [RegistryPermission(SecurityAction.Demand, Unrestricted=true)]
         private void btnContinue_Click(object sender, RoutedEventArgs e)
         {
-            if (this.chkAlwaysCheckFileAssociations.IsChecked != null)
+            if (chkAlwaysCheckFileAssociations.IsChecked != null)
             {
-                Properties.Settings.Default.AlwaysCheckFileAssociations = (bool)this.chkAlwaysCheckFileAssociations.IsChecked;
+                Properties.Settings.Default.AlwaysCheckFileAssociations = (bool)chkAlwaysCheckFileAssociations.IsChecked;
                 Properties.Settings.Default.Save();
             }
 
             //Set Associations appropriately
-            foreach (FileAssociationInfo info in this._associations)
+            foreach (FileAssociationInfo info in _associations)
             {
                 //Ensure File Association exists in the registry
                 if (!info.Exists) 
@@ -211,7 +211,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 {
                     info.PerceivedType = PerceivedTypes.Text;
                 }
-                if (info.ContentType.Equals(String.Empty))
+                if (info.ContentType.Equals(string.Empty))
                 {
                     try
                     {
@@ -225,12 +225,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 }
 
                 //Add/Remove the association
-                bool addAssociation = this.IsAssociationChecked(info.Extension);
+                bool addAssociation = IsAssociationChecked(info.Extension);
                 if (addAssociation)
                 {
                     info.ProgID = RegistryProgramID;
                 }
-                else if (this._currentAssociations.Contains(info.Extension))
+                else if (_currentAssociations.Contains(info.Extension))
                 {
                     //We want to remove the association to ourselves
                     info.ProgID = info.Extension.Substring(1) + "_auto_file";                    
@@ -239,13 +239,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //TODO: Ensure we are in the OpenWith List
             }
 
-            this.Close();
+            Close();
         }
 
         private void btnSkip_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            DialogResult = false;
+            Close();
         }
     }
 }

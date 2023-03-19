@@ -44,7 +44,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
             foreach (Connection connection in connections.Connections)
             {
-                this.lstConnections.Items.Add(connection);
+                lstConnections.Items.Add(connection);
             }
         }
 
@@ -58,16 +58,16 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            if (this.lstConnections.SelectedIndex == -1) return;
-            this.Connection = this.lstConnections.SelectedItem as Connection;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            if (lstConnections.SelectedIndex == -1) return;
+            Connection = lstConnections.SelectedItem as Connection;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

@@ -33,16 +33,16 @@ namespace VDS.RDF.Utilities.Convert
         : GraphHandler
     {
         private IRdfWriter _writer;
-        private String _file;
+        private string _file;
         private TextWriter _textWriter;
 
-        public SaveOnCompletionHandler(IRdfWriter writer, String file)
+        public SaveOnCompletionHandler(IRdfWriter writer, string file)
             : base(new Graph())
         {
             if (writer == null) throw new ArgumentNullException("writer", "Must specify a RDF Writer to use when the Handler completes RDF handling");
             if (file == null) throw new ArgumentNullException("file", "Cannot save RDF to a null file");
-            this._writer = writer;
-            this._file = file;
+            _writer = writer;
+            _file = file;
         }
 
         public SaveOnCompletionHandler(IRdfWriter writer, TextWriter textWriter)
@@ -50,8 +50,8 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer == null) throw new ArgumentNullException("writer", "Must specify a RDF Writer to use when the Handler completes RDF handling");
             if (textWriter == null) throw new ArgumentNullException("textWriter", "Cannot save RDF to a null TextWriter");
-            this._writer = writer;
-            this._textWriter = textWriter;            
+            _writer = writer;
+            _textWriter = textWriter;            
         }
 
         protected override void EndRdfInternal(bool ok)
@@ -60,13 +60,13 @@ namespace VDS.RDF.Utilities.Convert
 
             if (ok)
             {
-                if (this._textWriter != null)
+                if (_textWriter != null)
                 {
-                    this._writer.Save(this.Graph, this._textWriter);
+                    _writer.Save(Graph, _textWriter);
                 }
                 else
                 {
-                    this._writer.Save(this.Graph, this._file);
+                    _writer.Save(Graph, _file);
                 }
             }
         }
@@ -76,16 +76,16 @@ namespace VDS.RDF.Utilities.Convert
         : StoreHandler
     {
         private IStoreWriter _writer;
-        private String _file;
+        private string _file;
         private TextWriter _textWriter;
 
-        public SaveStoreOnCompletionHandler(IStoreWriter writer, String file)
+        public SaveStoreOnCompletionHandler(IStoreWriter writer, string file)
             : base(new TripleStore())
         {
             if (writer == null) throw new ArgumentNullException("writer", "Must specify a RDF Dataset Writer to use when the Handler completes RDF handling");
             if (file == null) throw new ArgumentNullException("file", "Cannot save RDF to a null file");
-            this._writer = writer;
-            this._file = file;
+            _writer = writer;
+            _file = file;
         }
 
         public SaveStoreOnCompletionHandler(IStoreWriter writer, TextWriter textWriter)
@@ -93,8 +93,8 @@ namespace VDS.RDF.Utilities.Convert
         {
             if (writer == null) throw new ArgumentNullException("writer", "Must specify a RDF Dataset Writer to use when the Handler completes RDF handling");
             if (textWriter == null) throw new ArgumentNullException("textWriter", "Cannot save RDF to a null TextWriter");
-            this._writer = writer;
-            this._textWriter = textWriter;            
+            _writer = writer;
+            _textWriter = textWriter;            
         }
 
         protected override void EndRdfInternal(bool ok)
@@ -103,13 +103,13 @@ namespace VDS.RDF.Utilities.Convert
 
             if (ok)
             {
-                if (this._textWriter != null)
+                if (_textWriter != null)
                 {
-                    this._writer.Save(this.Store, this._textWriter);
+                    _writer.Save(Store, _textWriter);
                 }
                 else
                 {
-                    this._writer.Save(this.Store, this._file);
+                    _writer.Save(Store, _file);
                 }
             }
         }

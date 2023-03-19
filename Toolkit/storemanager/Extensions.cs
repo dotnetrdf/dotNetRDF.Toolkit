@@ -37,9 +37,9 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns>The result of calling ToString() on non-null objects and String.Empty otherwise</returns>
-        internal static String ToSafeString(this Object obj)
+        internal static string ToSafeString(this object obj)
         {
-            return (obj != null ? obj.ToString() : String.Empty);
+            return (obj != null ? obj.ToString() : string.Empty);
         }
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns>Either the AbolsuteUri or an empty string</returns>
-        internal static String ToSafeString(this Uri u)
+        internal static string ToSafeString(this Uri u)
         {
-            return (u != null ? u.AbsoluteUri : String.Empty);
+            return (u != null ? u.AbsoluteUri : string.Empty);
         }
     }
 }

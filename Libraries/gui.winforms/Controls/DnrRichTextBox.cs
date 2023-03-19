@@ -16,14 +16,14 @@ namespace VDS.RDF.GUI.WinForms
 
         public void BeginUpdate()
         {
-            if (this.IsDisposed) return;
-            SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
+            if (IsDisposed) return;
+            SendMessage(Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
         }
         public void EndUpdate()
         {
-            if (this.IsDisposed) return;
-            SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
-            this.Invalidate();
+            if (IsDisposed) return;
+            SendMessage(Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
+            Invalidate();
         }
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);

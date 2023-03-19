@@ -36,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
         {
             InitializeComponent();
 
-            this.lblConfirm.Text = String.Format(this.lblConfirm.Text, info.SourceUri, info.Source, target);
+            lblConfirm.Text = string.Format(lblConfirm.Text, info.SourceUri, info.Source, target);
         }
 
         public bool IsCopy
@@ -53,22 +53,22 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            this.IsCopy = true;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            IsCopy = true;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnMove_Click(object sender, EventArgs e)
         {
-            this.IsMove = true;
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            IsMove = true;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

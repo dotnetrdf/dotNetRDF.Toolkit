@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the File
         /// </summary>
         [Connection(DisplayName="Dataset File", DisplayOrder=1, IsRequired=true, AllowEmptyString=false, Type=ConnectionSettingType.File, FileFilter="RDF Dataset Files|*.nq;*.trig;*.trix;*.xml", PopulateFrom = ConfigurationLoader.PropertyFromFile)]
-        public String File
+        public string File
         {
             get;
             set;
@@ -69,7 +69,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            return new DatasetFileManager(this.File, this.Async);
+            return new DatasetFileManager(File, Async);
         }
 
         /// <summary>
@@ -78,15 +78,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            DatasetFileConnectionDefinition definition = new DatasetFileConnectionDefinition();
-            definition.File = this.File;
-            definition.Async = this.Async;
+            DatasetFileConnectionDefinition definition = new DatasetFileConnectionDefinition
+            {
+                File = File,
+                Async = Async
+            };
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[Dataset File] " + this.File.ToSafeString();
+            return "[Dataset File] " + File.ToSafeString();
         }
     }
 }

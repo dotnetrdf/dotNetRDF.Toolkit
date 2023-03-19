@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class OpenUri : Window
     {
         private Uri _u;
-        private String _data;
+        private string _data;
         private IRdfReader _parser;
 
         public OpenUri()
@@ -60,22 +60,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             try
             {
-                Uri u = new Uri(this.txtUri.Text);
+                Uri u = new Uri(txtUri.Text);
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u.AbsoluteUri);
                 request.Accept = MimeTypesHelper.HttpAcceptHeader + ",*.*";
-                String data;
+                string data;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     try
                     {
-                        this._parser = MimeTypesHelper.GetParser(response.ContentType);
-                        if (this._parser is NTriplesParser)
+                        _parser = MimeTypesHelper.GetParser(response.ContentType);
+                        if (_parser is NTriplesParser)
                         {
                             if (!response.ContentType.Equals("text/plain"))
                             {
-                                this._parser = null;
+                                _parser = null;
                             }
                         }
                     }
@@ -86,16 +86,16 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     response.Close();
                 }
 
-                this._data = data;
-                if (this._parser == null)
+                _data = data;
+                if (_parser == null)
                 {
-                    this._parser = StringParser.GetParser(data);
-                    if (this._parser is NTriplesParser) this._parser = null;
+                    _parser = StringParser.GetParser(data);
+                    if (_parser is NTriplesParser) _parser = null;
                 }
-                this._u = u;
+                _u = u;
 
-                this.DialogResult = true;
-                this.Close();
+                DialogResult = true;
+                Close();
             }
             catch (UriFormatException)
             {
@@ -115,15 +115,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this._u;
+                return _u;
             }
         }
 
-        public String RetrievedData
+        public string RetrievedData
         {
             get
             {
-                return this._data;
+                return _data;
             }
         }
 
@@ -131,14 +131,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this._parser;
+                return _parser;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.txtUri.Focus();
-            this.txtUri.SelectAll();
+            txtUri.Focus();
+            txtUri.SelectAll();
         }
 
 

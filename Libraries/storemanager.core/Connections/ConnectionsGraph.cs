@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="file">File on disk to which the graph should be saved</param>
-        public ConnectionsGraph(IGraph g, String file)
+        public ConnectionsGraph(IGraph g, string file)
             : base(g, file)
         {
         }
@@ -61,11 +61,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="g">Graph</param>
         /// <param name="file">File on disk to which the graph should be saved</param>
         /// <param name="maxConnections">Maximum recent connections to manage</param>
-        public RecentConnectionsesGraph(IGraph g, String file, int maxConnections)
+        public RecentConnectionsesGraph(IGraph g, string file, int maxConnections)
             : base(g, file)
         {
             if (maxConnections < 1) throw new ArgumentException("Number of recent connections must be at least 1", "maxConnections");
-            this.MaxConnections = maxConnections;
+            MaxConnections = maxConnections;
         }
 
         /// <summary>
@@ -73,12 +73,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public int MaxConnections
         {
-            get { return this._maxConnections; }
+            get { return _maxConnections; }
             set
             {
                 if (value < 1) throw new ArgumentException("Number of recent connections must be at least 1");
-                this._maxConnections = value;
-                this.Save();
+                _maxConnections = value;
+                Save();
             }
         }
 
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             base.Load();
             // Doing the save will trim any excess connections
-            this.Save();
+            Save();
         }
 
         /// <summary>
@@ -97,13 +97,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected override void Save()
         {
-            if (this.MaxConnections > 0 && this._connections.Count > this.MaxConnections)
+            if (MaxConnections > 0 && _connections.Count > MaxConnections)
             {
-                while (this._connections.Count > this.MaxConnections)
+                while (_connections.Count > MaxConnections)
                 {
-                    Connection leastRecent = this._connections.OrderBy(c => c.LastOpened).ThenBy(c => c.LastModified).First();
-                    this._connections.Remove(leastRecent);
-                    this.RaiseRemoved(leastRecent);
+                    Connection leastRecent = _connections.OrderBy(c => c.LastOpened).ThenBy(c => c.LastModified).First();
+                    _connections.Remove(leastRecent);
+                    RaiseRemoved(leastRecent);
                 }
             }
             base.Save();
@@ -136,15 +136,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="e">Event arguments</param>
         protected override void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (this.IsClosed) return;
+            if (IsClosed) return;
             if (e.PropertyName.Equals("IsOpen"))
             {
                 // If the IsOpen property changed then a connection may now be in the closed state
                 // Calling Save() causes closed connections to be culled
-                this.Save();
+                Save();
             }
             // Even though we will have raised any appropriate Remove notifications we should still bubble up the Changed notification regardless
-            this.RaiseChanged();
+            RaiseChanged();
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             base.Load();
             // Doing the save will trim any excess connections
-            this.Save();
+            Save();
         }
 
         /// <summary>
@@ -162,14 +162,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         protected override void Save()
         {
-            if (!this._firstRun && !this.IsClosed)
+            if (!_firstRun && !IsClosed)
             {
-                List<Connection> inactive = this._connections.Where(c => !c.IsOpen).ToList();
-                this._connections.RemoveAll(c => !c.IsOpen);
-                inactive.ForEach(c => this.RaiseRemoved(c));
+                List<Connection> inactive = _connections.Where(c => !c.IsOpen).ToList();
+                _connections.RemoveAll(c => !c.IsOpen);
+                inactive.ForEach(c => RaiseRemoved(c));
             }
             base.Save();
-            this._firstRun = false;
+            _firstRun = false;
         }
 
         /// <summary>
@@ -191,8 +191,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public void Close()
         {
-            this.Save();
-            this.IsClosed = true;
+            Save();
+            IsClosed = true;
         }
     }
 }

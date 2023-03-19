@@ -50,7 +50,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         /// <param name="data">Underlying data</param>
         public WpfCompletionData(ICompletionData data)
         {
-            this._data = data;
+            _data = data;
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         /// <param name="insertionRequestEventArgs">Event Arguments</param>
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            textArea.Document.Replace(completionSegment, this.Text);
+            textArea.Document.Replace(completionSegment, Text);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.DisplayText; 
+                return _data.DisplayText; 
             }
         }
 
@@ -82,7 +82,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.Description; 
+                return _data.Description; 
             }
         }
 
@@ -104,7 +104,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.Priority; 
+                return _data.Priority; 
             }
         }
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.InsertionText; 
+                return _data.InsertionText; 
             }
         }
     }

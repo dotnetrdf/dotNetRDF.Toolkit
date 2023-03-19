@@ -78,30 +78,30 @@ namespace VDS.RDF.GUI.WinForms.Forms
                 }
             }
             writers.Sort(new ToStringComparer<IRdfWriter>());
-            this.cboWriter.DataSource = writers;
-            if (this.cboWriter.Items.Count > 0) this.cboWriter.SelectedIndex = 0;
+            cboWriter.DataSource = writers;
+            if (cboWriter.Items.Count > 0) cboWriter.SelectedIndex = 0;
 
-            this.cboWriter.SelectedIndex = 0;
-            this.cboCompression.SelectedIndex = 1;
+            cboWriter.SelectedIndex = 0;
+            cboCompression.SelectedIndex = 1;
         }
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            if (this.txtFile.Text.Equals(String.Empty))
+            if (txtFile.Text.Equals(string.Empty))
             {
                 MessageBox.Show("You must enter a filename you wish to export the Graph to", "Filename Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         /// <summary>
@@ -111,22 +111,22 @@ namespace VDS.RDF.GUI.WinForms.Forms
         {
             get
             {
-                IRdfWriter writer = this.cboWriter.SelectedItem as IRdfWriter;
+                IRdfWriter writer = cboWriter.SelectedItem as IRdfWriter;
                 if (writer == null) writer = new NTriplesWriter();
 
                 //Configure Options on the Writer
                 if (writer is IPrettyPrintingWriter)
                 {
-                    ((IPrettyPrintingWriter)writer).PrettyPrintMode = this.chkPrettyPrinting.Checked;
+                    ((IPrettyPrintingWriter)writer).PrettyPrintMode = chkPrettyPrinting.Checked;
                 }
                 if (writer is IHighSpeedWriter)
                 {
-                    ((IHighSpeedWriter)writer).HighSpeedModePermitted = this.chkHighSpeed.Checked;
+                    ((IHighSpeedWriter)writer).HighSpeedModePermitted = chkHighSpeed.Checked;
                 }
                 if (writer is ICompressingWriter)
                 {
                     int c = WriterCompressionLevel.Default;
-                    switch (this.cboCompression.SelectedIndex)
+                    switch (cboCompression.SelectedIndex)
                     {
                         case 0:
                             c = WriterCompressionLevel.None;
@@ -160,20 +160,20 @@ namespace VDS.RDF.GUI.WinForms.Forms
         /// <summary>
         /// Gets the Target Filename the user selected
         /// </summary>
-        public String File
+        public string File
         {
             get
             {
-                return this.txtFile.Text;
+                return txtFile.Text;
             }
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            this.sfdExport.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
-            if (this.sfdExport.ShowDialog() == DialogResult.OK)
+            sfdExport.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
+            if (sfdExport.ShowDialog() == DialogResult.OK)
             {
-                this.txtFile.Text = this.sfdExport.FileName;
+                txtFile.Text = sfdExport.FileName;
             }
         }
 

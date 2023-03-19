@@ -52,27 +52,26 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="manager">Storage Provider to import to</param>
         /// <param name="targetGraph">Target Graph to import to</param>
         /// <param name="batchSize">Batch Size for imports</param>
-        public BaseImportTask(String name, IStorageProvider manager, Uri targetGraph, int batchSize)
+        public BaseImportTask(string name, IStorageProvider manager, Uri targetGraph, int batchSize)
             : base(name)
         {
-            this._manager = manager;
-            this._targetUri = targetGraph;
-            this._batchSize = batchSize;
-            if (this._batchSize <= 0) this._batchSize = 100;
+            _manager = manager;
+            _targetUri = targetGraph;
+            _batchSize = batchSize;
+            if (_batchSize <= 0) _batchSize = 100;
 
-            this._progress = new ImportProgressHandler(this._counter);
-            this._progress.Progress += new ImportProgressEventHandler(_progress_Progress);
+            _progress = new ImportProgressHandler(_counter);
+            _progress.Progress += new ImportProgressEventHandler(ReportProgress);
         }
 
         /// <summary>
         /// Progress reporter event handler
         /// </summary>
-        void _progress_Progress()
+        void ReportProgress()
         {
-            StringBuilder output = new StringBuilder();
-            int readTriples = this._counter.TripleCount;
-            int importedTriples = (readTriples / this._batchSize) * this._batchSize;
-            this.Information = "Read " + readTriples + " Triple(s), Imported " + importedTriples + " Triple(s) in " + this._counter.GraphCount + " Graph(s) so far...";
+            int readTriples = _counter.TripleCount;
+            int importedTriples = readTriples / _batchSize * _batchSize;
+            Information = $"Read {readTriples} Triple(s), Imported {importedTriples} Triple(s) in {_counter.GraphCount} Graph(s) so far...";
         }
         
         /// <summary>
@@ -81,38 +80,38 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected sealed override TaskResult RunTaskInternal()
         {
-            if (this._manager.UpdateSupported)
+            if (_manager.UpdateSupported)
             {
                 //Use a WriteToStoreHandler for direct writing
-                this._canceller = new CancellableHandler(new WriteToStoreHandler(this._manager, this.GetTargetUri(), this._batchSize));
-                if (this.HasBeenCancelled) this._canceller.Cancel();
+                _canceller = new CancellableHandler(new WriteToStoreHandler(_manager, GetTargetUri(), _batchSize));
+                if (HasBeenCancelled) _canceller.Cancel();
 
                 //Wrap in a ChainedHandler to ensure we permit cancellation but also count imported triples
-                ChainedHandler m = new ChainedHandler(new IRdfHandler[] { this._canceller, this._progress });
-                this.ImportUsingHandler(m);
+                ChainedHandler m = new ChainedHandler(new IRdfHandler[] { _canceller, _progress });
+                ImportUsingHandler(m);
             }
             else
             {
                 //Use a StoreHandler to load into memory and will do a SaveGraph() at the end
                 TripleStore store = new TripleStore();
-                this._canceller = new CancellableHandler(new StoreHandler(store));
-                if (this.HasBeenCancelled) this._canceller.Cancel();
+                _canceller = new CancellableHandler(new StoreHandler(store));
+                if (HasBeenCancelled) _canceller.Cancel();
 
                 //Wrap in a ChainedHandler to ensure we permit cancellation but also count imported triples
-                ChainedHandler m = new ChainedHandler(new IRdfHandler[] { this._canceller, this._progress });
-                this.ImportUsingHandler(m);
+                ChainedHandler m = new ChainedHandler(new IRdfHandler[] { _canceller, _progress });
+                ImportUsingHandler(m);
 
                 //Finally Save to the underlying Store
                 foreach (IGraph g in store.Graphs)
                 {
                     if (g.BaseUri == null)
                     {
-                        g.BaseUri = this.GetTargetUri();
+                        g.BaseUri = GetTargetUri();
                     }
-                    this._manager.SaveGraph(g);
+                    _manager.SaveGraph(g);
                 }
             }
-            this.Information = this._counter.TripleCount + " Triple(s) in " + this._counter.GraphCount + " Graph(s) Imported";
+            Information = _counter.TripleCount + " Triple(s) in " + _counter.GraphCount + " Graph(s) Imported";
 
             return new TaskResult(true);
         }
@@ -129,13 +128,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         private Uri GetTargetUri()
         {
-            if (this._targetUri != null)
+            if (_targetUri != null)
             {
-                return this._targetUri;
+                return _targetUri;
             }
             else
             {
-                return this.GetDefaultTargetUri();
+                return GetDefaultTargetUri();
             }
         }
 
@@ -153,9 +152,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void CancelInternal()
         {
-            if (this._canceller != null)
+            if (_canceller != null)
             {
-                this._canceller.Cancel();
+                _canceller.Cancel();
             }
         }
     }
@@ -181,7 +180,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public ImportProgressHandler(StoreCountHandler handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
-            this._handler = handler;
+            _handler = handler;
         }
 
         /// <summary>
@@ -191,7 +190,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                return this._handler.AsEnumerable().OfType<IRdfHandler>();
+                return _handler.AsEnumerable().OfType<IRdfHandler>();
             }
         }
 
@@ -200,8 +199,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._progressCount = 0;
-            this._handler.StartRdf();
+            _progressCount = 0;
+            _handler.StartRdf();
         }
 
         /// <summary>
@@ -210,7 +209,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="ok">Whether parsing finished OK</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
+            _handler.EndRdf(ok);
         }
 
         /// <summary>
@@ -220,12 +219,24 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            bool temp = this._handler.HandleTriple(t);
-            this._progressCount++;
-            if (this._progressCount == 1000)
+            bool temp = _handler.HandleTriple(t);
+            _progressCount++;
+            if (_progressCount == 1000)
             {
-                this._progressCount = 0;
-                this.RaiseImportProgress();
+                _progressCount = 0;
+                RaiseImportProgress();
+            }
+            return temp;
+        }
+
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            bool temp = _handler.HandleQuad(t, graph);
+            _progressCount++;
+            if (_progressCount == 1000)
+            {
+                _progressCount = 0;
+                RaiseImportProgress();
             }
             return temp;
         }
@@ -251,7 +262,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         private void RaiseImportProgress()
         {
-            ImportProgressEventHandler d = this.Progress;
+            ImportProgressEventHandler d = Progress;
             if (d != null)
             {
                 d();

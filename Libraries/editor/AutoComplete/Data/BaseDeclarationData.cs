@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="prefix">Prefix text</param>
         /// <param name="postfix">Postfix text</param>
-        public BaseDeclarationData(String prefix, String postfix)
+        public BaseDeclarationData(string prefix, string postfix)
             : base("<New Base URI Declaration>", prefix + "<Enter Base URI here>" + postfix, "Inserts a new Base URI declaration") { }
     }
 
@@ -68,6 +68,6 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         public SparqlStyleBaseDeclarationData()
-            : base("BASE", String.Empty) { }
+            : base("BASE", string.Empty) { }
     }
 }

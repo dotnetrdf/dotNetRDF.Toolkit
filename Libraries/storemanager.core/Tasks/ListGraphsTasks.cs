@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public ListGraphsTask(IStorageProvider manager)
             : base("List Graphs")
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         /// <summary>
@@ -57,28 +57,27 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override IEnumerable<Uri> RunTaskInternal()
         {
-            if (!this._manager.IsReady)
+            if (!_manager.IsReady)
             {
-                this.Information = "Waiting for Store to become ready...";
-                this.RaiseStateChanged();
-                while (!this._manager.IsReady)
+                Information = "Waiting for Store to become ready...";
+                RaiseStateChanged();
+                while (!_manager.IsReady)
                 {
                     Thread.Sleep(250);
                 }
             }
 
-            if (this._manager.ListGraphsSupported)
+            if (_manager.ListGraphsSupported)
             {
-                return this._manager.ListGraphs();
+                return _manager.ListGraphs();
             }
-            if (this._manager is IQueryableStorage)
+            if (_manager is IQueryableStorage storage)
             {
                 List<Uri> uris = new List<Uri>();
-                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { } }");
-                if (results is SparqlResultSet)
+                object results = storage.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { } }");
+                if (results is SparqlResultSet rset)
                 {
-                    SparqlResultSet rset = (SparqlResultSet)results;
-                    foreach (SparqlResult res in rset)
+                    foreach (ISparqlResult res in rset)
                     {
                         if (res["g"] != null && res["g"].NodeType == NodeType.Uri)
                         {

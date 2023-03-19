@@ -40,18 +40,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : NonCancellableTask<IStorageProvider>
     {
         private readonly IStorageServer _server;
-        private readonly String _id;
+        private readonly string _id;
 
         /// <summary>
         /// Creates a task for retrieving a Store
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public GetStoreTask(IStorageServer server, String id)
+        public GetStoreTask(IStorageServer server, string id)
             : base("Get Store")
         {
-            this._server = server;
-            this._id = id;
+            _server = server;
+            _id = id;
         }
 
         /// <summary>
@@ -60,10 +60,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override IStorageProvider RunTaskInternal()
         {
-            this.Information = "Retrieving Store " + this._id + "...";
-            if (this._server != null)
+            Information = "Retrieving Store " + _id + "...";
+            if (_server != null)
             {
-                IStorageProvider provider = this._server.GetStore(this._id);
+                IStorageProvider provider = _server.GetStore(_id);
                 return provider;
             }
             else

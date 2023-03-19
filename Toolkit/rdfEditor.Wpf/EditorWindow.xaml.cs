@@ -51,7 +51,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class EditorWindow
         : Window
     {
-        private readonly String FileFilterRdf, FileFilterSparql, FileFilterRdfDataset, FileFilterAll;
+        private readonly string FileFilterRdf, FileFilterSparql, FileFilterRdfDataset, FileFilterAll;
 
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
@@ -64,7 +64,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             InitializeComponent();
 
             //rdfEditor must disable URI interning otherwise it will eat memory as the user edits lots of files
-            Options.InternUris = false;
+            UriFactory.InternUris = false;
 
             //Generate Filename Filters
             FileFilterRdf = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, true);
@@ -78,29 +78,29 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
             //Create the Editor Manager
             WpfEditorFactory factory = new WpfEditorFactory();
-            this._editor = new Editor<TextEditor, FontFamily, Color>(factory);
-            this._editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditor>(this.SaveChangesCallback);
-            this._editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditor>(this.SaveAsCallback);
-            this._editor.DocumentManager.DocumentCreated += new DocumentChangedHandler<TextEditor>(HandleDocumentCreated);
+            _editor = new Editor<TextEditor, FontFamily, Color>(factory);
+            _editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditor>(SaveChangesCallback);
+            _editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditor>(SaveAsCallback);
+            _editor.DocumentManager.DocumentCreated += new DocumentChangedHandler<TextEditor>(HandleDocumentCreated);
           
             //Set up the Editor Options
-            if (this._editor.DocumentManager.VisualOptions == null) this._editor.DocumentManager.VisualOptions = new WpfVisualOptions();
-            this._editor.DocumentManager.VisualOptions.EnableClickableUris = Properties.Settings.Default.EnableClickableUris;
-            this._editor.DocumentManager.VisualOptions.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
-            this._editor.DocumentManager.VisualOptions.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
-            this._editor.DocumentManager.VisualOptions.ShowSpaces = Properties.Settings.Default.ShowSpaces;
-            this._editor.DocumentManager.VisualOptions.ShowTabs = Properties.Settings.Default.ShowTabs;
+            if (_editor.DocumentManager.VisualOptions == null) _editor.DocumentManager.VisualOptions = new WpfVisualOptions();
+            _editor.DocumentManager.VisualOptions.EnableClickableUris = Properties.Settings.Default.EnableClickableUris;
+            _editor.DocumentManager.VisualOptions.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
+            _editor.DocumentManager.VisualOptions.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+            _editor.DocumentManager.VisualOptions.ShowSpaces = Properties.Settings.Default.ShowSpaces;
+            _editor.DocumentManager.VisualOptions.ShowTabs = Properties.Settings.Default.ShowTabs;
             if (Properties.Settings.Default.EditorFontFace != null)
             {
-                this._editor.DocumentManager.VisualOptions.FontFace = Properties.Settings.Default.EditorFontFace;
+                _editor.DocumentManager.VisualOptions.FontFace = Properties.Settings.Default.EditorFontFace;
             }
-            this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
-            this._editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
-            this._editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
-            this._editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
-            this._editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
-            this._editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
-            this._editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
+            _editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
+            _editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
+            _editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
+            _editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
+            _editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
+            _editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
+            _editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
 
             //If custom highlighting colours have been used this call forces them to be used
             AppearanceSettings.UpdateHighlightingColours();
@@ -109,94 +109,94 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             Options.UseBomForUtf8 = false;
             if (Properties.Settings.Default.UseUtf8Bom)
             {
-                this.mnuUseBomForUtf8.IsChecked = true;
+                mnuUseBomForUtf8.IsChecked = true;
                 Options.UseBomForUtf8 = true;
                 GlobalOptions.UseBomForUtf8 = true;
             }
             if (Properties.Settings.Default.SaveWithOptionsPrompt)
             {
-                this.mnuSaveWithPromptOptions.IsChecked = true;
+                mnuSaveWithPromptOptions.IsChecked = true;
             }
             if (!Properties.Settings.Default.EnableSymbolSelection)
             {
-                this._editor.DocumentManager.Options.IsSymbolSelectionEnabled = false;
-                this.mnuSymbolSelectEnabled.IsChecked = false;
+                _editor.DocumentManager.Options.IsSymbolSelectionEnabled = false;
+                mnuSymbolSelectEnabled.IsChecked = false;
             }
             if (!Properties.Settings.Default.IncludeSymbolBoundaries)
             {
-                this._editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = false;
-                this.mnuSymbolSelectIncludeBoundary.IsChecked = false;
+                _editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = false;
+                mnuSymbolSelectIncludeBoundary.IsChecked = false;
             }
             switch (Properties.Settings.Default.SymbolSelectionMode)
             {
                 case "Punctuation":
-                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
-                    this.mnuBoundariesPunctuation.IsChecked = true;
+                    _editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
+                    mnuBoundariesPunctuation.IsChecked = true;
                     break;
                 case "WhiteSpace":
-                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
-                    this.mnuBoundariesWhiteSpace.IsChecked = true;
+                    _editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
+                    mnuBoundariesWhiteSpace.IsChecked = true;
                     break;
                 case "All":
-                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
-                    this.mnuBoundariesAll.IsChecked = true;
+                    _editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
+                    mnuBoundariesAll.IsChecked = true;
                     break;
                 case "Default":
                 default:
-                    this.mnuBoundariesDefault.IsChecked = true;
+                    mnuBoundariesDefault.IsChecked = true;
                     break;
             }
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
-                this._editor.DocumentManager.Options.IsAutoCompletionEnabled = false;
-                this.mnuAutoComplete.IsChecked = false;
+                _editor.DocumentManager.Options.IsAutoCompletionEnabled = false;
+                mnuAutoComplete.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableHighlighting)
             {
-                this._editor.DocumentManager.Options.IsSyntaxHighlightingEnabled = false;
-                this.mnuEnableHighlighting.IsChecked = false;
+                _editor.DocumentManager.Options.IsSyntaxHighlightingEnabled = false;
+                mnuEnableHighlighting.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableValidateAsYouType)
             {
-                this._editor.DocumentManager.Options.IsValidateAsYouTypeEnabled = false;
-                this.mnuValidateAsYouType.IsChecked = false;
+                _editor.DocumentManager.Options.IsValidateAsYouTypeEnabled = false;
+                mnuValidateAsYouType.IsChecked = false;
             }
             if (!Properties.Settings.Default.ShowLineNumbers)
             {
-                this._editor.DocumentManager.VisualOptions.ShowLineNumbers = false;
-                this.mnuShowLineNumbers.IsChecked = false;
+                _editor.DocumentManager.VisualOptions.ShowLineNumbers = false;
+                mnuShowLineNumbers.IsChecked = false;
             }
             if (Properties.Settings.Default.WordWrap)
             {
-                this._editor.DocumentManager.VisualOptions.WordWrap = true;
-                this.mnuWordWrap.IsChecked = true;
+                _editor.DocumentManager.VisualOptions.WordWrap = true;
+                mnuWordWrap.IsChecked = true;
             }
             if (Properties.Settings.Default.EnableClickableUris)
             {
-                this._editor.DocumentManager.VisualOptions.EnableClickableUris = true;
-                this.mnuClickableUris.IsChecked = true;
+                _editor.DocumentManager.VisualOptions.EnableClickableUris = true;
+                mnuClickableUris.IsChecked = true;
             }
             if (Properties.Settings.Default.ShowEndOfLine)
             {
-                this._editor.DocumentManager.VisualOptions.ShowEndOfLine = true;
-                this.mnuShowSpecialEOL.IsChecked = true;
+                _editor.DocumentManager.VisualOptions.ShowEndOfLine = true;
+                mnuShowSpecialEOL.IsChecked = true;
             }
             if (Properties.Settings.Default.ShowSpaces)
             {
-                this._editor.DocumentManager.VisualOptions.ShowSpaces = true;
-                this.mnuShowSpecialSpaces.IsChecked = true;
+                _editor.DocumentManager.VisualOptions.ShowSpaces = true;
+                mnuShowSpecialSpaces.IsChecked = true;
             }
             if (Properties.Settings.Default.ShowTabs)
             {
-                this._editor.DocumentManager.VisualOptions.ShowTabs = true;
-                this.mnuShowSpecialTabs.IsChecked = true;
+                _editor.DocumentManager.VisualOptions.ShowTabs = true;
+                mnuShowSpecialTabs.IsChecked = true;
             }
-            this._editor.DocumentManager.DefaultSyntax = Properties.Settings.Default.DefaultHighlighter;
+            _editor.DocumentManager.DefaultSyntax = Properties.Settings.Default.DefaultHighlighter;
 
             //Add an initial document for editing
-            this.AddTextEditor();
-            this.tabDocuments.SelectedIndex = 0;
-            this._editor.DocumentManager.ActiveDocument.TextEditor.Control.Focus();
+            AddTextEditor();
+            tabDocuments.SelectedIndex = 0;
+            _editor.DocumentManager.ActiveDocument.TextEditor.Control.Focus();
 
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
@@ -208,21 +208,21 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             _sfd.Filter = _ofd.Filter;
 
             //Setup dropping of files
-            this.AllowDrop = true;
-            this.Drop += new DragEventHandler(EditorWindow_Drop);
+            AllowDrop = true;
+            Drop += new DragEventHandler(EditorWindow_Drop);
         }
 
         #region Text Editor Management
 
         private void AddTextEditor()
         {
-            this.AddTextEditor(new TabItem());
+            AddTextEditor(new TabItem());
         }
 
         private void AddTextEditor(TabItem tab)
         {
-            Document<TextEditor> doc = this._editor.DocumentManager.New();
-            this.AddTextEditor(tab, doc);
+            Document<TextEditor> doc = _editor.DocumentManager.New();
+            AddTextEditor(tab, doc);
         }
 
         private void AddTextEditor(TabItem tab, Document<TextEditor> doc)
@@ -231,41 +231,41 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             doc.FilenameChanged +=
                 new DocumentChangedHandler<TextEditor>((sender, e) =>
                 {
-                    if (e.Document.Filename != null && !e.Document.Filename.Equals(String.Empty))
+                    if (e.Document.Filename != null && !e.Document.Filename.Equals(string.Empty))
                     {
                         tab.Header = System.IO.Path.GetFileName(e.Document.Filename);
                     }
                 });
             doc.TitleChanged += new DocumentChangedHandler<TextEditor>((sender, e) =>
             {
-                if (e.Document.Title != null && !e.Document.Title.Equals(String.Empty))
+                if (e.Document.Title != null && !e.Document.Title.Equals(string.Empty))
                 {
                     tab.Header = e.Document.Title;
                 }
             });
             doc.SyntaxChanged += new DocumentChangedHandler<TextEditor>((sender, e) =>
             {
-                if (ReferenceEquals(this._editor.DocumentManager.ActiveDocument, e.Document))
+                if (ReferenceEquals(_editor.DocumentManager.ActiveDocument, e.Document))
                 {
-                    this.stsCurrSyntax.Content = "Syntax: " + e.Document.Syntax;
+                    stsCurrSyntax.Content = "Syntax: " + e.Document.Syntax;
                 }
             });
-            doc.Validated += new DocumentValidatedHandler<TextEditor>(this.HandleValidation);
-            doc.ValidatorChanged += new DocumentChangedHandler<TextEditor>(this.HandleValidatorChanged);
-            doc.TextChanged += new DocumentChangedHandler<TextEditor>(this.HandleTextChanged);
+            doc.Validated += new DocumentValidatedHandler<TextEditor>(HandleValidation);
+            doc.ValidatorChanged += new DocumentChangedHandler<TextEditor>(HandleValidatorChanged);
+            doc.TextChanged += new DocumentChangedHandler<TextEditor>(HandleTextChanged);
 
             //Set Tab title where appropriate
-            if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+            if (doc.Filename != null && !doc.Filename.Equals(string.Empty))
             {
                 tab.Header = System.IO.Path.GetFileName(doc.Filename);
             }
-            else if (doc.Title != null && !doc.Title.Equals(String.Empty))
+            else if (doc.Title != null && !doc.Title.Equals(string.Empty))
             {
                 tab.Header = doc.Title;
             }
 
             //Add to Tabs
-            this.tabDocuments.Items.Add(tab);
+            tabDocuments.Items.Add(tab);
             tab.Content = doc.TextEditor.Control;
 
             //Add appropriate event handlers on tabs
@@ -286,43 +286,43 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuFile_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            bool hasDoc = this._editor.DocumentManager.ActiveDocument != null;
-            this.mnuNewFromActive.IsEnabled = hasDoc;
-            this.mnuSave.IsEnabled = hasDoc;
-            this.mnuSaveAs.IsEnabled = hasDoc;
-            this.mnuSaveAll.IsEnabled = hasDoc;
-            this.mnuSaveWith.IsEnabled = hasDoc;
-            this.mnuPageSetup.IsEnabled = hasDoc;
-            this.mnuPrint.IsEnabled = hasDoc;
-            this.mnuPrintNoHighlighting.IsEnabled = hasDoc;
-            this.mnuPrintPreview.IsEnabled = hasDoc;
-            this.mnuPrintPreviewNoHighlighting.IsEnabled = hasDoc;
-            this.mnuClose.IsEnabled = hasDoc;
-            this.mnuCloseAll.IsEnabled = hasDoc;
+            bool hasDoc = _editor.DocumentManager.ActiveDocument != null;
+            mnuNewFromActive.IsEnabled = hasDoc;
+            mnuSave.IsEnabled = hasDoc;
+            mnuSaveAs.IsEnabled = hasDoc;
+            mnuSaveAll.IsEnabled = hasDoc;
+            mnuSaveWith.IsEnabled = hasDoc;
+            mnuPageSetup.IsEnabled = hasDoc;
+            mnuPrint.IsEnabled = hasDoc;
+            mnuPrintNoHighlighting.IsEnabled = hasDoc;
+            mnuPrintPreview.IsEnabled = hasDoc;
+            mnuPrintPreviewNoHighlighting.IsEnabled = hasDoc;
+            mnuClose.IsEnabled = hasDoc;
+            mnuCloseAll.IsEnabled = hasDoc;
         }
 
         private void mnuNew_Click(object sender, RoutedEventArgs e)
         {
-            this.AddTextEditor();
-            this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
-            this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+            AddTextEditor();
+            _editor.DocumentManager.SwitchTo(_editor.DocumentManager.Count - 1);
+            tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
         }
 
         private void mnuNewFromActive_Click(object sender, RoutedEventArgs e)
         {
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             if (doc != null)
             {
-                Document<TextEditor> newDoc = this._editor.DocumentManager.NewFromActive(true);
+                Document<TextEditor> newDoc = _editor.DocumentManager.NewFromActive(true);
 
                 TabItem tab = new TabItem();
                 tab.Header = newDoc.Title;
-                this.AddTextEditor(tab, newDoc);
-                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                AddTextEditor(tab, newDoc);
+                tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
             }
             else
             {
-                this.AddTextEditor();
+                AddTextEditor();
             }
         }
 
@@ -330,46 +330,46 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             try
             {
-                if (this._ofd.ShowDialog() == true)
+                if (_ofd.ShowDialog() == true)
                 {
-                    if (this._ofd.FileNames.Length == 1)
+                    if (_ofd.FileNames.Length == 1)
                     {
                         Document<TextEditor> doc, active;
-                        active = this._editor.DocumentManager.ActiveDocument;
-                        if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                        active = _editor.DocumentManager.ActiveDocument;
+                        if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(string.Empty)))
                         {
                             doc = active;
-                            doc.Filename = this._ofd.FileName;
-                            this.UpdateMruList(doc.Filename);
+                            doc.Filename = _ofd.FileName;
+                            UpdateMruList(doc.Filename);
                         }
                         else
                         {
-                            doc = this._editor.DocumentManager.New(System.IO.Path.GetFileName(this._ofd.FileName), true);
+                            doc = _editor.DocumentManager.New(System.IO.Path.GetFileName(_ofd.FileName), true);
                         }
 
                         //Open the file and display in new tab if necessary
-                        doc.Open(this._ofd.FileName);
+                        doc.Open(_ofd.FileName);
                         if (!ReferenceEquals(active, doc))
                         {
-                            this.AddTextEditor(new TabItem(), doc);
-                            this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                            AddTextEditor(new TabItem(), doc);
+                            tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
                         }
                     }
                     else
                     {
-                        foreach (String filename in this._ofd.FileNames)
+                        foreach (string filename in _ofd.FileNames)
                         {
-                            Document<TextEditor> doc = this._editor.DocumentManager.New(System.IO.Path.GetFileName(filename), false);
+                            Document<TextEditor> doc = _editor.DocumentManager.New(System.IO.Path.GetFileName(filename), false);
                             try
                             {
                                 doc.Open(filename);
-                                this.AddTextEditor(new TabItem(), doc);
-                                this.UpdateMruList(doc.Filename);
+                                AddTextEditor(new TabItem(), doc);
+                                UpdateMruList(doc.Filename);
                             }
                             catch (Exception ex)
                             {
                                 System.Windows.MessageBox.Show("An error occurred while opening the selected file(s): " + ex.Message, "Open File Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                                this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                                _editor.DocumentManager.Close(_editor.DocumentManager.Count - 1);
                             }
                         }
                     }
@@ -384,23 +384,23 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void mnuOpenUri_Click(object sender, RoutedEventArgs e)
         {
             Document<TextEditor> doc, active;
-            active = this._editor.DocumentManager.ActiveDocument;
+            active = _editor.DocumentManager.ActiveDocument;
             if (active != null)
             {
-                if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(string.Empty)))
                 {
                     doc = active;
                 }
                 else
                 {
-                    doc = this._editor.DocumentManager.New(true);
-                    this.AddTextEditor(new TabItem(), doc);
+                    doc = _editor.DocumentManager.New(true);
+                    AddTextEditor(new TabItem(), doc);
                 }
             }
             else
             {
-                doc = this._editor.DocumentManager.New(true);
-                this.AddTextEditor(new TabItem(), doc);
+                doc = _editor.DocumentManager.New(true);
+                AddTextEditor(new TabItem(), doc);
             }
 
             OpenUri diag = new OpenUri();
@@ -420,19 +420,19 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
-            String queryText = String.Empty;
-            if (this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.Syntax.StartsWith("SparqlQuery"))
+            string queryText = string.Empty;
+            if (_editor.DocumentManager.ActiveDocument != null && _editor.DocumentManager.ActiveDocument.Syntax.StartsWith("SparqlQuery"))
             {
-                queryText = this._editor.DocumentManager.ActiveDocument.Text;
+                queryText = _editor.DocumentManager.ActiveDocument.Text;
             }
 
-            OpenQueryResults diag = new OpenQueryResults(this._editor.DocumentManager.VisualOptions);
-            if (!queryText.Equals(String.Empty)) diag.Query = queryText;
+            OpenQueryResults diag = new OpenQueryResults(_editor.DocumentManager.VisualOptions);
+            if (!queryText.Equals(string.Empty)) diag.Query = queryText;
             if (diag.ShowDialog() == true)
             {
-                Document<TextEditor> doc = this._editor.DocumentManager.New(true);
-                this.AddTextEditor(new TabItem(), doc);
-                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                Document<TextEditor> doc = _editor.DocumentManager.New(true);
+                AddTextEditor(new TabItem(), doc);
+                tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
                 doc.Text = diag.RetrievedData;
                 doc.AutoDetectSyntax();
             }
@@ -440,10 +440,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSave_Click(object sender, RoutedEventArgs e)
         {
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             if (doc != null)
             {
-                if (doc.Filename == null || doc.Filename.Equals(String.Empty))
+                if (doc.Filename == null || doc.Filename.Equals(string.Empty))
                 {
                     mnuSaveAs_Click(sender, e);
                 }
@@ -456,10 +456,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             if (doc != null)
             {
-                String filename = this.SaveAsCallback(doc);
+                string filename = SaveAsCallback(doc);
                 if (filename != null)
                 {
                     doc.SaveAs(_sfd.FileName);
@@ -469,14 +469,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.SaveAll();
+            _editor.DocumentManager.SaveAll();
         }
 
         private void SaveWith(IRdfWriter writer)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
 
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             IRdfReader parser = SyntaxManager.GetParser(doc.Syntax);
             if (parser == null)
             {
@@ -508,11 +508,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 //Do the actual save
                 System.IO.StringWriter strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
-                Document<TextEditor> newDoc = this._editor.DocumentManager.New(true);
+                Document<TextEditor> newDoc = _editor.DocumentManager.New(true);
                 newDoc.Text = strWriter.ToString();
                 newDoc.AutoDetectSyntax();
-                this.AddTextEditor(new TabItem(), newDoc);
-                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                AddTextEditor(new TabItem(), newDoc);
+                tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
             }
             catch (Exception ex)
             {
@@ -522,43 +522,43 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSaveWithNTriples_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new NTriplesWriter());
+            SaveWith(new NTriplesWriter());
         }
 
         private void mnuSaveWithTurtle_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new CompressingTurtleWriter(WriterCompressionLevel.High));
+            SaveWith(new CompressingTurtleWriter(WriterCompressionLevel.High));
         }
 
         private void mnuSaveWithN3_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new Notation3Writer());
+            SaveWith(new Notation3Writer());
         }
 
         private void mnuSaveWithRdfXml_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new PrettyRdfXmlWriter());
+            SaveWith(new PrettyRdfXmlWriter());
         }
 
         private void mnuSaveWithRdfJson_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new RdfJsonWriter());
+            SaveWith(new RdfJsonWriter());
         }
 
         private void mnuSaveWithRdfa_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new HtmlWriter());
+            SaveWith(new HtmlWriter());
         }
 
         private void mnuSaveWithPromptOptions_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
+            Properties.Settings.Default.SaveWithOptionsPrompt = mnuSaveWithPromptOptions.IsChecked;
             Properties.Settings.Default.Save();
         }
 
         private void mnuUseBomForUtf8_Click(object sender, RoutedEventArgs e)
         {
-            Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
+            Options.UseBomForUtf8 = mnuUseBomForUtf8.IsChecked;
             GlobalOptions.UseBomForUtf8 = Options.UseBomForUtf8;
             Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
             Properties.Settings.Default.Save();
@@ -566,55 +566,55 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuPageSetup_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PageSetupDialog();
+                _editor.DocumentManager.ActiveDocument.TextEditor.Control.PageSetupDialog();
             }
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(this._editor.DocumentManager.ActiveDocument.Title);
+                _editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(_editor.DocumentManager.ActiveDocument.Title);
             }
         }
 
         private void mnuPrintPreviewNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(this._editor.DocumentManager.ActiveDocument.Title, false);
+                _editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(_editor.DocumentManager.ActiveDocument.Title, false);
             }
         }
 
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(this._editor.DocumentManager.ActiveDocument.Title);
+                _editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(_editor.DocumentManager.ActiveDocument.Title);
             }
         }
 
         private void mnuPrintNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(this._editor.DocumentManager.ActiveDocument.Title, false);
+                _editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(_editor.DocumentManager.ActiveDocument.Title, false);
             }
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                if (this._editor.DocumentManager.Close())
+                if (_editor.DocumentManager.Close())
                 {
-                    int index = this._editor.DocumentManager.ActiveDocumentIndex;
+                    int index = _editor.DocumentManager.ActiveDocumentIndex;
                     try
                     {
-                        this.tabDocuments.Items.RemoveAt(this.tabDocuments.SelectedIndex);
-                        this.tabDocuments.SelectedIndex = index;
+                        tabDocuments.Items.RemoveAt(tabDocuments.SelectedIndex);
+                        tabDocuments.SelectedIndex = index;
                     }
                     catch (ArgumentOutOfRangeException)
                     {
@@ -627,22 +627,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuCloseAll_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.CloseAll();
-            foreach (TabItem tab in this.tabDocuments.Items)
+            _editor.DocumentManager.CloseAll();
+            foreach (TabItem tab in tabDocuments.Items)
             {
                 tab.Content = null;
             }
-            this.tabDocuments.Items.Clear();
+            tabDocuments.Items.Clear();
 
             //Recreate new Tabs for any Documents that were not closed
-            foreach (Document<TextEditor> doc in this._editor.DocumentManager.Documents)
+            foreach (Document<TextEditor> doc in _editor.DocumentManager.Documents)
             {
-                this.AddTextEditor(new TabItem(), doc);
+                AddTextEditor(new TabItem(), doc);
             }
             try
             {
-                this._editor.DocumentManager.SwitchTo(0);
-                this.tabDocuments.SelectedIndex = 0;
+                _editor.DocumentManager.SwitchTo(0);
+                tabDocuments.SelectedIndex = 0;
             }
             catch (IndexOutOfRangeException)
             {
@@ -653,7 +653,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
             mnuCloseAll_Click(sender, e);
-            if (this.tabDocuments.Items.Count == 0)
+            if (tabDocuments.Items.Count == 0)
             {
                 Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 Application.Current.Shutdown();
@@ -666,113 +666,113 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuEdit_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            bool hasDoc = this._editor.DocumentManager.ActiveDocument != null;
-            this.mnuUndo.IsEnabled = hasDoc;
-            this.mnuRedo.IsEnabled = hasDoc;
-            this.mnuCut.IsEnabled = hasDoc;
-            this.mnuCopy.IsEnabled = hasDoc;
-            this.mnuPaste.IsEnabled = hasDoc;
-            this.mnuFind.IsEnabled = hasDoc;
-            this.mnuFindNext.IsEnabled = hasDoc;
-            this.mnuReplace.IsEnabled = hasDoc;
-            this.mnuGoToLine.IsEnabled = hasDoc;
-            this.mnuCommentSelection.IsEnabled = hasDoc;
-            this.mnuUncommentSelection.IsEnabled = hasDoc;
-            this.mnuSymbolBoundaries.IsEnabled = this._editor.DocumentManager.Options.IsSymbolSelectionEnabled;
+            bool hasDoc = _editor.DocumentManager.ActiveDocument != null;
+            mnuUndo.IsEnabled = hasDoc;
+            mnuRedo.IsEnabled = hasDoc;
+            mnuCut.IsEnabled = hasDoc;
+            mnuCopy.IsEnabled = hasDoc;
+            mnuPaste.IsEnabled = hasDoc;
+            mnuFind.IsEnabled = hasDoc;
+            mnuFindNext.IsEnabled = hasDoc;
+            mnuReplace.IsEnabled = hasDoc;
+            mnuGoToLine.IsEnabled = hasDoc;
+            mnuCommentSelection.IsEnabled = hasDoc;
+            mnuUncommentSelection.IsEnabled = hasDoc;
+            mnuSymbolBoundaries.IsEnabled = _editor.DocumentManager.Options.IsSymbolSelectionEnabled;
         }
 
         private void mnuUndo_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo)
+            if (_editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Undo();
+                _editor.DocumentManager.ActiveDocument.TextEditor.Undo();
             }
         }
 
         private void mnuRedo_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                if (this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo)
+                if (_editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo)
                 {
-                    this._editor.DocumentManager.ActiveDocument.TextEditor.Redo();
+                    _editor.DocumentManager.ActiveDocument.TextEditor.Redo();
                 }
             }
         }
 
         private void mnuCut_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Cut();
+                _editor.DocumentManager.ActiveDocument.TextEditor.Cut();
             }
         }
 
         private void mnuCopy_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Copy();
+                _editor.DocumentManager.ActiveDocument.TextEditor.Copy();
             }
         }
 
         private void mnuPaste_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument != null)
+            if (_editor.DocumentManager.ActiveDocument != null)
             {
-                this._editor.DocumentManager.ActiveDocument.TextEditor.Paste();
+                _editor.DocumentManager.ActiveDocument.TextEditor.Paste();
             }
         }
 
         private void mnuFind_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            if (this._findReplace == null)
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            if (_findReplace == null)
             {
-                this._findReplace = new FindReplace();
+                _findReplace = new FindReplace();
             }
-            this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
-            if (this._findReplace.Visibility != Visibility.Visible)
+            _findReplace.Editor = _editor.DocumentManager.ActiveDocument.TextEditor;
+            if (_findReplace.Visibility != Visibility.Visible)
             {
-                this._findReplace.Mode = FindReplaceMode.Find;
-                this._findReplace.Show();
+                _findReplace.Mode = FindReplaceMode.Find;
+                _findReplace.Show();
             }
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
+            _findReplace.BringIntoView();
+            _findReplace.Focus();
         }
 
         private void mnuFindNext_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            if (this._findReplace == null)
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            if (_findReplace == null)
             {
-                this.mnuFind_Click(sender, e);
+                mnuFind_Click(sender, e);
             }
             else
             {
-                this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
-                this._findReplace.FindNext();
+                _findReplace.Editor = _editor.DocumentManager.ActiveDocument.TextEditor;
+                _findReplace.FindNext();
             }
         }
 
         private void mnuReplace_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            if (this._findReplace == null)
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            if (_findReplace == null)
             {
-                this._findReplace = new FindReplace();
+                _findReplace = new FindReplace();
             }
-            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
-            this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
-            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
+            _findReplace.Mode = FindReplaceMode.FindAndReplace;
+            _findReplace.Editor = _editor.DocumentManager.ActiveDocument.TextEditor;
+            if (_findReplace.Visibility != Visibility.Visible) _findReplace.Show();
+            _findReplace.BringIntoView();
+            _findReplace.Focus();
         }
 
         private void mnuGoToLine_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            ITextEditorAdaptor<TextEditor> editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            ITextEditorAdaptor<TextEditor> editor = _editor.DocumentManager.ActiveDocument.TextEditor;
             GoToLine gotoLine = new GoToLine(editor);
             gotoLine.Owner = this;
             if (gotoLine.ShowDialog() == true)
@@ -783,19 +783,19 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
 
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             TextEditor textEditor = doc.TextEditor.Control;
             if (textEditor.SelectionLength == 0) return;
 
-            String syntax = doc.Syntax;
+            string syntax = doc.Syntax;
             SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
             if (def != null)
             {
                 if (def.CanComment)
                 {
-                    String selection = textEditor.SelectedText;
+                    string selection = textEditor.SelectedText;
                     int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
                     int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
 
@@ -832,19 +832,19 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuUncommentSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
 
-            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            Document<TextEditor> doc = _editor.DocumentManager.ActiveDocument;
             TextEditor textEditor = doc.TextEditor.Control;
             if (textEditor.SelectionLength == 0) return;
 
-            String syntax = doc.Syntax;
+            string syntax = doc.Syntax;
             SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
             if (def != null)
             {
                 if (def.CanComment)
                 {
-                    String selection = textEditor.SelectedText;
+                    string selection = textEditor.SelectedText;
                     int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
                     int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
 
@@ -877,7 +877,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                                 DocumentLine line = textEditor.Document.GetLineByNumber(i);
                                 int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
                                 int endOffset = Math.Min(textEditor.SelectionStart + textEditor.SelectionLength, line.EndOffset);
-                                String lineText = textEditor.Document.GetText(startOffset, endOffset - startOffset);
+                                string lineText = textEditor.Document.GetText(startOffset, endOffset - startOffset);
                                 int index = lineText.IndexOf(def.SingleLineComment);
                                 textEditor.Document.Remove(startOffset + index, def.SingleLineComment.Length);
                             }
@@ -890,15 +890,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSymbolSelectEnabled_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
-            Properties.Settings.Default.EnableSymbolSelection = this.mnuSymbolSelectEnabled.IsChecked;
+            _editor.DocumentManager.Options.IsSymbolSelectionEnabled = mnuSymbolSelectEnabled.IsChecked;
+            Properties.Settings.Default.EnableSymbolSelection = mnuSymbolSelectEnabled.IsChecked;
             Properties.Settings.Default.Save();
         }
 
         private void mnuSymbolSelectIncludeBoundary_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
-            Properties.Settings.Default.IncludeSymbolBoundaries = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            _editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = mnuSymbolSelectIncludeBoundary.IsChecked;
+            Properties.Settings.Default.IncludeSymbolBoundaries = mnuSymbolSelectIncludeBoundary.IsChecked;
             Properties.Settings.Default.Save();
         }
 
@@ -906,12 +906,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             MenuItem selected = sender as MenuItem;
             if (selected == null) return;
-            String tag = (String)selected.Tag;
+            string tag = (string)selected.Tag;
             if (selected.IsChecked == false) tag = "Default";
 
-            foreach (MenuItem item in this.mnuSymbolBoundaries.Items.OfType<MenuItem>())
+            foreach (MenuItem item in mnuSymbolBoundaries.Items.OfType<MenuItem>())
             {
-                if (tag.Equals((String)item.Tag))
+                if (tag.Equals((string)item.Tag))
                 {
                     item.IsChecked = true;
                 }
@@ -921,13 +921,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 }
             }
 
-            ISymbolSelector<TextEditor> current = this._editor.DocumentManager.Options.CurrentSymbolSelector;
+            ISymbolSelector<TextEditor> current = _editor.DocumentManager.Options.CurrentSymbolSelector;
             switch (tag)
             {
                 case "Punctuation":
                     if (!(current is PunctuationSelector<TextEditor>))
                     {
-                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
+                        _editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
                         Properties.Settings.Default.SymbolSelectionMode = tag;
                         Properties.Settings.Default.Save();
                     }
@@ -935,13 +935,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 case "WhiteSpace":
                     if (!(current is WhiteSpaceSelector<TextEditor>))
                     {
-                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
+                        _editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
                     }
                     break;
                 case "All":
                     if (!(current is WhiteSpaceOrPunctuationSelection<TextEditor>))
                     {
-                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
+                        _editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
                     }
                     break;
                 case "Default":
@@ -949,7 +949,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     tag = "Default";
                     if (!(current is DefaultSelector<TextEditor>))
                     {
-                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new DefaultSelector<TextEditor>();
+                        _editor.DocumentManager.Options.CurrentSymbolSelector = new DefaultSelector<TextEditor>();
                     }
                     break;
             }
@@ -965,31 +965,31 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuShowLineNumbers_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
-            Properties.Settings.Default.ShowLineNumbers = this._editor.DocumentManager.VisualOptions.ShowLineNumbers;
+            _editor.DocumentManager.VisualOptions.ShowLineNumbers = mnuShowLineNumbers.IsChecked;
+            Properties.Settings.Default.ShowLineNumbers = _editor.DocumentManager.VisualOptions.ShowLineNumbers;
             Properties.Settings.Default.Save();
         }
 
         private void mnuWordWrap_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.WordWrap = this.mnuWordWrap.IsChecked;
-            Properties.Settings.Default.WordWrap = this._editor.DocumentManager.VisualOptions.WordWrap;
+            _editor.DocumentManager.VisualOptions.WordWrap = mnuWordWrap.IsChecked;
+            Properties.Settings.Default.WordWrap = _editor.DocumentManager.VisualOptions.WordWrap;
             Properties.Settings.Default.Save();
         }
 
         private void mnuClickableUris_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.EnableClickableUris = this.mnuClickableUris.IsChecked;
-            Properties.Settings.Default.EnableClickableUris = this._editor.DocumentManager.VisualOptions.EnableClickableUris;
+            _editor.DocumentManager.VisualOptions.EnableClickableUris = mnuClickableUris.IsChecked;
+            Properties.Settings.Default.EnableClickableUris = _editor.DocumentManager.VisualOptions.EnableClickableUris;
             Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialAll_Click(object sender, RoutedEventArgs e)
         {
-            bool all = this.mnuShowSpecialAll.IsChecked;
-            this.mnuShowSpecialEOL.IsChecked = all;
-            this.mnuShowSpecialSpaces.IsChecked = all;
-            this.mnuShowSpecialTabs.IsChecked = all;
+            bool all = mnuShowSpecialAll.IsChecked;
+            mnuShowSpecialEOL.IsChecked = all;
+            mnuShowSpecialSpaces.IsChecked = all;
+            mnuShowSpecialTabs.IsChecked = all;
             mnuShowSpecialEOL_Click(sender, e);
             mnuShowSpecialSpaces_Click(sender, e);
             mnuShowSpecialTabs_Click(sender, e);
@@ -997,22 +997,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuShowSpecialEOL_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.ShowEndOfLine = this.mnuShowSpecialEOL.IsChecked;
-            Properties.Settings.Default.ShowEndOfLine = this._editor.DocumentManager.VisualOptions.ShowEndOfLine;
+            _editor.DocumentManager.VisualOptions.ShowEndOfLine = mnuShowSpecialEOL.IsChecked;
+            Properties.Settings.Default.ShowEndOfLine = _editor.DocumentManager.VisualOptions.ShowEndOfLine;
             Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialSpaces_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.ShowSpaces = this.mnuShowSpecialSpaces.IsChecked;
-            Properties.Settings.Default.ShowSpaces = this._editor.DocumentManager.VisualOptions.ShowSpaces;
+            _editor.DocumentManager.VisualOptions.ShowSpaces = mnuShowSpecialSpaces.IsChecked;
+            Properties.Settings.Default.ShowSpaces = _editor.DocumentManager.VisualOptions.ShowSpaces;
             Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialTabs_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.ShowTabs = this.mnuShowSpecialTabs.IsChecked;
-            Properties.Settings.Default.ShowTabs = this._editor.DocumentManager.VisualOptions.ShowTabs;
+            _editor.DocumentManager.VisualOptions.ShowTabs = mnuShowSpecialTabs.IsChecked;
+            Properties.Settings.Default.ShowTabs = _editor.DocumentManager.VisualOptions.ShowTabs;
             Properties.Settings.Default.Save();
         }
 
@@ -1022,14 +1022,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuEnableHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IsSyntaxHighlightingEnabled = mnuEnableHighlighting.IsChecked;
-            Properties.Settings.Default.EnableHighlighting = this._editor.DocumentManager.Options.IsSyntaxHighlightingEnabled;
+            _editor.DocumentManager.Options.IsSyntaxHighlightingEnabled = mnuEnableHighlighting.IsChecked;
+            Properties.Settings.Default.EnableHighlighting = _editor.DocumentManager.Options.IsSyntaxHighlightingEnabled;
             Properties.Settings.Default.Save();
         }
 
         private void mnuCurrentHighlighter_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            String currSyntax = this._editor.DocumentManager.ActiveDocument != null ? this._editor.DocumentManager.ActiveDocument.Syntax : "None";
+            string currSyntax = _editor.DocumentManager.ActiveDocument != null ? _editor.DocumentManager.ActiveDocument.Syntax : "None";
             foreach (MenuItem item in mnuCurrentHighlighter.Items.OfType<MenuItem>())
             {
                 if (item.Tag != null)
@@ -1042,15 +1042,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     {
                         item.IsChecked = false;
                     }
-                    String header = (String)item.Header;
+                    string header = (string)item.Header;
                     if (header.EndsWith(" (Default)"))
                     {
-                        if (!item.Tag.Equals(this._editor.DocumentManager.DefaultSyntax))
+                        if (!item.Tag.Equals(_editor.DocumentManager.DefaultSyntax))
                         {
                             item.Header = header.Substring(0, header.Length - 10);
                         }
                     }
-                    else if (item.Tag.Equals(this._editor.DocumentManager.DefaultSyntax))
+                    else if (item.Tag.Equals(_editor.DocumentManager.DefaultSyntax))
                     {
                         item.Header += " (Default)";
                     }
@@ -1060,8 +1060,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSetDefaultHighlighter_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.DefaultSyntax = this._editor.DocumentManager.ActiveDocument != null ? this._editor.DocumentManager.ActiveDocument.Syntax : "None";
-            Properties.Settings.Default.DefaultHighlighter = this._editor.DocumentManager.DefaultSyntax;
+            _editor.DocumentManager.DefaultSyntax = _editor.DocumentManager.ActiveDocument != null ? _editor.DocumentManager.ActiveDocument.Syntax : "None";
+            Properties.Settings.Default.DefaultHighlighter = _editor.DocumentManager.DefaultSyntax;
             Properties.Settings.Default.Save();
         }
 
@@ -1070,40 +1070,40 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             MenuItem item = sender as MenuItem;
             if (item == null) return;
             if (item.Tag == null) return;
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            this._editor.DocumentManager.ActiveDocument.Syntax = (String)item.Tag;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            _editor.DocumentManager.ActiveDocument.Syntax = (string)item.Tag;
         }
 
         private void mnuValidateAsYouType_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IsValidateAsYouTypeEnabled = this.mnuValidateAsYouType.IsChecked;
-            Properties.Settings.Default.EnableValidateAsYouType = this._editor.DocumentManager.Options.IsValidateAsYouTypeEnabled;
+            _editor.DocumentManager.Options.IsValidateAsYouTypeEnabled = mnuValidateAsYouType.IsChecked;
+            Properties.Settings.Default.EnableValidateAsYouType = _editor.DocumentManager.Options.IsValidateAsYouTypeEnabled;
             Properties.Settings.Default.Save();
-            if (this._editor.DocumentManager.Options.IsValidateAsYouTypeEnabled)
+            if (_editor.DocumentManager.Options.IsValidateAsYouTypeEnabled)
             {
-                if (this._editor.DocumentManager.ActiveDocument != null)
+                if (_editor.DocumentManager.ActiveDocument != null)
                 {
-                    this._editor.DocumentManager.ActiveDocument.Validate();
+                    _editor.DocumentManager.ActiveDocument.Validate();
                 }
             }
             else
             {
-                this.stsSyntaxValidation.Content = "Validate as you Type disabled, go to Tools > Validate Syntax to check your syntax";
-                this.stsSyntaxValidation.ToolTip = String.Empty;
+                stsSyntaxValidation.Content = "Validate as you Type disabled, go to Tools > Validate Syntax to check your syntax";
+                stsSyntaxValidation.ToolTip = string.Empty;
             }
         }
 
         private void mnuHighlightErrors_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IsHighlightErrorsEnabled = this.mnuHighlightErrors.IsChecked;
-            Properties.Settings.Default.EnableErrorHighlighting = this._editor.DocumentManager.Options.IsHighlightErrorsEnabled;
+            _editor.DocumentManager.Options.IsHighlightErrorsEnabled = mnuHighlightErrors.IsChecked;
+            Properties.Settings.Default.EnableErrorHighlighting = _editor.DocumentManager.Options.IsHighlightErrorsEnabled;
             Properties.Settings.Default.Save();
         }
 
         private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
         {
-            this._editor.DocumentManager.Options.IsAutoCompletionEnabled = this.mnuAutoComplete.IsChecked;
-            Properties.Settings.Default.EnableAutoComplete = this._editor.DocumentManager.Options.IsAutoCompletionEnabled;
+            _editor.DocumentManager.Options.IsAutoCompletionEnabled = mnuAutoComplete.IsChecked;
+            Properties.Settings.Default.EnableAutoComplete = _editor.DocumentManager.Options.IsAutoCompletionEnabled;
             Properties.Settings.Default.Save();
         }
 
@@ -1115,25 +1115,25 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuCustomiseAppearance_Click(object sender, RoutedEventArgs e)
         {
-            AppearanceSettings settings = new AppearanceSettings(this._editor.DocumentManager.VisualOptions);
+            AppearanceSettings settings = new AppearanceSettings(_editor.DocumentManager.VisualOptions);
             settings.Owner = this;
             if (settings.ShowDialog() == true)
             {
                 if (Properties.Settings.Default.EditorFontFace != null)
                 {
-                    this._editor.DocumentManager.VisualOptions.FontFace = Properties.Settings.Default.EditorFontFace;
+                    _editor.DocumentManager.VisualOptions.FontFace = Properties.Settings.Default.EditorFontFace;
                 }
-                this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
-                this._editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
-                this._editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
+                _editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
+                _editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
+                _editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
 
-                this._editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
-                this._editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
+                _editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
+                _editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
                 if (Properties.Settings.Default.ErrorHighlightFontFamily != null)
                 {
-                    this._editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
+                    _editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
                 }
-                this._editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
+                _editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
             }
         }
 
@@ -1143,20 +1143,20 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuTools_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            bool hasDoc = this._editor.DocumentManager.ActiveDocument != null;
-            this.mnuValidateSyntax.IsEnabled = hasDoc;
-            this.mnuStructureView.IsEnabled = hasDoc;
+            bool hasDoc = _editor.DocumentManager.ActiveDocument != null;
+            mnuValidateSyntax.IsEnabled = hasDoc;
+            mnuStructureView.IsEnabled = hasDoc;
         }
 
         private void mnuValidateSyntax_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
 
-            ISyntaxValidator validator = this._editor.DocumentManager.ActiveDocument.SyntaxValidator;
+            ISyntaxValidator validator = _editor.DocumentManager.ActiveDocument.SyntaxValidator;
             if (validator != null)
             {
-                ISyntaxValidationResults results = this._editor.DocumentManager.ActiveDocument.Validate();
-                String caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
+                ISyntaxValidationResults results = _editor.DocumentManager.ActiveDocument.Validate();
+                string caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
                 MessageBox.Show(results.Message, caption);
             }
             else
@@ -1167,22 +1167,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuStructureView_Click(object sender, RoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.ActiveDocument == null) return;
-            ISyntaxValidator validator = this._editor.DocumentManager.ActiveDocument.SyntaxValidator;
+            if (_editor.DocumentManager.ActiveDocument == null) return;
+            ISyntaxValidator validator = _editor.DocumentManager.ActiveDocument.SyntaxValidator;
             if (validator != null)
             {
-                ISyntaxValidationResults results = validator.Validate(this._editor.DocumentManager.ActiveDocument.Text);
+                ISyntaxValidationResults results = validator.Validate(_editor.DocumentManager.ActiveDocument.Text);
                 if (results.IsValid)
                 {
-                    if (!this._editor.DocumentManager.ActiveDocument.Syntax.Equals("None"))
+                    if (!_editor.DocumentManager.ActiveDocument.Syntax.Equals("None"))
                     {
                         try
                         {
-                            SyntaxDefinition def = SyntaxManager.GetDefinition(this._editor.DocumentManager.ActiveDocument.Syntax);
+                            SyntaxDefinition def = SyntaxManager.GetDefinition(_editor.DocumentManager.ActiveDocument.Syntax);
                             if (def.DefaultParser != null)
                             {
                                 NonIndexedGraph g = new NonIndexedGraph();
-                                def.DefaultParser.Load(g, new StringReader(this._editor.DocumentManager.ActiveDocument.Text));
+                                def.DefaultParser.Load(g, new StringReader(_editor.DocumentManager.ActiveDocument.Text));
                                 TriplesWindow window = new TriplesWindow(g);
                                 window.ShowDialog();
                             }
@@ -1194,7 +1194,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                             else if (def.Validator is SparqlResultsValidator)
                             {
                                 SparqlResultSet sparqlResults = new SparqlResultSet();
-                                StringParser.ParseResultSet(sparqlResults, this._editor.DocumentManager.ActiveDocument.Text);
+                                StringParser.ParseResultSet(sparqlResults, _editor.DocumentManager.ActiveDocument.Text);
                                 if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
                                 {
                                     ResultSetWindow window = new ResultSetWindow(sparqlResults);
@@ -1342,22 +1342,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void FindCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuFind_Click(sender, e);
+            mnuFind_Click(sender, e);
         }
 
         private void FindNextCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuFindNext_Click(sender, e);
+            mnuFindNext_Click(sender, e);
         }
 
         private void ReplaceCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuReplace_Click(sender, e);
+            mnuReplace_Click(sender, e);
         }
 
         private void GoToLineCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuGoToLine_Click(sender, e);
+            mnuGoToLine_Click(sender, e);
         }
 
         private void CommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1372,67 +1372,67 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void ToggleLineNumbersExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuShowLineNumbers.IsChecked = !this.mnuShowLineNumbers.IsChecked;
+            mnuShowLineNumbers.IsChecked = !mnuShowLineNumbers.IsChecked;
             mnuShowLineNumbers_Click(sender, e);
         }
 
         private void ToggleWordWrapExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuWordWrap.IsChecked = !this.mnuWordWrap.IsChecked;
+            mnuWordWrap.IsChecked = !mnuWordWrap.IsChecked;
             mnuWordWrap_Click(sender, e);
         }
 
         private void ToggleClickableUrisExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuClickableUris.IsChecked = !this.mnuClickableUris.IsChecked;
+            mnuClickableUris.IsChecked = !mnuClickableUris.IsChecked;
             mnuClickableUris_Click(sender, e);
         }
 
         private void IncreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(this._editor.DocumentManager.VisualOptions.FontSize + 1.0, 0);
-            Properties.Settings.Default.EditorFontSize = this._editor.DocumentManager.VisualOptions.FontSize;
+            _editor.DocumentManager.VisualOptions.FontSize = Math.Round(_editor.DocumentManager.VisualOptions.FontSize + 1.0, 0);
+            Properties.Settings.Default.EditorFontSize = _editor.DocumentManager.VisualOptions.FontSize;
             Properties.Settings.Default.Save();
         }
 
         private void DecreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (this._editor.DocumentManager.VisualOptions.FontSize >= 5.0d)
+            if (_editor.DocumentManager.VisualOptions.FontSize >= 5.0d)
             {
-                this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(this._editor.DocumentManager.VisualOptions.FontSize - 1.0, 0);
-                Properties.Settings.Default.EditorFontSize = this._editor.DocumentManager.VisualOptions.FontSize;
+                _editor.DocumentManager.VisualOptions.FontSize = Math.Round(_editor.DocumentManager.VisualOptions.FontSize - 1.0, 0);
+                Properties.Settings.Default.EditorFontSize = _editor.DocumentManager.VisualOptions.FontSize;
                 Properties.Settings.Default.Save();
             }
         }
 
         private void ResetTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this._editor.DocumentManager.VisualOptions.FontSize = 13.0d;
-            Properties.Settings.Default.EditorFontSize = this._editor.DocumentManager.VisualOptions.FontSize;
+            _editor.DocumentManager.VisualOptions.FontSize = 13.0d;
+            Properties.Settings.Default.EditorFontSize = _editor.DocumentManager.VisualOptions.FontSize;
             Properties.Settings.Default.Save();
         }
 
         private void ToggleHighlightingExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuEnableHighlighting.IsChecked = !this.mnuEnableHighlighting.IsChecked;
+            mnuEnableHighlighting.IsChecked = !mnuEnableHighlighting.IsChecked;
             mnuEnableHighlighting_Click(sender, e);
         }
 
         private void ToggleValidateAsYouTypeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuValidateAsYouType.IsChecked = !this.mnuValidateAsYouType.IsChecked;
+            mnuValidateAsYouType.IsChecked = !mnuValidateAsYouType.IsChecked;
             mnuValidateAsYouType_Click(sender, e);
         }
 
         private void ToggleValidationErrorHighlighting(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuHighlightErrors.IsChecked = !this.mnuHighlightErrors.IsChecked;
+            mnuHighlightErrors.IsChecked = !mnuHighlightErrors.IsChecked;
             mnuHighlightErrors_Click(sender, e);
         }
 
         private void ToggleAutoCompletionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuAutoComplete.IsChecked = !this.mnuAutoComplete.IsChecked;
+            mnuAutoComplete.IsChecked = !mnuAutoComplete.IsChecked;
             mnuAutoComplete_Click(sender, e);
         }
 
@@ -1447,68 +1447,68 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         void HandleDocumentCreated(object sender, DocumentChangedEventArgs<TextEditor> args)
         {
-            args.Document.TextEditor.Control.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(args.Document.TextEditor as WpfEditorAdaptor, this._editor.DocumentManager.VisualOptions));
+            args.Document.TextEditor.Control.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(args.Document.TextEditor as WpfEditorAdaptor, _editor.DocumentManager.VisualOptions));
         }
 
-        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TextEditor> args)
+        private void HandleValidatorChanged(object sender, DocumentChangedEventArgs<TextEditor> args)
         {
-            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            if (ReferenceEquals(args.Document, _editor.DocumentManager.ActiveDocument))
             {
                 if (args.Document.SyntaxValidator == null)
                 {
-                    this.stsSyntaxValidation.Content = "No Syntax Validator available for the currently selected syntax";
+                    stsSyntaxValidation.Content = "No Syntax Validator available for the currently selected syntax";
                 }
                 else
                 {
-                    this.stsSyntaxValidation.Content = "Syntax Validation available, enable Validate as you Type or select Tools > Validate to validate";
-                    this._editor.DocumentManager.ActiveDocument.Validate();
+                    stsSyntaxValidation.Content = "Syntax Validation available, enable Validate as you Type or select Tools > Validate to validate";
+                    _editor.DocumentManager.ActiveDocument.Validate();
                 }
             }
         }
 
-        private void HandleValidation(Object sender, DocumentValidatedEventArgs<TextEditor> args)
+        private void HandleValidation(object sender, DocumentValidatedEventArgs<TextEditor> args)
         {
-            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            if (ReferenceEquals(args.Document, _editor.DocumentManager.ActiveDocument))
             {
-                this.stsSyntaxValidation.ToolTip = String.Empty;
+                stsSyntaxValidation.ToolTip = string.Empty;
                 if (args.ValidationResults != null)
                 {
-                    this.stsSyntaxValidation.Content = args.ValidationResults.Message;
+                    stsSyntaxValidation.Content = args.ValidationResults.Message;
                     //Build a TextBlock with wrapping for the ToolTip
                     TextBlock block = new TextBlock();
                     block.TextWrapping = TextWrapping.Wrap;
                     block.Width = 800;
                     block.Text = args.ValidationResults.Message;
-                    this.stsSyntaxValidation.ToolTip = block;
+                    stsSyntaxValidation.ToolTip = block;
                     if (args.ValidationResults.Warnings.Any())
                     {
-                        this.stsSyntaxValidation.ToolTip += "\n" + String.Join("\n", args.ValidationResults.Warnings.ToArray());
+                        stsSyntaxValidation.ToolTip += "\n" + string.Join("\n", args.ValidationResults.Warnings.ToArray());
                     }
                 }
                 else
                 {
-                    this.stsSyntaxValidation.Content = "Syntax Validation unavailable";
+                    stsSyntaxValidation.Content = "Syntax Validation unavailable";
                 }
             }
         }
 
-        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<TextEditor> args)
+        private void HandleTextChanged(object sender, DocumentChangedEventArgs<TextEditor> args)
         {
-            this.mnuUndo.IsEnabled = this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo;
-            this.mnuRedo.IsEnabled = this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo;
+            mnuUndo.IsEnabled = _editor.DocumentManager.ActiveDocument != null && _editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo;
+            mnuRedo.IsEnabled = _editor.DocumentManager.ActiveDocument != null && _editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo;
         }
 
         private void tabDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.tabDocuments.SelectedIndex >= 0 && this.tabDocuments.Items.Count > 0)
+            if (tabDocuments.SelectedIndex >= 0 && tabDocuments.Items.Count > 0)
             {
                 try
                 {
-                    this._editor.DocumentManager.SwitchTo(this.tabDocuments.SelectedIndex);
-                    this.stsCurrSyntax.Content = "Current Syntax: " + this._editor.DocumentManager.ActiveDocument.Syntax;
-                    this.stsSyntaxValidation.Content = String.Empty;
-                    this.stsSyntaxValidation.ToolTip = String.Empty;
-                    this._editor.DocumentManager.ActiveDocument.Validate();
+                    _editor.DocumentManager.SwitchTo(tabDocuments.SelectedIndex);
+                    stsCurrSyntax.Content = "Current Syntax: " + _editor.DocumentManager.ActiveDocument.Syntax;
+                    stsSyntaxValidation.Content = string.Empty;
+                    stsSyntaxValidation.ToolTip = string.Empty;
+                    _editor.DocumentManager.ActiveDocument.Validate();
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -1521,23 +1521,23 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Open a File if we've been asked to do so
-            String[] args = Environment.GetCommandLineArgs();
+            string[] args = Environment.GetCommandLineArgs();
             if (args.Length >= 2)
             {
                 if (File.Exists(args[1]))
                 {
-                    Document<TextEditor> doc = this._editor.DocumentManager.New();
+                    Document<TextEditor> doc = _editor.DocumentManager.New();
                     try
                     {
                         doc.Open(args[1]);
-                        this.AddTextEditor(new TabItem(), doc);
-                        this._editor.DocumentManager.Close(0);
-                        this.tabDocuments.Items.RemoveAt(0);
+                        AddTextEditor(new TabItem(), doc);
+                        _editor.DocumentManager.Close(0);
+                        tabDocuments.Items.RemoveAt(0);
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                        this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                        _editor.DocumentManager.Close(_editor.DocumentManager.Count - 1);
                     }
                 }
             }
@@ -1559,13 +1559,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             //Set Window size
             if (Properties.Settings.Default.WindowHeight > 0 && Properties.Settings.Default.WindowWidth > 0)
             {
-                this.Height = Properties.Settings.Default.WindowHeight;
-                this.Width = Properties.Settings.Default.WindowWidth;
+                Height = Properties.Settings.Default.WindowHeight;
+                Width = Properties.Settings.Default.WindowWidth;
             }
-            this._saveWindowSize = true;
+            _saveWindowSize = true;
 
             //Fill The MRU List
-            this.ShowMruList();
+            ShowMruList();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1573,7 +1573,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown )
             {
                 mnuCloseAll_Click(sender, new RoutedEventArgs());
-                if (this.tabDocuments.Items.Count == 0)
+                if (tabDocuments.Items.Count == 0)
                 {
                     Application.Current.Shutdown();
                 }
@@ -1586,12 +1586,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (!this._saveWindowSize) return;
+            if (!_saveWindowSize) return;
 
-            if (this.Width > 0 && this.Height > 0)
+            if (Width > 0 && Height > 0)
             {
-                Properties.Settings.Default.WindowHeight = this.Height;
-                Properties.Settings.Default.WindowWidth = this.Width;
+                Properties.Settings.Default.WindowHeight = Height;
+                Properties.Settings.Default.WindowWidth = Width;
                 Properties.Settings.Default.Save();
             }
         }
@@ -1599,23 +1599,23 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         void EditorWindow_Drop(object sender, DragEventArgs e)
         {
             //Is the data FileDrop data?
-            String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
+            string[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
             if (droppedFilePaths == null) return;
 
             e.Handled = true;
 
-            foreach (String file in droppedFilePaths)
+            foreach (string file in droppedFilePaths)
             {
-                Document<TextEditor> doc = this._editor.DocumentManager.New();
+                Document<TextEditor> doc = _editor.DocumentManager.New();
                 try
                 {
                     doc.Open(file);
-                    this.AddTextEditor(new TabItem(), doc);
+                    AddTextEditor(new TabItem(), doc);
                 }
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("The dropped file '" + file + "' could not be opened due to an error: " + ex.Message, "Open File Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                    this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                    _editor.DocumentManager.Close(_editor.DocumentManager.Count - 1);
                 }
             }
         }
@@ -1639,10 +1639,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        private String SaveAsCallback(Document<TextEditor> doc)
+        private string SaveAsCallback(Document<TextEditor> doc)
         {
-            _sfd.Filter = this.FileFilterAll;
-            if (doc.Filename == null || doc.Filename.Equals(String.Empty))
+            _sfd.Filter = FileFilterAll;
+            if (doc.Filename == null || doc.Filename.Equals(string.Empty))
             {
                 _sfd.Title = "Save " + doc.Title + " As...";
             }
@@ -1653,9 +1653,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 _sfd.FileName = doc.Filename;
             }
 
-            if (this._sfd.ShowDialog() == true)
+            if (_sfd.ShowDialog() == true)
             {
-                return this._sfd.FileName;
+                return _sfd.FileName;
             }
             else
             {
@@ -1671,30 +1671,30 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
             {
-                while (this.mnuRecentFiles.Items.Count > 2)
+                while (mnuRecentFiles.Items.Count > 2)
                 {
-                    this.mnuRecentFiles.Items.RemoveAt(2);
+                    mnuRecentFiles.Items.RemoveAt(2);
                 }
 
                 int i = 0;
-                foreach (String file in VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Files)
+                foreach (string file in VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Files)
                 {
                     i++;
                     MenuItem item = new MenuItem();
                     item.Header = i + ": " + MruList.ShortenFilename(file);
                     item.Tag = file;
-                    item.Click += new RoutedEventHandler(this.MruListFileClicked);
-                    this.mnuRecentFiles.Items.Add(item);
+                    item.Click += new RoutedEventHandler(MruListFileClicked);
+                    mnuRecentFiles.Items.Add(item);
                 }
             }
         }
 
-        private void UpdateMruList(String file)
+        private void UpdateMruList(string file)
         {
             if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
             {
                 VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Add(file);
-                this.ShowMruList();
+                ShowMruList();
             }
         }
 
@@ -1705,20 +1705,20 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 MenuItem item = (MenuItem)sender;
                 if (item.Tag != null)
                 {
-                    String file = item.Tag as String;
+                    string file = item.Tag as string;
                     if (file != null)
                     {
                         if (File.Exists(file))
                         {
                             Document<TextEditor> doc;
                             bool add = false;
-                            if (this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextLength == 0 && String.IsNullOrEmpty(this._editor.DocumentManager.ActiveDocument.Filename))
+                            if (_editor.DocumentManager.ActiveDocument != null && _editor.DocumentManager.ActiveDocument.TextLength == 0 && string.IsNullOrEmpty(_editor.DocumentManager.ActiveDocument.Filename))
                             {
-                                doc = this._editor.DocumentManager.ActiveDocument;
+                                doc = _editor.DocumentManager.ActiveDocument;
                             } 
                             else 
                             {
-                                doc = this._editor.DocumentManager.New();
+                                doc = _editor.DocumentManager.New();
                                 add = true;
                             }
                             try
@@ -1726,16 +1726,16 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                                 doc.Open(file);
                                 if (add)
                                 {
-                                    this.AddTextEditor(new TabItem(), doc);
-                                    this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
-                                    this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
-                                    this.tabDocuments.SelectedItem = this.tabDocuments.Items[this.tabDocuments.Items.Count - 1];
+                                    AddTextEditor(new TabItem(), doc);
+                                    _editor.DocumentManager.SwitchTo(_editor.DocumentManager.Count - 1);
+                                    tabDocuments.SelectedIndex = tabDocuments.Items.Count - 1;
+                                    tabDocuments.SelectedItem = tabDocuments.Items[tabDocuments.Items.Count - 1];
                                 }
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Open File Failed");
-                                this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                                _editor.DocumentManager.Close(_editor.DocumentManager.Count - 1);
                             }
                         }
                         else

@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ImportFileTask 
         : BaseImportTask
     {
-        private readonly String _file;
+        private readonly string _file;
 
         /// <summary>
         /// Creates a new Import File task
@@ -44,10 +44,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="file">File to import from</param>
         /// <param name="targetUri">Target Graph URI</param>
         /// <param name="batchSize">Import Batch Size</param>
-        public ImportFileTask(IStorageProvider manager, String file, Uri targetUri, int batchSize)
+        public ImportFileTask(IStorageProvider manager, string file, Uri targetUri, int batchSize)
             : base("Import File", manager, targetUri, batchSize)
         {
-            this._file = file;
+            _file = file;
         }
 
         /// <summary>
@@ -56,17 +56,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
-            this.Information = "Importing from File " + this._file;
+            Information = "Importing from File " + _file;
             try
             {
                 //Assume a RDF Graph
-                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._file));
-                FileLoader.Load(handler, this._file, reader);
+                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(_file));
+                FileLoader.Load(handler, _file, reader);
             }
             catch (RdfParserSelectionException)
             {
                 //Assume a RDF Dataset
-                FileLoader.LoadDataset(handler, this._file);
+                FileLoader.LoadDataset(handler, _file);
             }
         }
     }
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public ImportUriTask(IStorageProvider manager, Uri u, Uri targetUri, int batchSize)
             : base("Import URI", manager, targetUri, batchSize)
         {
-            this._u = u;
+            _u = u;
         }
 
         /// <summary>
@@ -98,16 +98,16 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
-            this.Information = "Importing from URI " + this._u.AbsoluteUri;
+            Information = "Importing from URI " + _u.AbsoluteUri;
             try
             {
                 //Assume a RDF Graph
-                UriLoader.Load(handler, this._u);
+                UriLoader.Load(handler, _u);
             }
             catch (RdfParserSelectionException)
             {
                 //Assume a RDF Dataset
-                UriLoader.LoadDataset(handler, this._u);
+                UriLoader.LoadDataset(handler, _u);
             }
         }
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override Uri GetDefaultTargetUri()
         {
-            return this._u;
+            return _u;
         }
     }
 }

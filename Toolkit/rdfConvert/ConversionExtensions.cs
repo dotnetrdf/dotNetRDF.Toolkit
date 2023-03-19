@@ -35,10 +35,10 @@ namespace VDS.RDF.Utilities.Convert
 {
     static class ConversionExtensions
     {
-        public static String GetFilename(this IConversionInput input, String baseName, String ext)
+        public static string GetFilename(this IConversionInput input, string baseName, string ext)
         {
-            String outFile = String.Empty;
-            if (!baseName.Equals(String.Empty))
+            string outFile = string.Empty;
+            if (!baseName.Equals(string.Empty))
             {
                 outFile = baseName;
                 if (input is FileInput)

@@ -36,7 +36,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : CancellableTask<IGraph>
     {
         private readonly IStorageProvider _manager;
-        private readonly String _graphUri;
+        private readonly string _graphUri;
         private readonly int _previewSize = 100;
         private CancellableHandler _canceller;
 
@@ -46,12 +46,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="manager">Storage Provider</param>
         /// <param name="graphUri">URI of the graph to preview</param>
         /// <param name="previewSize">Preview Size</param>
-        public PreviewGraphTask(IStorageProvider manager, String graphUri, int previewSize)
+        public PreviewGraphTask(IStorageProvider manager, string graphUri, int previewSize)
             : base("Preview Graph")
         {
-            this._manager = manager;
-            this._graphUri = graphUri;
-            this._previewSize = previewSize;
+            _manager = manager;
+            _graphUri = graphUri;
+            _previewSize = previewSize;
         }
 
         /// <summary>
@@ -60,19 +60,19 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override IGraph RunTaskInternal()
         {
-            if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
+            if (_graphUri != null && !_graphUri.Equals(string.Empty))
             {
-                this.Information = "Previewing Graph " + this._graphUri + "...";
+                Information = "Previewing Graph " + _graphUri + "...";
             }
             else
             {
-                this.Information = "Previewing Default Graph...";
+                Information = "Previewing Default Graph...";
             }
 
             Graph g = new Graph();
-            this._canceller = new CancellableHandler(new PagingHandler(new GraphHandler(g), this._previewSize));
-            this._manager.LoadGraph(this._canceller, this._graphUri);
-            this.Information = "Previewed Graph previews first " + g.Triples.Count + " Triple(s)";
+            _canceller = new CancellableHandler(new PagingHandler(new GraphHandler(g), _previewSize));
+            _manager.LoadGraph(_canceller, _graphUri);
+            Information = "Previewed Graph previews first " + g.Triples.Count + " Triple(s)";
             return g;
         }
 
@@ -81,9 +81,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void CancelInternal()
         {
-            if (this._canceller != null)
+            if (_canceller != null)
             {
-                this._canceller.Cancel();
+                _canceller.Cancel();
             }
         }
     }

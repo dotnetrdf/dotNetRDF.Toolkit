@@ -52,7 +52,7 @@ namespace VDS.RDF.Utilities.Editor
                         _background = null,
                         _errorForeground = null,
                         _errorBackground = null;
-        private String _errorDecoration = null;
+        private string _errorDecoration = null;
 
         /// <summary>
         /// Gets/Sets whether clickable URIs are enabled
@@ -61,14 +61,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._clickableUris;
+                return _clickableUris;
             }
             set
             {
-                if (value != this._clickableUris)
+                if (value != _clickableUris)
                 {
-                    this._clickableUris = value;
-                    this.RaiseChanged();
+                    _clickableUris = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -80,14 +80,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._showLineNumbers;
+                return _showLineNumbers;
             }
             set
             {
-                if (value != this._showLineNumbers)
+                if (value != _showLineNumbers)
                 {
-                    this._showLineNumbers = value;
-                    this.RaiseChanged();
+                    _showLineNumbers = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -99,14 +99,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._showSpaces;
+                return _showSpaces;
             }
             set
             {
-                if (value != this._showSpaces)
+                if (value != _showSpaces)
                 {
-                    this._showSpaces = value;
-                    this.RaiseChanged();
+                    _showSpaces = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -118,14 +118,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._showTabs;
+                return _showTabs;
             }
             set
             {
-                if (value != this._showTabs)
+                if (value != _showTabs)
                 {
-                    this._showTabs = value;
-                    this.RaiseChanged();
+                    _showTabs = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -137,14 +137,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._showEndOfLine;
+                return _showEndOfLine;
             }
             set
             {
-                if (value != this._showEndOfLine)
+                if (value != _showEndOfLine)
                 {
-                    this._showEndOfLine = value;
-                    this.RaiseChanged();
+                    _showEndOfLine = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -156,14 +156,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._wordWrap;
+                return _wordWrap;
             }
             set
             {
-                if (value != this._wordWrap)
+                if (value != _wordWrap)
                 {
-                    this._wordWrap = value;
-                    this.RaiseChanged();
+                    _wordWrap = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -175,29 +175,29 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._fontFace;
+                return _fontFace;
             }
             set
             {
                 if (value == null)
                 {
-                    if (this._fontFace != null)
+                    if (_fontFace != null)
                     {
-                        this._fontFace = null;
-                        this.RaiseChanged();
+                        _fontFace = null;
+                        RaiseChanged();
                     }
                 }
                 else
                 {
-                    if (this._fontFace == null)
+                    if (_fontFace == null)
                     {
-                        this._fontFace = value;
-                        this.RaiseChanged();
+                        _fontFace = value;
+                        RaiseChanged();
                     }
-                    else if (!this._fontFace.Equals(value))
+                    else if (!_fontFace.Equals(value))
                     {
-                        this._fontFace = value;
-                        this.RaiseChanged();
+                        _fontFace = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -210,29 +210,29 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._errorFontFace;
+                return _errorFontFace;
             }
             set
             {
                 if (value == null)
                 {
-                    if (this._errorFontFace != null)
+                    if (_errorFontFace != null)
                     {
-                        this._errorFontFace = null;
-                        this.RaiseChanged();
+                        _errorFontFace = null;
+                        RaiseChanged();
                     }
                 }
                 else
                 {
-                    if (this._errorFontFace == null)
+                    if (_errorFontFace == null)
                     {
-                        this._errorFontFace = value;
-                        this.RaiseChanged();
+                        _errorFontFace = value;
+                        RaiseChanged();
                     }
-                    else if (!this._errorFontFace.Equals(value))
+                    else if (!_errorFontFace.Equals(value))
                     {
-                        this._errorFontFace = value;
-                        this.RaiseChanged();
+                        _errorFontFace = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -245,14 +245,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._fontSize;
+                return _fontSize;
             }
             set
             {
-                if (value != this._fontSize)
+                if (value != _fontSize)
                 {
-                    this._fontSize = value;
-                    this.RaiseChanged();
+                    _fontSize = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -264,9 +264,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._foreground != null)
+                if (_foreground != null)
                 {
-                    return this._foreground.Value;
+                    return _foreground.Value;
                 }
                 else
                 {
@@ -275,17 +275,17 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                if (this._foreground != null)
+                if (_foreground != null)
                 {
-                    this._foreground = value;
-                    this.RaiseChanged();
+                    _foreground = value;
+                    RaiseChanged();
                 }
                 else
                 {
-                    if (!this._foreground.Equals(value))
+                    if (!_foreground.Equals(value))
                     {
-                        this._foreground = value;
-                        this.RaiseChanged();
+                        _foreground = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -298,9 +298,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._background != null)
+                if (_background != null)
                 {
-                    return this._background.Value;
+                    return _background.Value;
                 }
                 else
                 {
@@ -309,17 +309,17 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                if (this._background != null)
+                if (_background != null)
                 {
-                    this._background = value;
-                    this.RaiseChanged();
+                    _background = value;
+                    RaiseChanged();
                 }
                 else
                 {
-                    if (!this._background.Equals(value))
+                    if (!_background.Equals(value))
                     {
-                        this._background = value;
-                        this.RaiseChanged();
+                        _background = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -332,9 +332,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._errorForeground != null)
+                if (_errorForeground != null)
                 {
-                    return this._errorForeground.Value;
+                    return _errorForeground.Value;
                 }
                 else
                 {
@@ -343,17 +343,17 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                if (this._errorForeground != null)
+                if (_errorForeground != null)
                 {
-                    this._errorForeground = value;
-                    this.RaiseChanged();
+                    _errorForeground = value;
+                    RaiseChanged();
                 }
                 else
                 {
-                    if (!this._errorForeground.Equals(value))
+                    if (!_errorForeground.Equals(value))
                     {
-                        this._errorForeground = value;
-                        this.RaiseChanged();
+                        _errorForeground = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -366,9 +366,9 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                if (this._errorBackground != null)
+                if (_errorBackground != null)
                 {
-                    return this._errorBackground.Value;
+                    return _errorBackground.Value;
                 }
                 else
                 {
@@ -377,17 +377,17 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                if (this._errorBackground != null)
+                if (_errorBackground != null)
                 {
-                    this._errorBackground = value;
-                    this.RaiseChanged();
+                    _errorBackground = value;
+                    RaiseChanged();
                 }
                 else
                 {
-                    if (!this._errorBackground.Equals(value))
+                    if (!_errorBackground.Equals(value))
                     {
-                        this._errorBackground = value;
-                        this.RaiseChanged();
+                        _errorBackground = value;
+                        RaiseChanged();
                     }
                 }
             }
@@ -396,18 +396,18 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the decoration for error highlights
         /// </summary>
-        public String ErrorDecoration
+        public string ErrorDecoration
         {
             get
             {
-                return this._errorDecoration;
+                return _errorDecoration;
             }
             set
             {
-                if (value != this._errorDecoration)
+                if (value != _errorDecoration)
                 {
-                    this._errorDecoration = value;
-                    this.RaiseChanged();
+                    _errorDecoration = value;
+                    RaiseChanged();
                 }
             }
         }
@@ -422,7 +422,7 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         protected void RaiseChanged()
         {
-            OptionsChanged d = this.Changed;
+            OptionsChanged d = Changed;
             if (d != null) d();
         }
     }

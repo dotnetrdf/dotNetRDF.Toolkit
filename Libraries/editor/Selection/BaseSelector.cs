@@ -62,16 +62,16 @@ namespace VDS.RDF.Utilities.Editor.Selection
             //check whether the preceding and following characters are deiliminators and if so
             //alter the selection start and length appropriately to include these otherwise our
             //select won't select the surrounding symbol properly
-            if (selStart > 0 && selLength > 0 && !this._includeDelim)
+            if (selStart > 0 && selLength > 0 && !_includeDelim)
             {
-                if (this.IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart-1)))
+                if (IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart-1)))
                 {
                     selStart--;
                     selLength++;
                 }
                 if (selStart + selLength < doc.TextLength - 1)
                 {
-                    if (this.IsEndingDeliminator(doc.TextEditor.GetCharAt(selStart + selLength))) selLength++;
+                    if (IsEndingDeliminator(doc.TextEditor.GetCharAt(selStart + selLength))) selLength++;
                 }
             }
 
@@ -88,15 +88,15 @@ namespace VDS.RDF.Utilities.Editor.Selection
 
                 //Otherwise check if character at start of selection is a boundary
                 char current = doc.TextEditor.GetCharAt(selStart);
-                if (this.IsStartingDeliminator(current))
+                if (IsStartingDeliminator(current))
                 {
-                    endDelim = this.RequireMatchingDeliminator(current);
+                    endDelim = RequireMatchingDeliminator(current);
                     break;
                 }
             }
-            if (!this._includeDelim)
+            if (!_includeDelim)
             {
-                if (selStart > 0 || this.IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart)))
+                if (selStart > 0 || IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart)))
                 {
                     selStart++;
                     selLength--;
@@ -118,13 +118,13 @@ namespace VDS.RDF.Utilities.Editor.Selection
                     //If a matching End Deliminator is required then stop when that is reached
                     if (endDelim == current) break;
                 }
-                else if (this.IsEndingDeliminator(current))
+                else if (IsEndingDeliminator(current))
                 {
                     //Otherwise stop when any End Deliminator is found
                     break;
                 }
             }
-            if (this._includeDelim)
+            if (_includeDelim)
             {
                 selLength++;
             }
@@ -141,11 +141,11 @@ namespace VDS.RDF.Utilities.Editor.Selection
         {
             get
             {
-                return this._includeDelim;
+                return _includeDelim;
             }
             set
             {
-                this._includeDelim = value;
+                _includeDelim = value;
             }
         }
 

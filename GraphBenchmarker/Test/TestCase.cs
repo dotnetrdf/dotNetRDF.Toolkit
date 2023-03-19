@@ -17,48 +17,48 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
         public TestCase(Type graphType)
         {
-            this._graphType = graphType;
+            _graphType = graphType;
         }
 
         public TestCase(Type graphType, Type tripleCollectionType)
             : this(graphType)
         {
-            this._tripleCollectionType = tripleCollectionType;
+            _tripleCollectionType = tripleCollectionType;
         }
 
         public TestCase(Type graphType, Type tripleCollectionType, Type nodeCollectionType)
             : this(graphType, tripleCollectionType)
         {
-            this._nodeCollectionType = nodeCollectionType;
+            _nodeCollectionType = nodeCollectionType;
         }
 
         public IGraph Instance
         {
             get
             {
-                if (this._instance == null)
+                if (_instance == null)
                 {
-                    if (this._tripleCollectionType != null)
+                    if (_tripleCollectionType != null)
                     {
-                        if (this._nodeCollectionType == null)
+                        if (_nodeCollectionType == null)
                         {
-                            this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType) });
+                            _instance = (IGraph)Activator.CreateInstance(_graphType, new object[] { Activator.CreateInstance(_tripleCollectionType) });
                         }
                         else
                         {
-                            this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType), Activator.CreateInstance(this._nodeCollectionType) });
+                            _instance = (IGraph)Activator.CreateInstance(_graphType, new object[] { Activator.CreateInstance(_tripleCollectionType), Activator.CreateInstance(_nodeCollectionType) });
                         }
                     }
-                    else if (this._nodeCollectionType != null)
+                    else if (_nodeCollectionType != null)
                     {
-                        this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._nodeCollectionType) });
+                        _instance = (IGraph)Activator.CreateInstance(_graphType, new object[] { Activator.CreateInstance(_nodeCollectionType) });
                     }
                     else
                     {
-                        this._instance = (IGraph)Activator.CreateInstance(this._graphType);
+                        _instance = (IGraph)Activator.CreateInstance(_graphType);
                     }
                 }
-                return this._instance;
+                return _instance;
             }
         }
 
@@ -66,7 +66,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._results;
+                return _results;
             }
         }
 
@@ -74,45 +74,45 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._initMemory;
+                return _initMemory;
             }
             set
             {
-                this._initMemory = value;
+                _initMemory = value;
             }
         }
 
         public void Reset(bool clearResults)
         {
-            if (this._instance != null)
+            if (_instance != null)
             {
-                this._instance.Dispose();
-                this._instance = null;
-                this._initMemory = 0;
+                _instance.Dispose();
+                _instance = null;
+                _initMemory = 0;
             }
-            if (clearResults) this._results.Clear();
+            if (clearResults) _results.Clear();
         }
 
         public override string ToString()
         {
-            if (this._tripleCollectionType != null)
+            if (_tripleCollectionType != null)
             {
-                if (this._nodeCollectionType != null)
+                if (_nodeCollectionType != null)
                 {
-                    return this._graphType.Name + " with " + this._tripleCollectionType.Name + " and " + this._nodeCollectionType.Name;
+                    return _graphType.Name + " with " + _tripleCollectionType.Name + " and " + _nodeCollectionType.Name;
                 }
                 else
                 {
-                    return this._graphType.Name + " with " + this._tripleCollectionType.Name;
+                    return _graphType.Name + " with " + _tripleCollectionType.Name;
                 }
             }
-            else if (this._nodeCollectionType != null)
+            else if (_nodeCollectionType != null)
             {
-                return this._graphType.Name + " with " + this._nodeCollectionType.Name;
+                return _graphType.Name + " with " + _nodeCollectionType.Name;
             }
             else
             {
-                return this._graphType.Name;
+                return _graphType.Name;
             }
         }
     }

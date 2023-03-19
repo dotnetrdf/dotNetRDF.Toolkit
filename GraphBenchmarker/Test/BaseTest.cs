@@ -9,11 +9,11 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
     {
         private TestType _type;
 
-        public BaseTest(String name, String description, TestType type)
+        public BaseTest(string name, string description, TestType type)
         {
-            this.Name = name;
-            this.Description = description;
-            this._type = type;
+            Name = name;
+            Description = description;
+            _type = type;
         }
 
         public string Name
@@ -32,7 +32,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._type;
+                return _type;
             }
         }
 
@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
     public abstract class SingleRunTest : BaseTest
     {
-        public SingleRunTest(String name, String description)
+        public SingleRunTest(string name, string description)
             : base(name, description, TestType.SingleRun)
         { }
     }
@@ -49,13 +49,13 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
     public abstract class IterationTest : BaseTest
     {
         private int _iterations;
-        private String _unit;
+        private string _unit;
 
-        public IterationTest(String name, String description, int iterations, String unit)
+        public IterationTest(string name, string description, int iterations, string unit)
             : base(name, description, TestType.Iterations)
         {
-            this._iterations = Math.Max(1000, iterations);
-            this._unit = unit;
+            _iterations = Math.Max(1000, iterations);
+            _unit = unit;
         }
 
         /// <summary>
@@ -69,17 +69,17 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
         public override TestResult Run(TestCase testCase)
         {
-            this.PreIterationSetup(testCase);
+            PreIterationSetup(testCase);
 
             DateTime start = DateTime.Now;
             int actions = 0;
-            for (int i = 0; i < this._iterations; i++)
+            for (int i = 0; i < _iterations; i++)
             {
-                actions += this.RunIteration(testCase);
+                actions += RunIteration(testCase);
             }
             TimeSpan elapsed = DateTime.Now - start;
 
-            return new TestResult(elapsed, actions, this._unit, TestMetricType.Speed);
+            return new TestResult(elapsed, actions, _unit, TestMetricType.Speed);
         }
 
         protected abstract int RunIteration(TestCase testCase);

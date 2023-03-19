@@ -50,7 +50,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Server URI", IsRequired = true, Type = ConnectionSettingType.String, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
          DefaultValue("http://localhost:8080/openrdf-sesame/")]
-        public override String Server
+        public override string Server
         {
             get
             {
@@ -66,7 +66,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// Gets/Sets the Repository ID
         /// </summary>
         [Connection(DisplayName = "Repository ID", DisplayOrder = 1, AllowEmptyString = false, IsRequired = true, Type = ConnectionSettingType.String, PopulateFrom = ConfigurationLoader.PropertyStore)]
-        public String StoreID
+        public string StoreID
         {
             get;
             set;
@@ -78,11 +78,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            if (this.UseProxy)
+            if (UseProxy)
             {
-                return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
+                return new SesameHttpProtocolConnector(Server, StoreID, Username, Password, GetProxy());
             }
-            return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password);
+            return new SesameHttpProtocolConnector(Server, StoreID, Username, Password);
         }
 
         /// <summary>
@@ -91,20 +91,23 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            SesameConnectionDefinition definition = new SesameConnectionDefinition();
-            definition.Server = this.Server;
-            definition.StoreID = this.StoreID;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
-            definition.Username = this.Username;
-            definition.Password = this.Password;
+            SesameConnectionDefinition definition = new SesameConnectionDefinition
+            {
+                Server = Server,
+                StoreID = StoreID,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer,
+                Username = Username,
+                Password = Password
+            };
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[Sesame] Store '" + this.StoreID.ToSafeString() + "' on Server '" + this.Server.ToSafeString() + "'";
+            return "[Sesame] Store '" + StoreID.ToSafeString() + "' on Server '" + Server.ToSafeString() + "'";
         }
     }
 }

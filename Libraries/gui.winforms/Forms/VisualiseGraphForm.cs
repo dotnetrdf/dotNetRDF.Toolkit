@@ -55,12 +55,12 @@ namespace VDS.RDF.GUI.WinForms.Forms
         {
             InitializeComponent();
 
-            this._g = g;
+            _g = g;
         }
 
         private void btnVisualise_Click(object sender, EventArgs e)
         {
-            if (this.txtFile.Text.Equals(String.Empty))
+            if (txtFile.Text.Equals(string.Empty))
             {
                 MessageBox.Show("You must enter a filename you wish to visualise the Graph to", "Filename Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -68,23 +68,23 @@ namespace VDS.RDF.GUI.WinForms.Forms
             {
                 try
                 {
-                    switch (Path.GetExtension(this.txtFile.Text))
+                    switch (Path.GetExtension(txtFile.Text))
                     {
                         case ".dot":
                         case "dot":
                             GraphVizWriter dotwriter = new GraphVizWriter();
-                            dotwriter.Save(this._g, this.txtFile.Text);
+                            dotwriter.Save(_g, txtFile.Text);
                             break;
                         case ".png":
                         case "png":
                             GraphVizGenerator pnggenerator = new GraphVizGenerator("png");
-                            pnggenerator.Generate(this._g, this.txtFile.Text, true);
+                            pnggenerator.Generate(_g, txtFile.Text, true);
                             break;
                         case ".svg":
                         case "svg":
                         default:
                             GraphVizGenerator svggenerator = new GraphVizGenerator("svg");
-                            svggenerator.Generate(this._g, this.txtFile.Text, true);
+                            svggenerator.Generate(_g, txtFile.Text, true);
                             break;
                     }
                 }
@@ -93,22 +93,22 @@ namespace VDS.RDF.GUI.WinForms.Forms
                     MessageBox.Show("An Error occurred while trying to visualise the selected Graph:\n" + ex.Message, "Visualisation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            if (this.sfdVisualise.ShowDialog() == DialogResult.OK)
+            if (sfdVisualise.ShowDialog() == DialogResult.OK)
             {
-                this.txtFile.Text = this.sfdVisualise.FileName;
+                txtFile.Text = sfdVisualise.FileName;
             }
         }
 

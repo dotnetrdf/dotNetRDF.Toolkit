@@ -52,12 +52,12 @@ namespace VDS.RDF.GUI.WinForms.Forms
             InitializeComponent();
             if (Constants.WindowIcon != null)
             {
-                this.Icon = Constants.WindowIcon;
+                Icon = Constants.WindowIcon;
             }
-            this.Text = String.Format("Graph Viewer - {0} Triple(s)", g.Triples.Count);
+            Text = string.Format("Graph Viewer - {0} Triple(s)", g.Triples.Count);
 
-            this.graphViewer.UriClicked += (sender, uri) => this.RaiseUriClicked(uri);
-            this.Load += (sender, args) => this.graphViewer.DisplayGraph(g);
+            graphViewer.UriClicked += (sender, uri) => RaiseUriClicked(uri);
+            Load += (sender, args) => graphViewer.DisplayGraph(g);
         }
 
         /// <summary>
@@ -65,10 +65,10 @@ namespace VDS.RDF.GUI.WinForms.Forms
         /// </summary>
         /// <param name="g">Graph to display</param>
         /// <param name="title">Title</param>
-        public GraphViewerForm(IGraph g, String title)
+        public GraphViewerForm(IGraph g, string title)
             : this(g)
         {
-            this.Text = String.Format("{0} - Graph Viewer - {1} Triple(s)", title, g.Triples.Count);
+            Text = string.Format("{0} - Graph Viewer - {1} Triple(s)", title, g.Triples.Count);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF.GUI.WinForms.Forms
 
         private void RaiseUriClicked(Uri u)
         {
-            UriClickedEventHandler d = this.UriClicked;
+            UriClickedEventHandler d = UriClicked;
             if (d != null)
             {
                 d(this, u);

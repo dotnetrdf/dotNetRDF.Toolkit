@@ -43,11 +43,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// A task that takes a query and runs it using the results of that query to build a new query
     /// </summary>
     public class GenerateEntitiesQueryTask
-        : NonCancellableTask<String>
+        : NonCancellableTask<string>
     {
         private readonly IQueryableStorage _storage;
         private readonly SparqlQueryParser _parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
-        private readonly INodeFactory _nodeFactory = new NodeFactory();
+        private readonly INodeFactory _nodeFactory = new NodeFactory(new NodeFactoryOptions());
         private readonly int _minValuesPerPredicateLimit;
         private int _nextTempID = 0, _nextTempColumnID = -1;
 
@@ -57,12 +57,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="storage">Storage Provider</param>
         /// <param name="originalQuery">Query String</param>
         /// <param name="minValuesPerPredicateLimit">Minimum values per predicate limit</param>
-        public GenerateEntitiesQueryTask(IQueryableStorage storage, String originalQuery, int minValuesPerPredicateLimit)
+        public GenerateEntitiesQueryTask(IQueryableStorage storage, string originalQuery, int minValuesPerPredicateLimit)
             : base("Generate Entities Query")
         {
-            this._storage = storage;
-            this.OriginalQueryString = originalQuery;
-            this._minValuesPerPredicateLimit = minValuesPerPredicateLimit;
+            _storage = storage;
+            OriginalQueryString = originalQuery;
+            _minValuesPerPredicateLimit = minValuesPerPredicateLimit;
         }
 
         /// <summary>
@@ -70,13 +70,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public string OriginalQueryString { get; private set; }
 
-        protected override String RunTaskInternal()
+        /// <inheritdoc/>
+        protected override string RunTaskInternal()
         {
             // Start from an initial Original Query issued by user
             SparqlQuery initialQuery;
             try
             {
-                initialQuery = this._parser.ParseFromString(this.OriginalQueryString);
+                initialQuery = _parser.ParseFromString(OriginalQueryString);
             }
             catch (RdfParseException parseEx)
             {
@@ -104,16 +105,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             // GROUP BY ?p
             // Create a dynamic originalQuery
 
-            SparqlVariable subject = initialQuery.Variables.FirstOrDefault(v => v.IsResultVariable);
-            if (subject == null) throw new RdfQueryException("At least one result variable is required to generate an entities query");
-            INode subjectNode = this._nodeFactory.CreateVariableNode(subject.Name);
+            SparqlVariable subject = initialQuery.Variables.FirstOrDefault(v => v.IsResultVariable) ?? throw new RdfQueryException("At least one result variable is required to generate an entities query");
+            INode subjectNode = _nodeFactory.CreateVariableNode(subject.Name);
 
-            SparqlParameterizedString getPredicatesQuery = new SparqlParameterizedString();
-            getPredicatesQuery.Namespaces = originalPrefixes;
-            getPredicatesQuery.CommandText = @"
+            SparqlParameterizedString getPredicatesQuery = new SparqlParameterizedString
+            {
+                Namespaces = originalPrefixes,
+                CommandText = @"
 SELECT DISTINCT ?p (COUNT(?p) as ?count)
 WHERE
-{";
+{"
+            };
             getPredicatesQuery.AppendSubQuery(initialQuery);
             getPredicatesQuery.CommandText += @"
   @subject ?p ?o.
@@ -124,15 +126,12 @@ GROUP BY ?p";
             try
             {
                 // Get predicates and number of usages
-                this.Information = "Running query to extract predicates for entities selected by original query...";
-                SparqlResultSet sparqlResults = (SparqlResultSet) this._storage.Query(getPredicatesQuery.ToString());
-                if (sparqlResults == null)
+                Information = "Running query to extract predicates for entities selected by original query...";
+                SparqlResultSet sparqlResults = (SparqlResultSet) _storage.Query(getPredicatesQuery.ToString()) ?? throw new RdfQueryException("Unexpected results type received while trying to build entities query");
+                List<string> selectColumns = new List<string>
                 {
-                    throw new RdfQueryException("Unexpected results type received while trying to build entities query");
-                }
-
-                List<String> selectColumns = new List<String>();
-                selectColumns.Add(subject.Name);
+                    subject.Name
+                };
                 SparqlParameterizedString entitiesQuery = new SparqlParameterizedString();
                 entitiesQuery.Namespaces.Import(getPredicatesQuery.Namespaces);
                 entitiesQuery.SetParameter("subject", subjectNode);
@@ -140,8 +139,8 @@ GROUP BY ?p";
                 // For each predicate add a column and an appropriate OPTIONAL clause
                 int predicateIndex = 0;
                 StringBuilder optionalFilters = new StringBuilder();
-                this.Information = "Generating Entities Query...";
-                foreach (SparqlResult sparqlResult in sparqlResults)
+                Information = "Generating Entities Query...";
+                foreach (ISparqlResult sparqlResult in sparqlResults)
                 {
                     if (!sparqlResult.HasBoundValue("p")) continue;
                     INode predicate = sparqlResult["p"];
@@ -151,7 +150,7 @@ GROUP BY ?p";
                     // For each predicate with predicateCount > _minValuesPerPredicateLimit add a new column and an optional filter in where clause
                     if (predicateCount <= _minValuesPerPredicateLimit) continue;
                     predicateIndex++;
-                    String predicateColumnName = GetColumnName(predicate, entitiesQuery.Namespaces);
+                    string predicateColumnName = GetColumnName(predicate, entitiesQuery.Namespaces);
                     if (predicateColumnName == null) continue;
                     selectColumns.Add(predicateColumnName);
 
@@ -162,7 +161,7 @@ GROUP BY ?p";
                 if (selectColumns.Count == 1) throw new RdfQueryException("No predicates which matched the criteria were found so an entities query cannot be generated");
 
                 entitiesQuery.CommandText = "SELECT DISTINCT ";
-                foreach (String column in selectColumns)
+                foreach (string column in selectColumns)
                 {
                     entitiesQuery.CommandText += "?" + column + " ";
                 }
@@ -175,16 +174,16 @@ WHERE
                 entitiesQuery.CommandText += @"
 }";
 
-                this.Information = "Generated Entities Query with " + (selectColumns.Count - 1) + " Predicate Columns";
-                this.OutputTableQuery = entitiesQuery.ToString();
+                Information = "Generated Entities Query with " + (selectColumns.Count - 1) + " Predicate Columns";
+                OutputTableQuery = entitiesQuery.ToString();
             }
             catch (Exception)
             {
-                this.OutputTableQuery = null;
+                OutputTableQuery = null;
                 throw;
             }
 
-            return this.OutputTableQuery;
+            return OutputTableQuery;
         }
 
         /// <summary>
@@ -198,12 +197,11 @@ WHERE
             if (node.NodeType != NodeType.Uri) return null;
             Uri u = ((IUriNode) node).Uri;
 
-            String qname;
-            if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
+            if (!namespaces.ReduceToQName(u.AbsoluteUri, out string qname))
             {
                 // Issue temporary namespaces
-                String tempNsPrefix = "ns" + this._nextTempID;
-                String nsUri = u.AbsoluteUri;
+                string tempNsPrefix = "ns" + _nextTempID;
+                string nsUri = u.AbsoluteUri;
                 if (nsUri.Contains("#"))
                 {
                     //Create a Hash Namespace Uri
@@ -214,12 +212,11 @@ WHERE
                     //Create a Slash Namespace Uri
                     nsUri = nsUri.Substring(0, nsUri.LastIndexOf("/") + 1);
                 }
-                Uri tempNsUri;
-                if (!Uri.TryCreate(nsUri, UriKind.Absolute, out tempNsUri)) tempNsUri = u;
+                if (!Uri.TryCreate(nsUri, UriKind.Absolute, out Uri tempNsUri)) tempNsUri = u;
                 while (namespaces.HasNamespace(tempNsPrefix))
                 {
-                    this._nextTempID++;
-                    tempNsPrefix = "ns" + this._nextTempID;
+                    _nextTempID++;
+                    tempNsPrefix = "ns" + _nextTempID;
                 }
                 namespaces.AddNamespace(tempNsPrefix, tempNsUri);
                 if (!namespaces.ReduceToQName(u.AbsoluteUri, out qname))
@@ -230,7 +227,7 @@ WHERE
             if (qname == null)
             {
                 // Issue temporary column name
-                return "entityPredicateColumn" + (++this._nextTempColumnID);
+                return "entityPredicateColumn" + (++_nextTempColumnID);
             }
             // Sanitize qname column name
             qname = qname.StartsWith("_") ? qname.Substring(1) : qname.Replace(':', '_');
@@ -238,7 +235,7 @@ WHERE
             if (qname.Length == 0)
             {
                 // Issue temporary column name
-                return "entityPredicateColumn " + (++this._nextTempColumnID);
+                return "entityPredicateColumn " + (++_nextTempColumnID);
             }
 
             // Clean up illegal characters
@@ -246,7 +243,7 @@ WHERE
             // Add a leading p for invalid first characters
             char[] cs = qname.ToCharArray();
             char first = cs[0];
-            if (!Char.IsDigit(first) || !SparqlSpecsHelper.IsPNCharsU(first))
+            if (!char.IsDigit(first) || !SparqlSpecsHelper.IsPNCharsU(first))
             {
                 qname = "p" + qname;
                 if (SparqlSpecsHelper.IsValidVarName(qname)) return qname;

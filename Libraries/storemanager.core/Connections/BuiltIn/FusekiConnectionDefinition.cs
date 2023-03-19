@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         /// </summary>
         [Connection(DisplayName = "Server URI", IsRequired = true, Type = ConnectionSettingType.String, DisplayOrder = -1, PopulateFrom = ConfigurationLoader.PropertyServer),
 DefaultValue("http://localhost:3030/dataset/data")]
-        public String Server
+        public string Server
         {
             get;
             set;
@@ -60,11 +60,11 @@ DefaultValue("http://localhost:3030/dataset/data")]
         /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
-            if (this.UseProxy)
+            if (UseProxy)
             {
-                return new FusekiConnector(this.Server, this.GetProxy());
+                return new FusekiConnector(Server, GetProxy());
             }
-            return new FusekiConnector(this.Server);
+            return new FusekiConnector(Server);
         }
 
         /// <summary>
@@ -73,17 +73,20 @@ DefaultValue("http://localhost:3030/dataset/data")]
         /// <returns>Copy of the connection definition</returns>
         public override IConnectionDefinition Copy()
         {
-            FusekiConnectionDefinition definition = new FusekiConnectionDefinition();
-            definition.Server = this.Server;
-            definition.ProxyPassword = this.ProxyPassword;
-            definition.ProxyUsername = this.ProxyUsername;
-            definition.ProxyServer = this.ProxyServer;
+            FusekiConnectionDefinition definition = new FusekiConnectionDefinition
+            {
+                Server = Server,
+                ProxyPassword = ProxyPassword,
+                ProxyUsername = ProxyUsername,
+                ProxyServer = ProxyServer
+            };
             return definition;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
-            return "[Fuseki] " + this.Server.ToSafeString();
+            return "[Fuseki] " + Server.ToSafeString();
         }
     }
 }

@@ -50,35 +50,35 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             InitializeComponent();
 
-            this._line = editor.Control.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
-            this._maxLine = editor.Control.Document.LineCount;
-            this.txtLineNumber.Text = this._line.ToString();
-            this.lblLineNumber.Content = String.Format((String)this.lblLineNumber.Content, this._maxLine);
+            _line = editor.Control.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
+            _maxLine = editor.Control.Document.LineCount;
+            txtLineNumber.Text = _line.ToString();
+            lblLineNumber.Content = string.Format((string)lblLineNumber.Content, _maxLine);
 
-            this.txtLineNumber.SelectAll();
-            this.txtLineNumber.Focus();
+            txtLineNumber.SelectAll();
+            txtLineNumber.Focus();
         }
 
         public int Line
         {
             get
             {
-                return this._line;
+                return _line;
             }
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            if (Int32.TryParse(this.txtLineNumber.Text, out this._line))
+            if (int.TryParse(txtLineNumber.Text, out _line))
             {
-                if (this._line > 0 && this._line <= this._maxLine)
+                if (_line > 0 && _line <= _maxLine)
                 {
-                    this.DialogResult = true;
-                    this.Close();
+                    DialogResult = true;
+                    Close();
                 }
                 else
                 {
-                    MessageBox.Show("Line Number is not in the range 1-" + this._maxLine, "Invalid Line Number", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Line Number is not in the range 1-" + _maxLine, "Invalid Line Number", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
             else
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

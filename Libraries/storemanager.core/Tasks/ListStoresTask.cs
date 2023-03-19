@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// Task for listing stores
     /// </summary>
     public class ListStoresTask
-        : NonCancellableTask<IEnumerable<String>>
+        : NonCancellableTask<IEnumerable<string>>
     {
         private readonly IStorageServer _manager;
 
@@ -46,16 +46,16 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public ListStoresTask(IStorageServer manager)
             : base("List Stores")
         {
-            this._manager = manager;
+            _manager = manager;
         }
 
         /// <summary>
         /// Runs the task
         /// </summary>
         /// <returns></returns>
-        protected override IEnumerable<String> RunTaskInternal()
+        protected override IEnumerable<string> RunTaskInternal()
         {
-            if (this._manager == null) throw new RdfStorageException("Store does not support listing of available Stores");
+            if (_manager == null) throw new RdfStorageException("Store does not support listing of available Stores");
             // TODO IStorageServer does not require IStorageCapabilies to be implemented, add IServerCapabilities interface?
             //IStorageCapabilities caps = this._manager as IStorageCapabilities;
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             //}
 
             
-            return this._manager.ListStores();
+            return _manager.ListStores();
         }
     }
 }

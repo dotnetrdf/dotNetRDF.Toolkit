@@ -37,25 +37,25 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         public IConnectionsGraph ActiveConnections
         {
-            get { return this.lvwActive.DataSource; }
-            set { this.lvwActive.DataSource = value; }
+            get { return lvwActive.DataSource; }
+            set { lvwActive.DataSource = value; }
         }
 
         public IConnectionsGraph RecentConnections
         {
-            get { return this.lvwRecent.DataSource; }
-            set { this.lvwRecent.DataSource = value; }
+            get { return lvwRecent.DataSource; }
+            set { lvwRecent.DataSource = value; }
         }
 
         public IConnectionsGraph FavouriteConnections
         {
-            get { return this.lvwFavourite.DataSource; }
-            set { this.lvwFavourite.DataSource = value; }
+            get { return lvwFavourite.DataSource; }
+            set { lvwFavourite.DataSource = value; }
         }
 
         private void btnClose_Click(object sender, System.EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

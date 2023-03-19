@@ -31,16 +31,16 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 {
     public partial class InvalidTemplateForm : Form
     {
-        public InvalidTemplateForm(List<String> errors)
+        public InvalidTemplateForm(List<string> errors)
         {
             InitializeComponent();
 
-            this.lstErrors.DataSource = errors;
+            lstErrors.DataSource = errors;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         /// Try to auto-complete
         /// </summary>
         /// <param name="newText">New Text</param>
-        void TryAutoComplete(String newText);
+        void TryAutoComplete(string newText);
 
         /// <summary>
         /// Gets/Sets the state

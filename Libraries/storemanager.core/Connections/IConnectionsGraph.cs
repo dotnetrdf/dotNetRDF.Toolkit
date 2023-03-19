@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets the file on disk where this graph is saved
         /// </summary>
-        String File { get; }
+        string File { get; }
 
         /// <summary>
         /// Gets the underlying graph

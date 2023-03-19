@@ -44,7 +44,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is whitespace of a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
-            return Char.IsWhiteSpace(c) || base.IsStartingDeliminator(c);
+            return char.IsWhiteSpace(c) || base.IsStartingDeliminator(c);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is whitespace or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
-            return Char.IsWhiteSpace(c) || base.IsEndingDeliminator(c);
+            return char.IsWhiteSpace(c) || base.IsEndingDeliminator(c);
         }
     }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is punctuation or a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
-            return Char.IsPunctuation(c) || base.IsStartingDeliminator(c);
+            return char.IsPunctuation(c) || base.IsStartingDeliminator(c);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is punctuation or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
-            return Char.IsPunctuation(c) || base.IsEndingDeliminator(c);
+            return char.IsPunctuation(c) || base.IsEndingDeliminator(c);
         }
     }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is punctuation, white space or a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
-            return Char.IsWhiteSpace(c) || Char.IsPunctuation(c) || base.IsStartingDeliminator(c);
+            return char.IsWhiteSpace(c) || char.IsPunctuation(c) || base.IsStartingDeliminator(c);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <returns>True if the character is punctuation, white space or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
-            return Char.IsWhiteSpace(c) || Char.IsPunctuation(c) || base.IsEndingDeliminator(c);
+            return char.IsWhiteSpace(c) || char.IsPunctuation(c) || base.IsEndingDeliminator(c);
         }
     }
 }

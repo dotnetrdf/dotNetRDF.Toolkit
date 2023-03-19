@@ -55,10 +55,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public WpfEditorAdaptor()
             : base(new TextEditor())
         {
-            this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
-            this.Control.TextArea.MouseDoubleClick += this.HandleDoubleClick;
-            this.Control.TextArea.TextEntered += this.HandleTextEntered;
-            this.Control.FontFamily = new FontFamily("Consolas");
+            Control.TextChanged += new EventHandler(HandleTextChanged);
+            Control.TextArea.MouseDoubleClick += HandleDoubleClick;
+            Control.TextArea.TextEntered += HandleTextEntered;
+            Control.FontFamily = new FontFamily("Consolas");
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             try
             {
-                this.Apply(options as VisualOptions<FontFamily, Color>);
+                Apply(options as VisualOptions<FontFamily, Color>);
             }
             catch
             {
@@ -87,22 +87,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             if (options == null) return;
 
-            this.Control.Options.EnableEmailHyperlinks = options.EnableClickableUris;
-            this.Control.Options.EnableHyperlinks = options.EnableClickableUris;
+            Control.Options.EnableEmailHyperlinks = options.EnableClickableUris;
+            Control.Options.EnableHyperlinks = options.EnableClickableUris;
 
             if (options.FontFace != null)
             {
-                this.Control.FontFamily = options.FontFace;
+                Control.FontFamily = options.FontFace;
             }
-            this.Control.FontSize = options.FontSize;
-            this.Control.Foreground = new SolidColorBrush(options.Foreground);
-            this.Control.Background = new SolidColorBrush(options.Background);
+            Control.FontSize = options.FontSize;
+            Control.Foreground = new SolidColorBrush(options.Foreground);
+            Control.Background = new SolidColorBrush(options.Background);
 
-            this.ShowLineNumbers = options.ShowLineNumbers;
-            this.ShowSpaces = options.ShowSpaces;
-            this.ShowTabs = options.ShowTabs;
-            this.ShowEndOfLine = options.ShowEndOfLine;
-            this.WordWrap = options.WordWrap;
+            ShowLineNumbers = options.ShowLineNumbers;
+            ShowSpaces = options.ShowSpaces;
+            ShowTabs = options.ShowTabs;
+            ShowEndOfLine = options.ShowEndOfLine;
+            WordWrap = options.WordWrap;
         }
 
         #region State
@@ -114,11 +114,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.Text;
+                return Control.Text;
             }
             set
             {
-                this.Control.Text = value;
+                Control.Text = value;
             }
         }
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get 
             {
-                return this.Control.Document.TextLength; 
+                return Control.Document.TextLength; 
             }
         }
 
@@ -140,11 +140,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.CaretOffset;
+                return Control.CaretOffset;
             }
             set
             {
-                this.Control.CaretOffset = value;
+                Control.CaretOffset = value;
             }
         }
 
@@ -155,11 +155,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.SelectionStart;
+                return Control.SelectionStart;
             }
             set
             {
-                this.Control.SelectionStart = value;
+                Control.SelectionStart = value;
             }
         }
 
@@ -170,11 +170,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.SelectionLength;
+                return Control.SelectionLength;
             }
             set
             {
-                this.Control.SelectionLength = value;
+                Control.SelectionLength = value;
             }
         }
 
@@ -185,11 +185,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.WordWrap;
+                return Control.WordWrap;
             }
             set
             {
-                this.Control.WordWrap = value;
+                Control.WordWrap = value;
             }
         }
 
@@ -200,11 +200,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.ShowLineNumbers;
+                return Control.ShowLineNumbers;
             }
             set
             {
-                this.Control.ShowLineNumbers = value;
+                Control.ShowLineNumbers = value;
             }
         }
 
@@ -215,11 +215,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.Options.ShowEndOfLine;
+                return Control.Options.ShowEndOfLine;
             }
             set
             {
-                this.Control.Options.ShowEndOfLine = value;
+                Control.Options.ShowEndOfLine = value;
             }
         }
 
@@ -230,11 +230,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.Options.ShowSpaces;
+                return Control.Options.ShowSpaces;
             }
             set
             {
-                this.Control.Options.ShowSpaces = value;
+                Control.Options.ShowSpaces = value;
             }
         }
 
@@ -245,11 +245,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this.Control.Options.ShowTabs;
+                return Control.Options.ShowTabs;
             }
             set
             {
-                this.Control.Options.ShowTabs = value;
+                Control.Options.ShowTabs = value;
             }
         }
 
@@ -263,7 +263,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="line">Line</param>
         public override void ScrollToLine(int line)
         {
-            this.Control.ScrollToLine(line);
+            Control.ScrollToLine(line);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Refresh()
         {
-            this.Control.TextArea.InvalidateVisual();
+            Control.TextArea.InvalidateVisual();
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void BeginUpdate()
         {
-            this.Control.Document.BeginUpdate();
+            Control.Document.BeginUpdate();
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void EndUpdate()
         {
-            this.Control.Document.EndUpdate();
+            Control.Document.EndUpdate();
         }
 
         #endregion
@@ -301,7 +301,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <returns>Character</returns>
         public override char GetCharAt(int offset)
         {
-            return this.Control.Document.GetCharAt(offset);
+            return Control.Document.GetCharAt(offset);
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <returns>Line Number</returns>
         public override int GetLineByOffset(int offset)
         {
-            return this.Control.Document.GetLineByOffset(offset).LineNumber;
+            return Control.Document.GetLineByOffset(offset).LineNumber;
         }
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <returns>Text</returns>
         public override string GetText(int offset, int length)
         {
-            return this.Control.Document.GetText(offset, length);
+            return Control.Document.GetText(offset, length);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="length">Length of the text to select</param>
         public override void Select(int offset, int length)
         {
-            this.Control.Select(offset, length);
+            Control.Select(offset, length);
         }
 
         /// <summary>
@@ -343,7 +343,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="text">Text to replace with</param>
         public override void Replace(int offset, int length, string text)
         {
-            this.Control.Document.Replace(offset, length, text);
+            Control.Document.Replace(offset, length, text);
         }
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Cut()
         {
-            this.Control.Cut();
+            Control.Cut();
         }
 
         /// <summary>
@@ -359,7 +359,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Copy()
         {
-            this.Control.Copy();
+            Control.Copy();
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Paste()
         {
-            this.Control.Paste();
+            Control.Paste();
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Undo()
         {
-            this.Control.Undo();
+            Control.Undo();
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void Redo()
         {
-            this.Control.Redo();
+            Control.Redo();
         }
 
         #endregion
@@ -397,7 +397,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this._currError;
+                return _currError;
             }
         }
 
@@ -407,13 +407,13 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="name">Syntax Name</param>
         public override void SetHighlighter(string name)
         {
-            if (name == null || name.Equals(String.Empty) || name.Equals("None"))
+            if (name == null || name.Equals(string.Empty) || name.Equals("None"))
             {
-                this.Control.SyntaxHighlighting = null;
+                Control.SyntaxHighlighting = null;
             }
             else
             {
-                this.Control.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
+                Control.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
             }
         }
 
@@ -423,7 +423,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// <param name="ex"></param>
         public override void AddErrorHighlight(Exception ex)
         {
-            this._currError = ex;
+            _currError = ex;
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void ClearErrorHighlights()
         {
-            this._currError = null;
+            _currError = null;
         }
 
         #endregion
@@ -458,43 +458,43 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public override void Suggest(IEnumerable<ICompletionData> suggestions)
         {
             bool mustShow = false;
-            if (this._c == null)
+            if (_c == null)
             {
-                this._c = new AvComplete.CompletionWindow(this.Control.TextArea);
-                this._c.SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
-                this._c.StartOffset = this.CaretOffset - 1;
-                this._c.CloseAutomatically = true;
-                this._c.CloseWhenCaretAtBeginning = true;
-                this._c.Closed += (sender, args) =>
+                _c = new AvComplete.CompletionWindow(Control.TextArea);
+                _c.SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+                _c.StartOffset = CaretOffset - 1;
+                _c.CloseAutomatically = true;
+                _c.CloseWhenCaretAtBeginning = true;
+                _c.Closed += (sender, args) =>
                     {
-                        this.EndSuggestion();
-                        this.AutoCompleter.DetectState();
+                        EndSuggestion();
+                        AutoCompleter.DetectState();
                     };
-                this._c.KeyDown += (sender, args) =>
+                _c.KeyDown += (sender, args) =>
                     {
                         if (args.Key == Key.Space && args.KeyboardDevice.Modifiers == ModifierKeys.Control)
                         {
-                            this._c.CompletionList.RequestInsertion(args);
-                            this.Control.Document.Insert(this.CaretOffset, " ");
+                            _c.CompletionList.RequestInsertion(args);
+                            Control.Document.Insert(CaretOffset, " ");
                             args.Handled = true;
                         }
-                        else if (this.AutoCompleter.State == AutoCompleteState.Keyword || this.AutoCompleter.State == AutoCompleteState.KeywordOrQName)
+                        else if (AutoCompleter.State == AutoCompleteState.Keyword || AutoCompleter.State == AutoCompleteState.KeywordOrQName)
                         {
                             if (args.Key == Key.D9 && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
                             {
-                                this._c.CompletionList.RequestInsertion(args);
+                                _c.CompletionList.RequestInsertion(args);
                             }
                             else if (args.Key == Key.OemOpenBrackets && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
                             {
-                                this._c.CompletionList.RequestInsertion(args);
-                                this.Control.Document.Insert(this.CaretOffset, " ");
+                                _c.CompletionList.RequestInsertion(args);
+                                Control.Document.Insert(CaretOffset, " ");
                             }
                         }
-                        else if (this.AutoCompleter.State == AutoCompleteState.Variable || this.AutoCompleter.State == AutoCompleteState.BNode)
+                        else if (AutoCompleter.State == AutoCompleteState.Variable || AutoCompleter.State == AutoCompleteState.BNode)
                         {
                             if (args.Key == Key.D0 && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
                             {
-                                this._c.CompletionList.RequestInsertion(args);
+                                _c.CompletionList.RequestInsertion(args);
                             }
                         }
                     };
@@ -502,9 +502,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
             foreach (ICompletionData data in suggestions)
             {
-                this._c.CompletionList.CompletionData.Add(new WpfCompletionData(data));
+                _c.CompletionList.CompletionData.Add(new WpfCompletionData(data));
             }
-            if (mustShow) this._c.Show();
+            if (mustShow) _c.Show();
         }
 
         /// <summary>
@@ -512,14 +512,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         public override void EndSuggestion()
         {
-            if (this._c != null)
+            if (_c != null)
             {
-                this._c.Close();
-                this._c = null;
+                _c.Close();
+                _c = null;
             }
-            if (this.AutoCompleter != null)
+            if (AutoCompleter != null)
             {
-                this.AutoCompleter.State = AutoCompleteState.None;
+                AutoCompleter.State = AutoCompleteState.None;
             }
         }
 
@@ -532,9 +532,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Event Arguments</param>
-        private void HandleTextChanged(Object sender, EventArgs args)
+        private void HandleTextChanged(object sender, EventArgs args)
         {
-            this.RaiseTextChanged(sender);
+            RaiseTextChanged(sender);
         }
 
         /// <summary>
@@ -542,11 +542,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Event Arguments</param>
-        private void HandleTextEntered(Object sender, TextCompositionEventArgs args)
+        private void HandleTextEntered(object sender, TextCompositionEventArgs args)
         {
-            if (this.CanAutoComplete && this.AutoCompleter != null)
+            if (CanAutoComplete && AutoCompleter != null)
             {
-                this.AutoCompleter.TryAutoComplete(args.Text);
+                AutoCompleter.TryAutoComplete(args.Text);
             }
         }
 
@@ -555,10 +555,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         /// </summary>
         /// <param name="sender">Sender</param>
         /// <param name="args">Event Arguments</param>
-        private void HandleDoubleClick(Object sender, MouseButtonEventArgs args)
+        private void HandleDoubleClick(object sender, MouseButtonEventArgs args)
         {
-            this.RaiseDoubleClick(sender);
-            args.Handled = (this.SymbolSelector != null);
+            RaiseDoubleClick(sender);
+            args.Handled = (SymbolSelector != null);
         }
 
         #endregion

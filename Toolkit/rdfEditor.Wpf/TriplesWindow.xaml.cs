@@ -53,11 +53,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public TriplesWindow(IGraph g, INodeFormatter formatter)
         {
             InitializeComponent();
-            this._formatter = formatter;
-            this._g = g;
-            this._grid = this.gridTriples;
+            _formatter = formatter;
+            _g = g;
+            _grid = gridTriples;
 
-            this.RenderTriples();
+            RenderTriples();
         }
 
         public TriplesWindow(IGraph g)
@@ -66,37 +66,37 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void RenderTriples()
         {
-            if (this._grid == null) return;
-            if (this._grid.RowDefinitions.Count > 1)
+            if (_grid == null) return;
+            if (_grid.RowDefinitions.Count > 1)
             {
-                this._grid.RowDefinitions.RemoveRange(1, this._grid.RowDefinitions.Count - 1);
-                this._grid.Children.RemoveRange(5, this._grid.Children.Count - 5);
+                _grid.RowDefinitions.RemoveRange(1, _grid.RowDefinitions.Count - 1);
+                _grid.Children.RemoveRange(5, _grid.Children.Count - 5);
             }
 
             int row = 1;
-            foreach (Triple t in this._g.Triples)
+            foreach (Triple t in _g.Triples)
             {
                 RowDefinition def = new RowDefinition();
                 def.Height = GridLength.Auto;
-                this._grid.RowDefinitions.Add(def);
+                _grid.RowDefinitions.Add(def);
 
-                Control s = this.RenderNode(t.Subject);
-                this._grid.Children.Add(s);
+                Control s = RenderNode(t.Subject);
+                _grid.Children.Add(s);
                 Grid.SetColumn(s, 0);
                 Grid.SetRow(s, row);
 
-                Control p = this.RenderNode(t.Predicate);
-                this._grid.Children.Add(p);
+                Control p = RenderNode(t.Predicate);
+                _grid.Children.Add(p);
                 Grid.SetColumn(p, 2);
                 Grid.SetRow(p, row);
 
-                Control o = this.RenderNode(t.Object);
-                this._grid.Children.Add(o);
+                Control o = RenderNode(t.Object);
+                _grid.Children.Add(o);
                 Grid.SetColumn(o, 4);
                 Grid.SetRow(o, row);
                 row++;
 
-                this._grid.RowDefinitions.Add(new RowDefinition());
+                _grid.RowDefinitions.Add(new RowDefinition());
                 GridSplitter rowSplitter = new GridSplitter();
                 rowSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
                 rowSplitter.Height = 1;
@@ -107,15 +107,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 Grid.SetColumn(rowSplitter, 0);
                 Grid.SetRow(rowSplitter, row);
                 Grid.SetColumnSpan(rowSplitter, 5);
-                this._grid.Children.Add(rowSplitter);
+                _grid.Children.Add(rowSplitter);
                 row++;
             }
 
-            Grid.SetRowSpan(this.split1, row + 1);
-            Grid.SetRowSpan(this.split2, row + 1);
+            Grid.SetRowSpan(split1, row + 1);
+            Grid.SetRowSpan(split2, row + 1);
 
-            this._grid.InvalidateVisual();
-            ((ScrollViewer)this.FindName("scroll")).InvalidateScrollInfo();
+            _grid.InvalidateVisual();
+            ((ScrollViewer)FindName("scroll")).InvalidateScrollInfo();
         }
 
         private Control RenderNode(INode n)
@@ -124,7 +124,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 case NodeType.Blank:
                     Label bnode = new Label();
-                    bnode.Content = this._formatter.Format(n);
+                    bnode.Content = _formatter.Format(n);
                     bnode.Padding = new Thickness(2);
                     return bnode;
 
@@ -135,10 +135,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     return glit;
 
                 case NodeType.Literal:
-                    return new LiteralNodeControl((ILiteralNode)n, this._formatter);
+                    return new LiteralNodeControl((ILiteralNode)n, _formatter);
 
                 case NodeType.Uri:
-                    return new UriNodeControl((IUriNode)n, this._formatter);
+                    return new UriNodeControl((IUriNode)n, _formatter);
 
                 default:
                     Label unknown = new Label();
@@ -150,34 +150,34 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.cboFormatter.SelectedIndex > -1)
+            if (cboFormatter.SelectedIndex > -1)
             {
-                switch (this.cboFormatter.SelectedIndex)
+                switch (cboFormatter.SelectedIndex)
                 {
                     case 0:
-                        this._formatter = new NTriplesFormatter();
+                        _formatter = new NTriplesFormatter();
                         break;
                     case 1:
-                        this._formatter = new TurtleFormatter(this._g);
+                        _formatter = new TurtleFormatter(_g);
                         break;
                     case 2:
-                        this._formatter = new UncompressedTurtleFormatter();
+                        _formatter = new UncompressedTurtleFormatter();
                         break;
                     case 3:
-                        this._formatter = new Notation3Formatter(this._g);
+                        _formatter = new Notation3Formatter(_g);
                         break;
                     case 4:
-                        this._formatter = new UncompressedNotation3Formatter();
+                        _formatter = new UncompressedNotation3Formatter();
                         break;
                     case 5:
-                        this._formatter = new CsvFormatter();
+                        _formatter = new CsvFormatter();
                         break;
                     case 6:
-                        this._formatter = new TsvFormatter();
+                        _formatter = new TsvFormatter();
                         break;
                 }
 
-                this.RenderTriples();
+                RenderTriples();
             }
         }
     }

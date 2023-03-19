@@ -43,7 +43,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="editor">Text Editor</param>
         public TextEditorEventArgs(ITextEditorAdaptor<T> editor)
         {
-            this.TextEditor = editor;
+            TextEditor = editor;
         }
 
         /// <summary>
@@ -62,5 +62,5 @@ namespace VDS.RDF.Utilities.Editor
     /// <typeparam name="T">Control Type</typeparam>
     /// <param name="sender">Sender</param>
     /// <param name="args">Event Arguments</param>
-    public delegate void TextEditorEventHandler<T>(Object sender, TextEditorEventArgs<T> args);
+    public delegate void TextEditorEventHandler<T>(object sender, TextEditorEventArgs<T> args);
 }

@@ -33,26 +33,26 @@ namespace VDS.RDF.GUI.WinForms.Controls
                 try
                 {
                     INodeFormatter formatter = (INodeFormatter) Activator.CreateInstance(t);
-                    this._formatters.Add(new Formatter(formatter.GetType(), formatter.ToString()));
+                    _formatters.Add(new Formatter(formatter.GetType(), formatter.ToString()));
                 }
                 catch
                 {
                     //Ignore this Formatter
                 }
             }
-            this._formatters.Sort();
+            _formatters.Sort();
 
-            this.cboFormat.DataSource = this._formatters;
-            this.cboFormat.SelectedItem = this._defaultFormatter ?? this._formatters.First();
-            this.cboFormat.SelectedIndexChanged += cboFormat_SelectedIndexChanged;
-            this.RaiseFormatterChanged();
+            cboFormat.DataSource = _formatters;
+            cboFormat.SelectedItem = _defaultFormatter ?? _formatters.First();
+            cboFormat.SelectedIndexChanged += cboFormat_SelectedIndexChanged;
+            RaiseFormatterChanged();
         }
 
         private void cboFormat_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             if (cboFormat.SelectedItem == null) return;
-            this.CurrentFormatter = (Formatter) cboFormat.SelectedItem;
-            this.RaiseFormatterChanged();
+            CurrentFormatter = (Formatter) cboFormat.SelectedItem;
+            RaiseFormatterChanged();
         }
 
         /// <summary>
@@ -60,15 +60,15 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// </summary>
         public Type DefaultFormatter
         {
-            get { return this._defaultFormatter != null ? this._defaultFormatter.Type : null; }
+            get { return _defaultFormatter != null ? _defaultFormatter.Type : null; }
             set
             {
                 if (value == null) return;
-                Formatter formatter = this._formatters.FirstOrDefault(f => f.Type == value);
+                Formatter formatter = _formatters.FirstOrDefault(f => f.Type == value);
                 if (formatter == null) return;
-                this._defaultFormatter = formatter;
-                this.cboFormat.SelectedItem = this._defaultFormatter;
-                this.RaiseFormatterChanged();
+                _defaultFormatter = formatter;
+                cboFormat.SelectedItem = _defaultFormatter;
+                RaiseFormatterChanged();
             }
         }
 
@@ -83,7 +83,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <returns></returns>
         public INodeFormatter GetFormatter()
         {
-            return this.GetFormatter(null);
+            return GetFormatter(null);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <returns></returns>
         public INodeFormatter GetFormatter(INamespaceMapper namespaces)
         {
-            return this.CurrentFormatter.CreateInstance(namespaces);
+            return CurrentFormatter.CreateInstance(namespaces);
         }
 
         /// <summary>
@@ -101,9 +101,9 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// </summary>
         protected void RaiseFormatterChanged()
         {
-            FormatterChanged d = this.FormatterChanged;
+            FormatterChanged d = FormatterChanged;
             if (d == null) return;
-            d(this, this.CurrentFormatter);
+            d(this, CurrentFormatter);
         }
 
         /// <summary>
@@ -123,10 +123,10 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// </summary>
         /// <param name="t">Formatter Type</param>
         /// <param name="name">Friendly Name</param>
-        public Formatter(Type t, String name)
+        public Formatter(Type t, string name)
         {
-            this.Type = t;
-            this.Name = name;
+            Type = t;
+            Name = name;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <summary>
         /// Gets/Sets the name
         /// </summary>
-        public String Name { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Creates an instance of the given formatter using the namespaces provided if possible
@@ -150,7 +150,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             {
                 try
                 {
-                    INodeFormatter formatter = (INodeFormatter) Activator.CreateInstance(this.Type, new object[] {namespaces});
+                    INodeFormatter formatter = (INodeFormatter) Activator.CreateInstance(Type, new object[] {namespaces});
                     return formatter;
                 }
                 catch
@@ -160,7 +160,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
             }
             try
             {
-                INodeFormatter formatter = (INodeFormatter) Activator.CreateInstance(this.Type);
+                INodeFormatter formatter = (INodeFormatter) Activator.CreateInstance(Type);
                 return formatter;
             }
             catch (Exception)
@@ -176,7 +176,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <returns></returns>
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace VDS.RDF.GUI.WinForms.Controls
         /// <returns></returns>
         public int CompareTo(Formatter other)
         {
-            return String.CompareOrdinal(this.Name, other.Name);
+            return string.CompareOrdinal(Name, other.Name);
         }
     }
 }

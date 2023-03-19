@@ -1,0 +1,32 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.10
+      with:
+        versionSpec: '5.x'
+    - name: GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.10
+      with:
+        updateAssemblyInfo: true
+    - name: Show GitVersion Value
+      run: |
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
+    - name: Restore Packages
+      run: nuget restore
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Build
+      run: msbuild dotNetRDF.Toolkit.sln

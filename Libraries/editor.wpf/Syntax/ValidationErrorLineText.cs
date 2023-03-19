@@ -51,7 +51,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         public ValidationErrorLineText(VisualOptions<FontFamily, Color> options, VisualLine parentLine, int length)
             : base(parentLine, length)
         {
-            this._options = options;
+            _options = options;
         }
 
         /// <summary>
@@ -62,31 +62,31 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns></returns>
         public override TextRun CreateTextRun(int startVisualColumn, ITextRunConstructionContext context)
         {
-            this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
-            if (this._options.ErrorDecoration != null && !this._options.ErrorDecoration.Equals(String.Empty))
+            TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+            if (_options.ErrorDecoration != null && !_options.ErrorDecoration.Equals(string.Empty))
             {
-                switch (this._options.ErrorDecoration)
+                switch (_options.ErrorDecoration)
                 {
                     case "Baseline":
-                        this.TextRunProperties.SetTextDecorations(TextDecorations.Baseline);
+                        TextRunProperties.SetTextDecorations(TextDecorations.Baseline);
                         break;
                     case "OverLine":
-                        this.TextRunProperties.SetTextDecorations(TextDecorations.OverLine);
+                        TextRunProperties.SetTextDecorations(TextDecorations.OverLine);
                         break;
                     case "Strikethrough":
-                        this.TextRunProperties.SetTextDecorations(TextDecorations.Strikethrough);
+                        TextRunProperties.SetTextDecorations(TextDecorations.Strikethrough);
                         break;
                     case "Underline":
-                        this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+                        TextRunProperties.SetTextDecorations(TextDecorations.Underline);
                         break;
                 }
                 
             }
-            this.TextRunProperties.SetBackgroundBrush(new SolidColorBrush(this._options.ErrorBackground));
-            this.TextRunProperties.SetForegroundBrush(new SolidColorBrush(this._options.ErrorForeground));
-            if (this._options.ErrorFontFace != null)
+            TextRunProperties.SetBackgroundBrush(new SolidColorBrush(_options.ErrorBackground));
+            TextRunProperties.SetForegroundBrush(new SolidColorBrush(_options.ErrorForeground));
+            if (_options.ErrorFontFace != null)
             {
-                this.TextRunProperties.SetTypeface(new Typeface(this._options.ErrorFontFace, new FontStyle(), new FontWeight(), new FontStretch()));
+                TextRunProperties.SetTypeface(new Typeface(_options.ErrorFontFace, new FontStyle(), new FontWeight(), new FontStretch()));
             }
             return base.CreateTextRun(startVisualColumn, context);
         }
@@ -98,7 +98,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
         /// <returns></returns>
         protected override VisualLineText CreateInstance(int length)
         {
-            return new ValidationErrorLineText(this._options, this.ParentVisualLine, length);
+            return new ValidationErrorLineText(_options, ParentVisualLine, length);
         }
 
         /// <summary>

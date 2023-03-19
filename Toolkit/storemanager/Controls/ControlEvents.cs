@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
         /// <param name="connection">Connection</param>
         public ConnectedEventArgs(Connection connection)
         {
-            this.Connection = connection;
+            Connection = connection;
         }
 
         /// <summary>
@@ -58,5 +58,5 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
     /// </summary>
     /// <param name="sender">Sender</param>
     /// <param name="e">Event Arguments</param>
-    public delegate void Connected(Object sender, ConnectedEventArgs e);
+    public delegate void Connected(object sender, ConnectedEventArgs e);
 }

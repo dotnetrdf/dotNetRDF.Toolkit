@@ -34,7 +34,7 @@ namespace VDS.RDF.Utilities.Convert
 {
     class RapperConvert
     {
-        private String _input;
+        private string _input;
         private IRdfReader _parser;
         private IRdfWriter _writer;
         private Graph _g = new Graph(true);
@@ -48,176 +48,176 @@ namespace VDS.RDF.Utilities.Convert
         private bool _showNamespaces = false;
         private bool _ignoreWarnings = false;
 
-        public void RunConvert(String[] args)
+        public void RunConvert(string[] args)
         {
             //Single Help Argument means Show Help
             if (args.Length == 1 && (args[0].Equals("-h") || args[0].Equals("--help")))
             {
-                this.ShowUsage();
+                ShowUsage();
                 return;
             }
 
             //Set the Options
-            if (!this.SetOptions(args))
+            if (!SetOptions(args))
             {
                 //If SetOptions returns false then some options were invalid and errors have been output to the error stream
                 return;
             }
 
-            if (this._input == null)
+            if (_input == null)
             {
                 //If no Input then abort
                 Console.Error.WriteLine("The required argument Input URI was not specified");
                 return;
             }
-            if (this._writer == null && !this._count)
+            if (_writer == null && !_count)
             {
                 //If no Output Format was specified and the Count option was not specified we abort
-                if (!this._quiet) Console.Error.WriteLine("rdfConvert: No Ouput Format specified - using default serializer NTriples");
-                this._writer = new NTriplesWriter();                
+                if (!_quiet) Console.Error.WriteLine("rdfConvert: No Ouput Format specified - using default serializer NTriples");
+                _writer = new NTriplesWriter();                
             }
-            if (this._parser == null && !this._guess)
+            if (_parser == null && !_guess)
             {
                 //Use guess mode if no specific input format or guess mode was specified
-                if (!this._quiet) Console.Error.WriteLine("rdfConvert: No Input Format was specified and the guess option was not specified - using default parser RDF/XML");
-                this._parser = new RdfXmlParser();
+                if (!_quiet) Console.Error.WriteLine("rdfConvert: No Input Format was specified and the guess option was not specified - using default parser RDF/XML");
+                _parser = new RdfXmlParser();
             }
             //Set Parser to Null if using guess mode
-            if (this._guess) this._parser = null;
-            if (this._parser != null && !this._ignoreWarnings)
+            if (_guess) _parser = null;
+            if (_parser != null && !_ignoreWarnings)
             {
                 //Output warnings to stderror if not ignoring warnings or using a mode where can't add a handler to the warning
-                this._parser.Warning += this.ShowWarnings;
-                if (this._writer != null) this._writer.Warning += this.ShowWarnings;
+                _parser.Warning += ShowWarnings;
+                if (_writer != null) _writer.Warning += ShowWarnings;
             }
-            else if (!this._ignoreWarnings)
+            else if (!_ignoreWarnings)
             {
-                UriLoader.Warning += this.ShowWarnings;
-                UriLoader.StoreWarning += this.ShowWarnings;
-                FileLoader.Warning += this.ShowWarnings;
-                FileLoader.StoreWarning += this.ShowWarnings;
+                UriLoader.Warning += ShowWarnings;
+                UriLoader.StoreWarning += ShowWarnings;
+                FileLoader.Warning += ShowWarnings;
+                FileLoader.StoreWarning += ShowWarnings;
             }
 
             //Try to parse in the Input
             try
             {
-                if (!this._quiet) 
+                if (!_quiet) 
                 {
-                    if (this._parser != null)
+                    if (_parser != null)
                     {
-                        Console.Error.WriteLine("rdfConvert: Parsing URI " + this._input + " with Parser " + this._parser.GetType().Name);
+                        Console.Error.WriteLine("rdfConvert: Parsing URI " + _input + " with Parser " + _parser.GetType().Name);
                     }
                     else
                     {
-                        Console.Error.WriteLine("rdfConvert: Parsing URI " + this._input + " with guessing of Content Type");
+                        Console.Error.WriteLine("rdfConvert: Parsing URI " + _input + " with guessing of Content Type");
                     }
                 }
-                if (this._input == "-")
+                if (_input == "-")
                 {
                     //Read from Standard In
-                    if (this._guess) 
+                    if (_guess) 
                     {
-                        StringParser.Parse(this._g, Console.In.ReadToEnd());
+                        StringParser.Parse(_g, Console.In.ReadToEnd());
                     } 
                     else 
                     {
-                        this._parser.Load(this._g, new StreamReader(Console.OpenStandardInput()));
+                        _parser.Load(_g, new StreamReader(Console.OpenStandardInput()));
                     }
                 }
                 else
                 {
                     try
                     {
-                        Uri u = new Uri(this._input);
+                        Uri u = new Uri(_input);
                         if (u.IsAbsoluteUri)
                         {
                             //Valid Absolute URI
-                            UriLoader.Load(this._g, u, this._parser);
+                            UriLoader.Load(_g, u, _parser);
                         }
                         else
                         {
                             //If not an absolute URI then probably a filename
-                            FileLoader.Load(this._g, this._input, this._parser);
+                            FileLoader.Load(_g, _input, _parser);
                         }
                     }
                     catch (UriFormatException)
                     {
                         //If not a valid URI then probably a filename
-                        FileLoader.Load(this._g, this._input, this._parser);
+                        FileLoader.Load(_g, _input, _parser);
                     }
                 }
             }
             catch (RdfParseException parseEx)
             {
-                this.ShowErrors(parseEx, "Parse Error");
+                ShowErrors(parseEx, "Parse Error");
                 return;
             }
             catch (RdfException rdfEx)
             {
-                this.ShowErrors(rdfEx, "RDF Error");
+                ShowErrors(rdfEx, "RDF Error");
                 return;
             }
             catch (Exception ex)
             {
-                this.ShowErrors(ex, "Error");
+                ShowErrors(ex, "Error");
                 return;
             }
 
-            if (!this._quiet) Console.Error.WriteLine("rdfConvert: Parsing returned " + this._g.Triples.Count + " Triples");
+            if (!_quiet) Console.Error.WriteLine("rdfConvert: Parsing returned " + _g.Triples.Count + " Triples");
 
             //Show only count if that was asked for
-            if (this._count)
+            if (_count)
             {
-                Console.WriteLine(this._g.Triples.Count);
+                Console.WriteLine(_g.Triples.Count);
                 return;
             }
 
             //Show Namespaces if asked for
-            if (this._showNamespaces)
+            if (_showNamespaces)
             {
-                foreach (String prefix in this._g.NamespaceMap.Prefixes)
+                foreach (string prefix in _g.NamespaceMap.Prefixes)
                 {
-                    Console.WriteLine(prefix + ": <" + this._g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + ">");
+                    Console.WriteLine(prefix + ": <" + _g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
             }
 
             //Now do the serialization
-            if (this._outputBase != null || this._useNullOutputBase)
+            if (_outputBase != null || _useNullOutputBase)
             {
                 //Set the Output Base URI if specified
-                this._g.BaseUri = this._outputBase;
+                _g.BaseUri = _outputBase;
             }
-            else if (this._useInputBase)
+            else if (_useInputBase)
             {
                 //Set the Output Base URI to the Input Base URI if specified
                 //Have to reset this since parsing the Input may have changed the Base URI
-                this._g.BaseUri = this._inputBase;
+                _g.BaseUri = _inputBase;
             }
             try
             {
-                if (!this._quiet) Console.Error.WriteLine("rdfConvert: Serializing with serializer " + this._writer.GetType().Name);
+                if (!_quiet) Console.Error.WriteLine("rdfConvert: Serializing with serializer " + _writer.GetType().Name);
 
                 //Save the Graph to Standard Out
-                this._writer.Save(this._g, Console.Out);
+                _writer.Save(_g, Console.Out);
             }
             catch (RdfOutputException outEx)
             {
-                this.ShowErrors(outEx, "Output Error");
+                ShowErrors(outEx, "Output Error");
                 return;
             }
             catch (RdfException rdfEx)
             {
-                this.ShowErrors(rdfEx, "RDF Error");
+                ShowErrors(rdfEx, "RDF Error");
                 return;
             }
             catch (Exception ex)
             {
-                this.ShowErrors(ex, "Error");
+                ShowErrors(ex, "Error");
                 return;
             }
         }
 
-        private bool SetOptions(String[] args)
+        private bool SetOptions(string[] args)
         {
             //No arguments means fail
             if (args.Length == 0)
@@ -229,7 +229,7 @@ namespace VDS.RDF.Utilities.Convert
             int i = 0;
             while (i < args.Length)
             {
-                String arg = args[i];
+                string arg = args[i];
 
                 if (arg.Equals("-i") || arg.Equals("--input"))
                 {
@@ -240,7 +240,7 @@ namespace VDS.RDF.Utilities.Convert
                         return false;
                     }
                     arg = args[i];
-                    if (!this.SetParser(arg)) return false;
+                    if (!SetParser(arg)) return false;
                 }
                 else if (arg.Equals("-I") || arg.Equals("--input-uri"))
                 {
@@ -251,7 +251,7 @@ namespace VDS.RDF.Utilities.Convert
                         return false;
                     }
                     arg = args[i];
-                    if (!this.SetBaseUri(arg)) return false;
+                    if (!SetBaseUri(arg)) return false;
                 }
                 else if (arg.Equals("-o") || arg.Equals("--output"))
                 {
@@ -262,7 +262,7 @@ namespace VDS.RDF.Utilities.Convert
                         return false;
                     }
                     arg = args[i];
-                    if (!this.SetWriter(arg)) return false;
+                    if (!SetWriter(arg)) return false;
                 }
                 else if (arg.Equals("-O") || arg.Equals("--output-uri"))
                 {
@@ -273,11 +273,11 @@ namespace VDS.RDF.Utilities.Convert
                         return false;
                     }
                     arg = args[i];
-                    if (!this.SetOutputBaseUri(arg)) return false;
+                    if (!SetOutputBaseUri(arg)) return false;
                 }
                 else if (arg.Equals("-c") || arg.Equals("--count"))
                 {
-                    this._count = true;
+                    _count = true;
                 }
                 else if (arg.Equals("-e") || arg.Equals("--ignore-errors"))
                 {
@@ -295,7 +295,7 @@ namespace VDS.RDF.Utilities.Convert
                 }
                 else if (arg.Equals("-g") || arg.Equals("--guess"))
                 {
-                    this._guess = true;
+                    _guess = true;
                 }
                 else if (arg.Equals("-h") || arg.Equals("--help"))
                 {
@@ -303,7 +303,7 @@ namespace VDS.RDF.Utilities.Convert
                 }
                 else if (arg.Equals("-q") || arg.Equals("--quiet"))
                 {
-                    this._quiet = true;
+                    _quiet = true;
                 }
                 else if (arg.Equals("-r") || arg.Equals("--replace-newlines"))
                 {
@@ -315,11 +315,11 @@ namespace VDS.RDF.Utilities.Convert
                 }
                 else if (arg.Equals("--show-graphs"))
                 {
-                    this._showGraphs = true;
+                    _showGraphs = true;
                 }
                 else if (arg.Equals("--show-namespaces"))
                 {
-                    this._showNamespaces = true;
+                    _showNamespaces = true;
                 }
                 else if (arg.Equals("-t") || arg.Equals("--trace"))
                 {
@@ -327,7 +327,7 @@ namespace VDS.RDF.Utilities.Convert
                 }
                 else if (arg.Equals("-w") || arg.Equals("--ignore-warnings"))
                 {
-                    this._ignoreWarnings = true;
+                    _ignoreWarnings = true;
                 }
                 else if (arg.Equals("-v"))
                 {
@@ -344,16 +344,16 @@ namespace VDS.RDF.Utilities.Convert
                 else
                 {
                     //Assume this is the Input URI
-                    this._input = arg;
+                    _input = arg;
 
                     i++;
                     if (i < args.Length)
                     {
                         //Assume the next thing is the Input Base URI if we haven't had a -I or --input-uri option
-                        if (!this._useInputBase)
+                        if (!_useInputBase)
                         {
                             arg = args[i];
-                            if (!this.SetBaseUri(arg)) return false;
+                            if (!SetBaseUri(arg)) return false;
                         }
 
                         if (i < args.Length - 1)
@@ -370,31 +370,31 @@ namespace VDS.RDF.Utilities.Convert
             return true;
         }
 
-        private bool SetParser(String format)
+        private bool SetParser(string format)
         {
             switch (format)
             {
                 case "rdfxml":
-                    this._parser = new RdfXmlParser();
+                    _parser = new RdfXmlParser();
                     break;
                 case "ntriples":
-                    this._parser = new NTriplesParser();
+                    _parser = new NTriplesParser();
                     break;
                 case "turtle":
-                    this._parser = new TurtleParser();
+                    _parser = new TurtleParser();
                     break;
                 case "n3":
-                    this._parser = new Notation3Parser();
+                    _parser = new Notation3Parser();
                     break;
                 case "json":
-                    this._parser = new RdfJsonParser();
+                    _parser = new RdfJsonParser();
                     break;
                 case "html":
                 case "rdfa":
-                    this._parser = new RdfAParser();
+                    _parser = new RdfAParser();
                     break;
                 case "guess":
-                    this._guess = true;
+                    _guess = true;
                     break;
                 default:
                     Console.Error.WriteLine("rdfConvert: The value '" + format + "' is not a valid format parameter");
@@ -403,31 +403,31 @@ namespace VDS.RDF.Utilities.Convert
             return true;
         }
 
-        private bool SetWriter(String format)
+        private bool SetWriter(string format)
         {
             switch (format)
             {
                 case "rdfxml":
-                    this._writer = new PrettyRdfXmlWriter();
+                    _writer = new PrettyRdfXmlWriter();
                     break;
                 case "ntriples":
-                    this._writer = new NTriplesWriter();
+                    _writer = new NTriplesWriter();
                     break;
                 case "turtle":
-                    this._writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
+                    _writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
                     break;
                 case "n3":
-                    this._writer = new Notation3Writer(WriterCompressionLevel.High);
+                    _writer = new Notation3Writer(WriterCompressionLevel.High);
                     break;
                 case "html":
                 case "rdfa":
-                    this._writer = new HtmlWriter();
+                    _writer = new HtmlWriter();
                     break;
                 case "json":
-                    this._writer = new RdfJsonWriter();
+                    _writer = new RdfJsonWriter();
                     break;
                 case "dot":
-                    this._writer = new GraphVizWriter();
+                    _writer = new GraphVizWriter();
                     break;
                 default:
                     Console.Error.WriteLine("rdfConvert: The value '" + format + "' is not a valid format parameter");
@@ -436,11 +436,11 @@ namespace VDS.RDF.Utilities.Convert
             return true;
         }
 
-        private bool SetBaseUri(String uri)
+        private bool SetBaseUri(string uri)
         {
             if (uri.Equals("-"))
             {
-                this._useInputBase = true;
+                _useInputBase = true;
                 return true;
             }
             else
@@ -448,25 +448,25 @@ namespace VDS.RDF.Utilities.Convert
                 try
                 {
                     Uri u = new Uri(uri);
-                    this._g.BaseUri = u;
-                    this._inputBase = u;
-                    this._useInputBase = true;
+                    _g.BaseUri = u;
+                    _inputBase = u;
+                    _useInputBase = true;
                     return true;
                 }
                 catch (UriFormatException ex)
                 {
                     Console.Error.WriteLine("rdf:Convert The value '" + uri + "' was not a valid URI for use as the Base URI");
-                    this.ShowErrors(ex, "URI Format Error");
+                    ShowErrors(ex, "URI Format Error");
                     return false;
                 }
             }
         }
 
-        private bool SetOutputBaseUri(String uri)
+        private bool SetOutputBaseUri(string uri)
         {
             if (uri.Equals("-"))
             {
-                this._useNullOutputBase = true;
+                _useNullOutputBase = true;
                 return true;
             }
             else
@@ -474,27 +474,27 @@ namespace VDS.RDF.Utilities.Convert
                 try
                 {
                     Uri u = new Uri(uri);
-                    this._outputBase = u;
+                    _outputBase = u;
                     return true;
                 }
                 catch (UriFormatException ex)
                 {
                     Console.Error.WriteLine("rdfConvert: The value '" + uri + "' was not a valid URI for use as the Output Base URI");
-                    this.ShowErrors(ex, "URI Format Error");
+                    ShowErrors(ex, "URI Format Error");
                     return false;
                 }
             }
         }
 
-        private void ShowWarnings(String message)
+        private void ShowWarnings(string message)
         {
             Console.Error.WriteLine("rdfConvert: Warning: " + message);
         }
 
-        private void ShowErrors(Exception ex, String prefix)
+        private void ShowErrors(Exception ex, string prefix)
         {
             Console.Error.WriteLine("rdfConvert: " + prefix + ": " + ex.Message);
-            if (ex.InnerException != null) this.ShowErrors(ex.InnerException, prefix);
+            if (ex.InnerException != null) ShowErrors(ex.InnerException, prefix);
         }
 
         private void ShowUsage()

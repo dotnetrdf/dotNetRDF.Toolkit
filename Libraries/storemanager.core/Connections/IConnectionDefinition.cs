@@ -44,7 +44,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets the display name for this connection
         /// </summary>
-        String StoreName
+        string StoreName
         {
             get;
         }
@@ -52,7 +52,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets the description for this connection
         /// </summary>
-        String StoreDescription
+        string StoreDescription
         {
             get;
         }

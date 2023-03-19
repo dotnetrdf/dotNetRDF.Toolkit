@@ -35,13 +35,13 @@ namespace VDS.RDF.Utilities.Sparql
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
 
-        public fclsInspect(SparqlQuery query, long parseTime, String origQuery)
+        public fclsInspect(SparqlQuery query, long parseTime, string origQuery)
         {
             InitializeComponent();
 
-            this.lblParseTime.Text = "Took " + parseTime + "ms to parse";
-            this.txtQuery.Text = this._formatter.Format(query);
-            this.txtAlgebra.Text = query.ToAlgebra().ToString();
+            lblParseTime.Text = "Took " + parseTime + "ms to parse";
+            txtQuery.Text = _formatter.Format(query);
+            txtAlgebra.Text = query.ToAlgebra().ToString();
 
             //Compute the actual syntax compatability
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.Sparql
             try
             {
                 SparqlQuery q = parser.ParseFromString(origQuery);
-                this.lblSyntaxCompatability.Text += " SPARQL 1.0 (Standard)";
+                lblSyntaxCompatability.Text += " SPARQL 1.0 (Standard)";
             }
             catch
             {
@@ -57,13 +57,13 @@ namespace VDS.RDF.Utilities.Sparql
                 {
                     parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
                     SparqlQuery q = parser.ParseFromString(origQuery);
-                    this.lblSyntaxCompatability.Text += " SPARQL 1.1 (Current Working Draft Standard)";
+                    lblSyntaxCompatability.Text += " SPARQL 1.1 (Current Working Draft Standard)";
                 }
                 catch
                 {
                     parser.SyntaxMode = SparqlQuerySyntax.Extended;
                     SparqlQuery q = parser.ParseFromString(origQuery);
-                    this.lblSyntaxCompatability.Text += " SPARQL 1.1 (Implementation specific extensions)";
+                    lblSyntaxCompatability.Text += " SPARQL 1.1 (Implementation specific extensions)";
                 }
             }
         }

@@ -48,21 +48,21 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="storeName">Display Name of the Store</param>
         /// <param name="storeDescrip">Display Description of the Store</param>
         /// <param name="t">Type of the connection instance that this definition will generate</param>
-        protected BaseConnectionDefinition(String storeName, String storeDescrip, Type t)
+        protected BaseConnectionDefinition(string storeName, string storeDescrip, Type t)
         {
-            this.StoreName = storeName;
-            this.StoreDescription = storeDescrip;
-            this.Type = t;
+            StoreName = storeName;
+            StoreDescription = storeDescrip;
+            Type = t;
 
             //Discover decorated properties
-            t = this.GetType();
+            t = GetType();
             Type target = typeof(ConnectionAttribute);
             Type def = typeof(DefaultValueAttribute);
             foreach (PropertyInfo property in t.GetProperties())
             {
                 foreach (ConnectionAttribute attr in property.GetCustomAttributes(target, true).OfType<ConnectionAttribute>())
                 {
-                    this._properties.Add(property, attr);
+                    _properties.Add(property, attr);
                     break;
                 }
                 foreach (DefaultValueAttribute attr in property.GetCustomAttributes(def, true).OfType<DefaultValueAttribute>())
@@ -109,9 +109,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public IStorageProvider OpenConnection()
         {
             //Validate Attributes
-            foreach (PropertyInfo property in this._properties.Keys)
+            foreach (PropertyInfo property in _properties.Keys)
             {
-                ConnectionAttribute attr = this._properties[property];
+                ConnectionAttribute attr = _properties[property];
 
                 switch (attr.Type)
                 {
@@ -137,14 +137,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     case ConnectionSettingType.Password:
                     case ConnectionSettingType.String:
                     case ConnectionSettingType.File:
-                        String s = (String)property.GetValue(this, null);
+                        string s = (string)property.GetValue(this, null);
                         if (attr.IsRequired)
                         {
-                            if (s == null || (s.Equals(String.Empty) && !attr.AllowEmptyString))
+                            if (s == null || (s.Equals(string.Empty) && !attr.AllowEmptyString))
                             {
                                 if (attr.NotRequiredIf != null)
                                 {
-                                    PropertyInfo notReqProp = this._properties.Keys.Where(p => p.Name.Equals(attr.NotRequiredIf)).FirstOrDefault();
+                                    PropertyInfo notReqProp = _properties.Keys.Where(p => p.Name.Equals(attr.NotRequiredIf)).FirstOrDefault();
                                     if (notReqProp != null)
                                     {
                                         bool notReq = (bool)notReqProp.GetValue(this, null);
@@ -185,7 +185,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                         throw new Exception("Not a valid Connection Setting Type");
                 }
             }
-            return this.OpenConnectionInternal();
+            return OpenConnectionInternal();
         }
 
         /// <summary>
@@ -201,15 +201,15 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="objNode">Object Node</param>
         public virtual void PopulateFrom(IGraph g, INode objNode)
         {
-            foreach (PropertyInfo property in this._properties.Keys)
+            foreach (PropertyInfo property in _properties.Keys)
             {
-                ConnectionAttribute attr = this._properties[property];
+                ConnectionAttribute attr = _properties[property];
 
-                if (!String.IsNullOrEmpty(attr.PopulateFrom))
+                if (!string.IsNullOrEmpty(attr.PopulateFrom))
                 {
                     INode n = objNode;
 
-                    if (!String.IsNullOrEmpty(attr.PopulateVia))
+                    if (!string.IsNullOrEmpty(attr.PopulateVia))
                     {
                         n = ConfigurationLoader.GetConfigurationNode(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateVia)));
                         if (n == null) continue;
@@ -225,8 +225,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                         case ConnectionSettingType.File:
                         case ConnectionSettingType.Password:
                         case ConnectionSettingType.String:
-                            String s = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
-                            if (!String.IsNullOrEmpty(s))
+                            string s = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
+                            if (!string.IsNullOrEmpty(s))
                             {
                                 property.SetValue(this, s, null);
                             }
@@ -244,12 +244,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                             break;
 
                         case ConnectionSettingType.Enum:
-                            String enumStr = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
-                            if (!String.IsNullOrEmpty(enumStr))
+                            string enumStr = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
+                            if (!string.IsNullOrEmpty(enumStr))
                             {
                                 try
                                 {
-                                    Object val = Enum.Parse(property.GetValue(this, null).GetType(), enumStr, false);
+                                    object val = Enum.Parse(property.GetValue(this, null).GetType(), enumStr, false);
                                     property.SetValue(this, val, null);
                                 }
                                 catch
@@ -275,7 +275,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns></returns>
         public IEnumerator<KeyValuePair<PropertyInfo, ConnectionAttribute>> GetEnumerator()
         {
-            return this._properties.GetEnumerator();
+            return _properties.GetEnumerator();
         }
 
         /// <summary>
@@ -284,13 +284,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
         /// Definitions <strong>should</strong> provide a ToString() implementation which is used for displaying friendly names for connections that haven't been explicitly named by users
         /// </summary>
         /// <returns>Friendly name for the connection that this definition will create</returns>
-        public abstract override String ToString();
+        public abstract override string ToString();
     }
 }

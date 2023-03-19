@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (this.chkRemember.Checked)
+            if (chkRemember.Checked)
             {
                 Settings.Default.PromptRestoreActiveConnections = false;
                 Settings.Default.AlwaysRestoreActiveConnections = true;
@@ -50,13 +50,13 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
             }
 
             Settings.Default.Save();
-            this.DialogResult = DialogResult.Yes;
-            this.Close();
+            DialogResult = DialogResult.Yes;
+            Close();
         }
 
         private void btnQuit_Click(object sender, EventArgs e)
         {
-            if (this.chkRemember.Checked)
+            if (chkRemember.Checked)
             {
                 Settings.Default.PromptRestoreActiveConnections = false;
                 Settings.Default.AlwaysRestoreActiveConnections = false;
@@ -67,14 +67,14 @@ namespace VDS.RDF.Utilities.StoreManager.Dialogues
                 Settings.Default.AlwaysRestoreActiveConnections = false;
             }
             Settings.Default.Save();
-            this.DialogResult = DialogResult.No;
-            this.Close();
+            DialogResult = DialogResult.No;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

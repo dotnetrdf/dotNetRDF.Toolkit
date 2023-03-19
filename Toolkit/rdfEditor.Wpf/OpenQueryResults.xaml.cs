@@ -41,33 +41,33 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class OpenQueryResults : Window
     {
         private Editor<TextEditor, FontFamily, Color> _editor;
-        private String _data;
+        private string _data;
         private ISparqlResultsReader _parser;
 
         public OpenQueryResults(VisualOptions<FontFamily, Color> options)
         {
             InitializeComponent();
 
-            this._editor = new Editor<TextEditor, FontFamily, Color>(new WpfEditorFactory());
-            this._editor.DocumentManager.VisualOptions = options;
-            Document<TextEditor> doc = this._editor.DocumentManager.New(true);
+            _editor = new Editor<TextEditor, FontFamily, Color>(new WpfEditorFactory());
+            _editor.DocumentManager.VisualOptions = options;
+            Document<TextEditor> doc = _editor.DocumentManager.New(true);
             doc.Syntax = "SparqlQuery11";
             Grid.SetRow(doc.TextEditor.Control, 2);
             Grid.SetColumn(doc.TextEditor.Control, 1);
-            this.gridContent.Children.Add(doc.TextEditor.Control);
+            gridContent.Children.Add(doc.TextEditor.Control);
 
             doc.TextEditor.Control.TabIndex = 3;
-            this.btnOpenQueryResults.TabIndex = 4;
+            btnOpenQueryResults.TabIndex = 4;
         }
 
         private void btnOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Uri u = new Uri(this.txtEndpoint.Text);
-                String defGraph = this.txtDefaultGraph.Text;
+                Uri u = new Uri(txtEndpoint.Text);
+                string defGraph = txtDefaultGraph.Text;
                 SparqlRemoteEndpoint endpoint;
-                if (String.IsNullOrEmpty(defGraph))
+                if (string.IsNullOrEmpty(defGraph))
                 {
                     endpoint = new SparqlRemoteEndpoint(u);
                 }
@@ -75,19 +75,19 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 {
                     endpoint = new SparqlRemoteEndpoint(u, defGraph);
                 }
-                String[] accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader.Split(',');
-                if (!String.IsNullOrEmpty(this.txtAcceptHeader.Text))
+                string[] accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader.Split(',');
+                if (!string.IsNullOrEmpty(txtAcceptHeader.Text))
                 {
-                    accept = this.txtAcceptHeader.Text.Split(',');
+                    accept = txtAcceptHeader.Text.Split(',');
                 }
 
-                String data;
-                using (HttpWebResponse response = endpoint.QueryRaw(this._editor.DocumentManager.ActiveDocument.Text, accept))
+                string data;
+                using (HttpWebResponse response = endpoint.QueryRaw(_editor.DocumentManager.ActiveDocument.Text, accept))
                 {
                     data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     try
                     {
-                        this._parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                        _parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
                     }
                     catch (RdfParserSelectionException)
                     {
@@ -96,21 +96,21 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     response.Close();
                 }
 
-                this._data = data;
-                if (this._parser == null)
+                _data = data;
+                if (_parser == null)
                 {
                     try
                     {
-                        this._parser = StringParser.GetResultSetParser(this._data);
+                        _parser = StringParser.GetResultSetParser(_data);
                     }
                     catch (RdfParserSelectionException)
                     {
-                        this._parser = null;
+                        _parser = null;
                     }
                 }
 
-                this.DialogResult = true;
-                this.Close();
+                DialogResult = true;
+                Close();
             }
             catch (UriFormatException)
             {
@@ -126,23 +126,23 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        public String Query
+        public string Query
         {
             get
             {
-                return this._editor.DocumentManager.ActiveDocument.Text;
+                return _editor.DocumentManager.ActiveDocument.Text;
             }
             set
             {
-                this._editor.DocumentManager.ActiveDocument.Text = value;
+                _editor.DocumentManager.ActiveDocument.Text = value;
             }
         }
 
-        public String RetrievedData
+        public string RetrievedData
         {
             get
             {
-                return this._data;
+                return _data;
             }
         }
 
@@ -150,14 +150,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             get
             {
-                return this._parser;
+                return _parser;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.txtEndpoint.Focus();
-            this.txtEndpoint.SelectAll();
+            txtEndpoint.Focus();
+            txtEndpoint.SelectAll();
         }
     }
 }

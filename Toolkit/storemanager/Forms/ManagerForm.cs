@@ -50,8 +50,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         public ManagerForm()
         {
             InitializeComponent();
-            this.Closing += OnClosing;
-            Constants.WindowIcon = this.Icon;
+            Closing += OnClosing;
+            Constants.WindowIcon = Icon;
 
             //Ensure we upgrade settings if user has come from an older version of the application
             if (Settings.Default.UpgradeRequired)
@@ -62,18 +62,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 Settings.Default.Reload();
             }
 
-            //Enable UTF-8 BOM Output if relevant
-            Options.UseBomForUtf8 = Settings.Default.UseUtf8Bom;
-
             //Ensure Configuration Loader has known required Object Factorires registered
-            ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
             ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
 
             //Prepare Connection Definitions so users don't get a huge lag the first time they use these
             ConnectionDefinitionManager.GetDefinitions().Count();
 
             //Check whether we have a Recent and Favourites Connections Graph
-            this.LoadConnections();
+            LoadConnections();
         }
 
         #region Connection Management
@@ -85,33 +81,33 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             try
             {
-                String appDataDir = Program.GetApplicationDataDirectory();
-                String recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
-                String faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
-                String activeConnectionsFile = Path.Combine(appDataDir, "active.ttl");
+                string appDataDir = Program.GetApplicationDataDirectory();
+                string recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
+                string faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
+                string activeConnectionsFile = Path.Combine(appDataDir, "active.ttl");
 
                 // Load Favourite Connections
                 IGraph faves = new Graph();
                 if (File.Exists(faveConnectionsFile)) faves.LoadFromFile(faveConnectionsFile);
-                this.FavouriteConnections = new ConnectionsGraph(faves, faveConnectionsFile);
-                this.FillConnectionsMenu(this.mnuFavouriteConnections, this.FavouriteConnections, 0);
+                FavouriteConnections = new ConnectionsGraph(faves, faveConnectionsFile);
+                FillConnectionsMenu(mnuFavouriteConnections, FavouriteConnections, 0);
 
                 // Subscribe to collection changed events
-                this.FavouriteConnections.CollectionChanged += FavouriteConnectionsOnCollectionChanged;
+                FavouriteConnections.CollectionChanged += FavouriteConnectionsOnCollectionChanged;
 
                 // Load Recent Connections
                 IGraph recent = new Graph();
                 if (File.Exists(recentConnectionsFile)) recent.LoadFromFile(recentConnectionsFile);
-                this.RecentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, Settings.Default.MaxRecentConnections);
-                this.FillConnectionsMenu(this.mnuRecentConnections, this.RecentConnections, Settings.Default.MaxRecentConnections);
+                RecentConnections = new RecentConnectionsesGraph(recent, recentConnectionsFile, Settings.Default.MaxRecentConnections);
+                FillConnectionsMenu(mnuRecentConnections, RecentConnections, Settings.Default.MaxRecentConnections);
 
                 // Subscribe to collection changed events
-                this.RecentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
+                RecentConnections.CollectionChanged += RecentConnectionsOnCollectionChanged;
 
                 // Load Active Connections
                 IGraph active = new Graph();
                 if (File.Exists(activeConnectionsFile)) active.LoadFromFile(activeConnectionsFile);
-                this.ActiveConnections = new ActiveConnectionsGraph(active, activeConnectionsFile);
+                ActiveConnections = new ActiveConnectionsGraph(active, activeConnectionsFile);
             }
             catch (Exception ex)
             {
@@ -141,17 +137,17 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         /// <returns>Form if found, null otherwise</returns>
         public StoreManagerForm GetStoreManagerForm(Connection connection)
         {
-            return this.MdiChildren.OfType<StoreManagerForm>().FirstOrDefault(form => ReferenceEquals(form.Connection, connection));
+            return MdiChildren.OfType<StoreManagerForm>().FirstOrDefault(form => ReferenceEquals(form.Connection, connection));
         }
 
         private void FavouriteConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.FavouriteConnections, this.mnuFavouriteConnections, 0);
+            HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, FavouriteConnections, mnuFavouriteConnections, 0);
         }
 
         private void RecentConnectionsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            this.HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, this.RecentConnections, this.mnuRecentConnections, Settings.Default.MaxRecentConnections);
+            HandleConnectionsGraphChanged(notifyCollectionChangedEventArgs, RecentConnections, mnuRecentConnections, Settings.Default.MaxRecentConnections);
         }
 
         private void HandleConnectionsGraphChanged(NotifyCollectionChangedEventArgs args, IConnectionsGraph connections, ToolStripMenuItem item, int maxItems)
@@ -161,7 +157,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 case NotifyCollectionChangedAction.Add:
                     foreach (Connection connection in args.NewItems.OfType<Connection>())
                     {
-                        this.AddConnectionToMenu(connection, item);
+                        AddConnectionToMenu(connection, item);
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -171,7 +167,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                     }
                     break;
                 default:
-                    this.FillConnectionsMenu(item, connections, maxItems);
+                    FillConnectionsMenu(item, connections, maxItems);
                     break;
             }
         }
@@ -180,8 +176,8 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         {
             try
             {
-                if (this.RecentConnections != null) this.RecentConnections.Add(connection);
-                if (this.ActiveConnections != null) this.ActiveConnections.Add(connection);
+                if (RecentConnections != null) RecentConnections.Add(connection);
+                if (ActiveConnections != null) ActiveConnections.Add(connection);
             }
             catch (Exception ex)
             {
@@ -191,14 +187,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         public void AddFavouriteConnection(Connection connection)
         {
-            if (this.FavouriteConnections == null)
+            if (FavouriteConnections == null)
             {
                 Program.HandleInternalError(Resources.FavouriteConnections_NoFile);
                 return;
             }
             try
             {
-                this.FavouriteConnections.Add(connection);
+                FavouriteConnections.Add(connection);
             }
             catch (Exception ex)
             {
@@ -234,14 +230,14 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void ClearRecentConnections()
         {
-            ClearConnections(this.mnuRecentConnections, this.RecentConnections);
+            ClearConnections(mnuRecentConnections, RecentConnections);
         }
 
         private void ClearFavouriteConnections()
         {
             if (MessageBox.Show(Resources.FavouriteConnections_ConfirmClear_Text, Resources.FavouriteConnections_ConfirmClear_Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                ClearConnections(this.mnuFavouriteConnections, this.FavouriteConnections);
+                ClearConnections(mnuFavouriteConnections, FavouriteConnections);
             }
         }
 
@@ -293,7 +289,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void QuickConnectClick(object sender, EventArgs e)
         {
             if (sender == null) return;
-            Object tag = null;
+            object tag = null;
             if (sender is Control)
             {
                 tag = ((Control) sender).Tag;
@@ -312,7 +308,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             try
             {
                 connection.Open();
-                this.ShowStoreManagerForm(connection);
+                ShowStoreManagerForm(connection);
             }
             catch (Exception ex)
             {
@@ -323,7 +319,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void QuickEditClick(object sender, EventArgs e)
         {
             if (sender == null) return;
-            Object tag = null;
+            object tag = null;
             if (sender is Control)
             {
                 tag = ((Control) sender).Tag;
@@ -354,9 +350,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         {
                             connection = editConn.Connection;
                             connection.Open();
-                            this.ShowStoreManagerForm(connection);
+                            ShowStoreManagerForm(connection);
 
-                            this.Close();
+                            Close();
                         }
                     }
                     catch (Exception ex)
@@ -369,10 +365,10 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void PromptRestoreConnections()
         {
-            if (this.ActiveConnections == null) return;
+            if (ActiveConnections == null) return;
             if (Settings.Default.PromptRestoreActiveConnections)
             {
-                if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
+                if (!ActiveConnections.IsClosed && ActiveConnections.Count > 0 && ActiveConnections.Connections.Any(c => c.IsOpen))
                 {
                     try
                     {
@@ -384,11 +380,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                                 return;
                             case DialogResult.Yes:
                                 Settings.Default.RestoreActiveConnections = true;
-                                this.ActiveConnections.Close();
+                                ActiveConnections.Close();
                                 break;
                             default:
                                 Settings.Default.RestoreActiveConnections = false;
-                                this.ActiveConnections.Clear();
+                                ActiveConnections.Clear();
                                 break;
                         }
                         Settings.Default.Save();
@@ -402,34 +398,34 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             }
             else if (Settings.Default.AlwaysRestoreActiveConnections)
             {
-                if (!this.ActiveConnections.IsClosed && this.ActiveConnections.Count > 0 && this.ActiveConnections.Connections.Any(c => c.IsOpen))
+                if (!ActiveConnections.IsClosed && ActiveConnections.Count > 0 && ActiveConnections.Connections.Any(c => c.IsOpen))
                 {
                     Settings.Default.RestoreActiveConnections = true;
-                    this.ActiveConnections.Close();
+                    ActiveConnections.Close();
                 }
             }
             else
             {
-                this.ActiveConnections.Clear();
+                ActiveConnections.Clear();
             }
         }
 
         private void RestoreConnections()
         {
             if (!Settings.Default.RestoreActiveConnections) return;
-            foreach (Connection connection in this.ActiveConnections.Connections.ToList())
+            foreach (Connection connection in ActiveConnections.Connections.ToList())
             {
                 try
                 {
                     connection.Open();
-                    this.ShowStoreManagerForm(connection);
+                    ShowStoreManagerForm(connection);
                 }
                 catch (Exception ex)
                 {
                     Program.HandleInternalError(string.Format(Resources.RestoreConnection_Error, connection.Name), ex);
                 }
             }
-            this.LayoutMdi(MdiLayout.Cascade);
+            LayoutMdi(MdiLayout.Cascade);
         }
 
         #endregion
@@ -438,16 +434,16 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void fclsManager_Load(object sender, EventArgs e)
         {
-            this.RestoreConnections();
+            RestoreConnections();
 
             if (!Settings.Default.ShowStartPage) return;
-            StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
+            StartPage start = new StartPage(RecentConnections, FavouriteConnections);
             start.ShowDialog();
         }
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            this.PromptRestoreConnections();
+            PromptRestoreConnections();
         }
 
         #endregion
@@ -456,40 +452,40 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuStrip_MenuActivate(object sender, EventArgs e)
         {
-            if (this.ActiveMdiChild != null)
+            if (ActiveMdiChild != null)
             {
-                Form activeChild = this.ActiveMdiChild;
-                this.ActivateMdiChild(null);
-                this.ActivateMdiChild(activeChild);
+                Form activeChild = ActiveMdiChild;
+                ActivateMdiChild(null);
+                ActivateMdiChild(activeChild);
 
-                if (this.ActiveMdiChild is StoreManagerForm)
+                if (ActiveMdiChild is StoreManagerForm)
                 {
-                    this.mnuSaveConnection.Enabled = true;
-                    this.mnuAddFavourite.Enabled = true;
-                    this.mnuNewFromExisting.Enabled = true;
+                    mnuSaveConnection.Enabled = true;
+                    mnuAddFavourite.Enabled = true;
+                    mnuNewFromExisting.Enabled = true;
                 }
                 else
                 {
-                    this.mnuSaveConnection.Enabled = false;
-                    this.mnuAddFavourite.Enabled = false;
-                    this.mnuNewFromExisting.Enabled = false;
+                    mnuSaveConnection.Enabled = false;
+                    mnuAddFavourite.Enabled = false;
+                    mnuNewFromExisting.Enabled = false;
                 }
             }
             else
             {
-                this.mnuSaveConnection.Enabled = false;
-                this.mnuAddFavourite.Enabled = false;
-                this.mnuNewFromExisting.Enabled = false;
+                mnuSaveConnection.Enabled = false;
+                mnuAddFavourite.Enabled = false;
+                mnuNewFromExisting.Enabled = false;
             }
         }
 
         private void mnuExit_Click(object sender, EventArgs e)
         {
             // Prompt for restoring connections
-            this.PromptRestoreConnections();
+            PromptRestoreConnections();
 
             // Close children
-            foreach (Form childForm in this.MdiChildren)
+            foreach (Form childForm in MdiChildren)
             {
                 childForm.Close();
             }
@@ -526,29 +522,29 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuSaveConnection_Click(object sender, EventArgs e)
         {
-            if (this.ActiveMdiChild != null)
+            if (ActiveMdiChild != null)
             {
-                if (this.ActiveMdiChild is StoreManagerForm)
+                if (ActiveMdiChild is StoreManagerForm)
                 {
                     try
                     {
-                        Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
-                        this.sfdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
-                        if (this.sfdConnection.ShowDialog() == DialogResult.OK)
+                        Connection connection = ((StoreManagerForm) ActiveMdiChild).Connection;
+                        sfdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
+                        if (sfdConnection.ShowDialog() == DialogResult.OK)
                         {
                             //Append to existing configuration file or overwrite?
                             IGraph cs = new Graph();
-                            if (File.Exists(this.sfdConnection.FileName))
+                            if (File.Exists(sfdConnection.FileName))
                             {
                                 DialogResult result = MessageBox.Show(Resources.SaveConnection_Append_Text, Resources.SaveConnection_Append_Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                                 switch (result)
                                 {
                                     case DialogResult.Yes:
                                         // Load in existing connections
-                                        cs.LoadFromFile(this.sfdConnection.FileName);
+                                        cs.LoadFromFile(sfdConnection.FileName);
                                         break;
                                     case DialogResult.No:
-                                        File.Delete(this.sfdConnection.FileName);
+                                        File.Delete(sfdConnection.FileName);
                                         break;
                                     default:
                                         return;
@@ -556,7 +552,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                             }
 
                             // Open the connections file and add to it which automatically causes it to be saved
-                            IConnectionsGraph connections = new ConnectionsGraph(cs, this.sfdConnection.FileName);
+                            IConnectionsGraph connections = new ConnectionsGraph(cs, sfdConnection.FileName);
                             connections.Add(connection);
                         }
                     }
@@ -567,25 +563,25 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                 }
                 else
                 {
-                    this.mnuSaveConnection.Enabled = false;
+                    mnuSaveConnection.Enabled = false;
                 }
             }
             else
             {
-                this.mnuSaveConnection.Enabled = false;
+                mnuSaveConnection.Enabled = false;
             }
         }
 
         private void mnuOpenConnection_Click(object sender, EventArgs e)
         {
-            this.ofdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
-            if (this.ofdConnection.ShowDialog() == DialogResult.OK)
+            ofdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
+            if (ofdConnection.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
                     IGraph cs = new Graph();
-                    cs.LoadFromFile(this.ofdConnection.FileName);
-                    IConnectionsGraph connections = new ConnectionsGraph(cs, this.ofdConnection.FileName);
+                    cs.LoadFromFile(ofdConnection.FileName);
+                    IConnectionsGraph connections = new ConnectionsGraph(cs, ofdConnection.FileName);
 
                     OpenConnectionForm openConnections = new OpenConnectionForm(connections);
                     openConnections.MdiParent = this;
@@ -608,20 +604,20 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuClearRecentConnections_Click(object sender, EventArgs e)
         {
-            this.ClearRecentConnections();
+            ClearRecentConnections();
         }
 
         private void mnuClearFavouriteConnections_Click(object sender, EventArgs e)
         {
-            this.ClearFavouriteConnections();
+            ClearFavouriteConnections();
         }
 
         private void mnuAddFavourite_Click(object sender, EventArgs e)
         {
-            if (this.ActiveMdiChild == null) return;
-            if (!(this.ActiveMdiChild is StoreManagerForm)) return;
-            Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
-            this.AddFavouriteConnection(connection);
+            if (ActiveMdiChild == null) return;
+            if (!(ActiveMdiChild is StoreManagerForm)) return;
+            Connection connection = ((StoreManagerForm) ActiveMdiChild).Connection;
+            AddFavouriteConnection(connection);
         }
 
         private void mnuAbout_Click(object sender, EventArgs e)
@@ -641,11 +637,11 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuNewFromExisting_Click(object sender, EventArgs e)
         {
-            if (this.ActiveMdiChild != null)
+            if (ActiveMdiChild != null)
             {
-                if (this.ActiveMdiChild is StoreManagerForm)
+                if (ActiveMdiChild is StoreManagerForm)
                 {
-                    Connection connection = ((StoreManagerForm) this.ActiveMdiChild).Connection;
+                    Connection connection = ((StoreManagerForm) ActiveMdiChild).Connection;
                     EditConnectionForm editConn = new EditConnectionForm(connection, true);
                     if (editConn.ShowDialog() == DialogResult.OK)
                     {
@@ -673,21 +669,21 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
                         if (args.PropertyName.Equals("Name")) CrossThreadSetText(quickJumpButton, connection.Name);
                         if (args.PropertyName.Equals("IsOpen") && !connection.IsOpen)
                         {
-                            this.quickJumpBar.Items.Remove(quickJumpButton);
-                            if (this.quickJumpBar.Items.Count == 1) this.quickJumpBar.Visible = false;
+                            quickJumpBar.Items.Remove(quickJumpButton);
+                            if (quickJumpBar.Items.Count == 1) quickJumpBar.Visible = false;
                         }
                     };
                 quickJumpButton.Click += delegate(object sender, EventArgs args)
                     {
-                        StoreManagerForm form = this.GetStoreManagerForm(connection);
+                        StoreManagerForm form = GetStoreManagerForm(connection);
                         if (form == null) return;
                         form.Show();
                         form.Focus();
                     };
                 quickJumpBar.Items.Add(quickJumpButton);
-                this.quickJumpBar.Visible = true;
+                quickJumpBar.Visible = true;
 
-                this.AddRecentConnection(connection);
+                AddRecentConnection(connection);
             }
             catch (Exception ex)
             {
@@ -697,7 +693,7 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
 
         private void mnuStartPage_Click(object sender, EventArgs e)
         {
-            StartPage start = new StartPage(this.RecentConnections, this.FavouriteConnections);
+            StartPage start = new StartPage(RecentConnections, FavouriteConnections);
             start.Owner = this;
             start.ShowDialog();
         }
@@ -705,9 +701,9 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
         private void mnuManageConnections_Click(object sender, EventArgs e)
         {
             ManageConnectionsForm manageConnectionsForm = new ManageConnectionsForm();
-            manageConnectionsForm.ActiveConnections = this.ActiveConnections;
-            manageConnectionsForm.RecentConnections = this.RecentConnections;
-            manageConnectionsForm.FavouriteConnections = this.FavouriteConnections;
+            manageConnectionsForm.ActiveConnections = ActiveConnections;
+            manageConnectionsForm.RecentConnections = RecentConnections;
+            manageConnectionsForm.FavouriteConnections = FavouriteConnections;
             manageConnectionsForm.MdiParent = this;
             manageConnectionsForm.Show();
         }
@@ -720,12 +716,12 @@ namespace VDS.RDF.Utilities.StoreManager.Forms
             dialogue.Show();
 
             // Want to apply updated editor options when the dialogue is closed
-            dialogue.Closed += (o, args) => this.UpdateEditors();
+            dialogue.Closed += (o, args) => UpdateEditors();
         }
 
         private void UpdateEditors()
         {
-            foreach (StoreManagerForm storeManagerForm in this.MdiChildren.OfType<StoreManagerForm>())
+            foreach (StoreManagerForm storeManagerForm in MdiChildren.OfType<StoreManagerForm>())
             {
                 storeManagerForm.ApplyEditorOptions();
             }

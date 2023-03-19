@@ -39,10 +39,10 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
 
         public ListViewColumnSorter(int column, SortOrder order)
         {
-            this._column = column;
+            _column = column;
             if (order == SortOrder.Descending)
             {
-                this._modifier = -1;
+                _modifier = -1;
             }
         }
 
@@ -54,8 +54,8 @@ namespace VDS.RDF.Utilities.StoreManager.Controls
             ListViewItem b = (ListViewItem) y;
 
             int numA, numB;
-            if (Int32.TryParse(a.SubItems[this._column].Text, out numA) && Int32.TryParse(b.SubItems[this._column].Text, out numB)) return this._modifier*numA.CompareTo(numB);
-            return this._modifier*String.Compare(a.SubItems[this._column].Text, b.SubItems[this._column].Text, StringComparison.CurrentCulture);
+            if (int.TryParse(a.SubItems[_column].Text, out numA) && int.TryParse(b.SubItems[_column].Text, out numB)) return _modifier*numA.CompareTo(numB);
+            return _modifier* string.Compare(a.SubItems[_column].Text, b.SubItems[_column].Text, StringComparison.CurrentCulture);
         }
     }
 }

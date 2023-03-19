@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// Creates new completion data
         /// </summary>
         /// <param name="keyword">Keyword</param>
-        public KeywordData(String keyword)
+        public KeywordData(string keyword)
             : this(keyword, "The " + keyword + " Keyword") { }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// </summary>
         /// <param name="keyword">Keyword</param>
         /// <param name="description">Description</param>
-        public KeywordData(String keyword, String description)
+        public KeywordData(string keyword, string description)
             : base(keyword, keyword, description) { }
     }
 }

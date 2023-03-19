@@ -39,7 +39,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <summary>
         /// Gets the description that should be displayed as a tool tip (if available)
         /// </summary>
-        String Description
+        string Description
         {
             get;
         }
@@ -47,7 +47,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <summary>
         /// Gets the text to display in the auto-complete list
         /// </summary>
-        String DisplayText
+        string DisplayText
         {
             get;
         }
@@ -55,7 +55,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         /// <summary>
         /// Gets the text that should actually be inserted
         /// </summary>
-        String InsertionText
+        string InsertionText
         {
             get;
         }

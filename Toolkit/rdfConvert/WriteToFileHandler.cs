@@ -34,42 +34,47 @@ namespace VDS.RDF.Utilities.Convert
 {
     class WriteToFileHandler : BaseRdfHandler
     {
-        private String _file;
+        private string _file;
         private Encoding _encoding;
         private Type _formatterType;
         private WriteThroughHandler _handler;
 
-        public WriteToFileHandler(String file, Encoding enc, Type formatterType)
+        public WriteToFileHandler(string file, Encoding enc, Type formatterType)
         {
-            this._file = file;
-            this._encoding = enc;
-            this._formatterType = formatterType;
+            _file = file;
+            _encoding = enc;
+            _formatterType = formatterType;
         }
 
         protected override void StartRdfInternal()
         {
-            this._handler = new WriteThroughHandler(this._formatterType, new StreamWriter(this._file, false, this._encoding));
-            this._handler.StartRdf();
+            _handler = new WriteThroughHandler(_formatterType, new StreamWriter(_file, false, _encoding));
+            _handler.StartRdf();
         }
 
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
+            _handler.EndRdf(ok);
         }
 
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         protected override bool HandleTripleInternal(Triple t)
         {
-            return this._handler.HandleTriple(t);
+            return _handler.HandleTriple(t);
+        }
+
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return _handler.HandleQuad(t, graph);
         }
 
         public override bool AcceptsAll

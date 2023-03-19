@@ -52,10 +52,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public CopyMoveTask(Connection source, Connection target, Uri sourceUri, Uri targetUri, bool forceCopy)
             : base(GetName(source, target, sourceUri, targetUri, forceCopy))
         {
-            this.Source = source;
-            this.Target = target;
-            this._sourceUri = sourceUri;
-            this._targetUri = targetUri;
+            Source = source;
+            Target = target;
+            _sourceUri = sourceUri;
+            _targetUri = targetUri;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         public Connection Target { get; private set; }
 
-        private static String GetName(Connection source, Connection target, Uri sourceUri, Uri targetUri, bool forceCopy)
+        private static string GetName(Connection source, Connection target, Uri sourceUri, Uri targetUri, bool forceCopy)
         {
             if (ReferenceEquals(source, target) && !forceCopy)
             {
@@ -85,49 +85,49 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
-            if (this.Target.IsReadOnly) throw new RdfStorageException("Cannot Copy/Move a Graph when the Target is a read-only Store!");
+            if (Target.IsReadOnly) throw new RdfStorageException("Cannot Copy/Move a Graph when the Target is a read-only Store!");
 
-            switch (this.Name)
+            switch (Name)
             {
                 case "Rename":
                 case "Move":
                     //Move/Rename a Graph 
-                    if (ReferenceEquals(this.Source, this.Target) && this.Source.StorageProvider is IUpdateableStorage)
+                    if (ReferenceEquals(Source, Target) && Source.StorageProvider is IUpdateableStorage)
                     {
                         //If the Source and Target are identical and it supports SPARQL Update natively then we'll just issue a MOVE command
-                        this.Information = "Issuing a MOVE command to rename Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
+                        Information = "Issuing a MOVE command to rename Graph '" + _sourceUri.ToSafeString() + "' to '" + _targetUri.ToSafeString() + "'";
                         SparqlParameterizedString update = new SparqlParameterizedString {CommandText = "MOVE"};
-                        if (this._sourceUri == null)
+                        if (_sourceUri == null)
                         {
                             update.CommandText += " DEFAULT TO";
                         }
                         else
                         {
                             update.CommandText += " GRAPH @source TO";
-                            update.SetUri("source", this._sourceUri);
+                            update.SetUri("source", _sourceUri);
                         }
-                        if (this._targetUri == null)
+                        if (_targetUri == null)
                         {
                             update.CommandText += " DEFAULT";
                         }
                         else
                         {
                             update.CommandText += " GRAPH @target";
-                            update.SetUri("target", this._targetUri);
+                            update.SetUri("target", _targetUri);
                         }
-                        ((IUpdateableStorage)this.Source.StorageProvider).Update(update.ToString());
-                        this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.ToSafeString() + "'";
+                        ((IUpdateableStorage)Source.StorageProvider).Update(update.ToString());
+                        Information = "MOVE command completed OK, Graph renamed to '" + _targetUri.ToSafeString() + "'";
                     }
                     else
                     {
                         //Otherwise do a load of the source graph writing through to the target graph
                         IRdfHandler handler;
                         IGraph g = null;
-                        if (this.Target.StorageProvider.UpdateSupported)
+                        if (Target.StorageProvider.UpdateSupported)
                         {
                             //If Target supports update then we'll use a WriteToStoreHandler combined with a GraphUriRewriteHandler
-                            handler = new WriteToStoreHandler(this.Target.StorageProvider, this._targetUri);
-                            handler = new GraphUriRewriteHandler(handler, this._targetUri);
+                            handler = new WriteToStoreHandler(Target.StorageProvider, _targetUri);
+                            handler = new GraphUriRewriteHandler(handler, _targetUri);
                         }
                         else
                         {
@@ -135,76 +135,76 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             g = new Graph();
                             handler = new GraphHandler(g);
                         }
-                        handler = new CopyMoveProgressHandler(handler, this, "Moving", this.Target.StorageProvider.UpdateSupported);
-                        this._canceller = new CancellableHandler(handler);
-                        if (this.HasBeenCancelled) this._canceller.Cancel();
+                        handler = new CopyMoveProgressHandler(handler, this, "Moving", Target.StorageProvider.UpdateSupported);
+                        _canceller = new CancellableHandler(handler);
+                        if (HasBeenCancelled) _canceller.Cancel();
 
                         //Now start reading out the data
-                        this.Information = "Copying data from Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
-                        this.Source.StorageProvider.LoadGraph(this._canceller, this._sourceUri);
+                        Information = "Copying data from Graph '" + _sourceUri.ToSafeString() + "' to '" + _targetUri.ToSafeString() + "'";
+                        Source.StorageProvider.LoadGraph(_canceller, _sourceUri);
 
                         //If we weren't moving the data directly need to save the resulting graph now
                         if (g != null)
                         {
-                            this.Information = "Saving copied data to Target Store...";
-                            this.Target.StorageProvider.SaveGraph(g);
+                            Information = "Saving copied data to Target Store...";
+                            Target.StorageProvider.SaveGraph(g);
                         }
 
                         //And finally since we've done a copy (not a move) so far we need to delete the original graph
                         //to effect a rename
-                        if (this.Source.StorageProvider.DeleteSupported)
+                        if (Source.StorageProvider.DeleteSupported)
                         {
-                            this.Information = "Removing source graph to complete the move operation";
-                            this.Source.StorageProvider.DeleteGraph(this._sourceUri);
+                            Information = "Removing source graph to complete the move operation";
+                            Source.StorageProvider.DeleteGraph(_sourceUri);
 
-                            this.Information = "Move completed OK, Graph moved to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this.Source, this.Target) ? String.Empty : " on " + this.Target);
+                            Information = "Move completed OK, Graph moved to '" + _targetUri.ToSafeString() + "'" + (ReferenceEquals(Source, Target) ? string.Empty : " on " + Target);
                         }
                         else
                         {
-                            this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this.Source, this.Target) ? String.Empty : " on " + this.Target) + ".  Please note that as the Source Triple Store does not support deleting Graphs so the Graph remains present in the Source Store";
+                            Information = "Copy completed OK, Graph copied to '" + _targetUri.ToSafeString() + "'" + (ReferenceEquals(Source, Target) ? string.Empty : " on " + Target) + ".  Please note that as the Source Triple Store does not support deleting Graphs so the Graph remains present in the Source Store";
                         }
                     }
 
                     break;
 
                 case "Copy":
-                    if (ReferenceEquals(this.Source, this.Target) && this.Source.StorageProvider is IUpdateableStorage)
+                    if (ReferenceEquals(Source, Target) && Source.StorageProvider is IUpdateableStorage)
                     {
                         //If the Source and Target are identical and it supports SPARQL Update natively then we'll just issue a COPY command
-                        this.Information = "Issuing a COPY command to copy Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
+                        Information = "Issuing a COPY command to copy Graph '" + _sourceUri.ToSafeString() + "' to '" + _targetUri.ToSafeString() + "'";
                         SparqlParameterizedString update = new SparqlParameterizedString();
                         update.CommandText = "COPY";
-                        if (this._sourceUri == null)
+                        if (_sourceUri == null)
                         {
                             update.CommandText += " DEFAULT TO";
                         }
                         else
                         {
                             update.CommandText += " GRAPH @source TO";
-                            update.SetUri("source", this._sourceUri);
+                            update.SetUri("source", _sourceUri);
                         }
-                        if (this._targetUri == null)
+                        if (_targetUri == null)
                         {
                             update.CommandText += " DEFAULT";
                         }
                         else
                         {
                             update.CommandText += " GRAPH @target";
-                            update.SetUri("target", this._targetUri);
+                            update.SetUri("target", _targetUri);
                         }
-                        ((IUpdateableStorage)this.Source.StorageProvider).Update(update.ToString());
-                        this.Information = "COPY command completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'";
+                        ((IUpdateableStorage)Source.StorageProvider).Update(update.ToString());
+                        Information = "COPY command completed OK, Graph copied to '" + _targetUri.ToSafeString() + "'";
                     }
                     else
                     {
                         //Otherwise do a load of the source graph writing through to the target graph
                         IRdfHandler handler;
                         IGraph g = null;
-                        if (this.Target.StorageProvider.UpdateSupported)
+                        if (Target.StorageProvider.UpdateSupported)
                         {
                             //If Target supports update then we'll use a WriteToStoreHandler combined with a GraphUriRewriteHandler
-                            handler = new WriteToStoreHandler(this.Target.StorageProvider, this._targetUri);
-                            handler = new GraphUriRewriteHandler(handler, this._targetUri);
+                            handler = new WriteToStoreHandler(Target.StorageProvider, _targetUri);
+                            handler = new GraphUriRewriteHandler(handler, _targetUri);
                         }
                         else
                         {
@@ -212,22 +212,22 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             g = new Graph();
                             handler = new GraphHandler(g);
                         }
-                        handler = new CopyMoveProgressHandler(handler, this, "Copying", this.Target.StorageProvider.UpdateSupported);
-                        this._canceller = new CancellableHandler(handler);
-                        if (this.HasBeenCancelled) this._canceller.Cancel();
+                        handler = new CopyMoveProgressHandler(handler, this, "Copying", Target.StorageProvider.UpdateSupported);
+                        _canceller = new CancellableHandler(handler);
+                        if (HasBeenCancelled) _canceller.Cancel();
 
                         //Now start reading out the data
-                        this.Information = "Copying data from Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
-                        this.Source.StorageProvider.LoadGraph(this._canceller, this._sourceUri);
+                        Information = "Copying data from Graph '" + _sourceUri.ToSafeString() + "' to '" + _targetUri.ToSafeString() + "'";
+                        Source.StorageProvider.LoadGraph(_canceller, _sourceUri);
 
                         //If we weren't moving the data directly need to save the resulting graph now
                         if (g != null)
                         {
-                            this.Information = "Saving copied data to Store...";
-                            this.Target.StorageProvider.SaveGraph(g);
+                            Information = "Saving copied data to Store...";
+                            Target.StorageProvider.SaveGraph(g);
                         }
 
-                        this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this.Source, this.Target) ? String.Empty : " on " + this.Target.ToString());
+                        Information = "Copy completed OK, Graph copied to '" + _targetUri.ToSafeString() + "'" + (ReferenceEquals(Source, Target) ? string.Empty : " on " + Target.ToString());
                     }
 
                     break;
@@ -241,9 +241,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void CancelInternal()
         {
-            if (this._canceller != null)
+            if (_canceller != null)
             {
-                this._canceller.Cancel();
+                _canceller.Cancel();
             }
         }
     }
@@ -256,7 +256,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private readonly IRdfHandler _handler;
         private readonly CopyMoveTask _task;
-        private readonly String _action;
+        private readonly string _action;
         private readonly bool _streaming;
         private int _count;
 
@@ -267,12 +267,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="task">Task</param>
         /// <param name="action">Action</param>
         /// <param name="streaming">Whether the copy/move is streaming</param>
-        public CopyMoveProgressHandler(IRdfHandler handler, CopyMoveTask task, String action, bool streaming)
+        public CopyMoveProgressHandler(IRdfHandler handler, CopyMoveTask task, string action, bool streaming)
         {
-            this._handler = handler;
-            this._task = task;
-            this._action = action;
-            this._streaming = streaming;
+            _handler = handler;
+            _task = task;
+            _action = action;
+            _streaming = streaming;
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             get
             {
-                return this._handler.AsEnumerable();
+                return _handler.AsEnumerable();
             }
         }
 
@@ -302,7 +302,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         protected override void StartRdfInternal()
         {
-            this._handler.StartRdf();
+            _handler.StartRdf();
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="ok">Whether parsing finished OK</param>
         protected override void EndRdfInternal(bool ok)
         {
-            this._handler.EndRdf(ok);
+            _handler.EndRdf(ok);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            return this._handler.HandleBaseUri(baseUri);
+            return _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            return this._handler.HandleNamespace(prefix, namespaceUri);
+            return _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -342,19 +342,31 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            this._count++;
-            if (this._count % 1000 == 0)
+            Report();
+            return _handler.HandleTriple(t);
+        }
+
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            Report();
+            return _handler.HandleQuad(t, graph);
+        }
+
+        private void Report()
+        {
+            _count++;
+            if (_count % 1000 == 0)
             {
-                if (this._streaming)
+                if (_streaming)
                 {
-                    this._task.Information = this._action + " " + this._count + " triples so far...";
+                    _task.Information = _action + " " + _count + " triples so far...";
                 }
                 else
                 {
-                    this._task.Information = "Read " + this._count + " triples into memory so far, no " + this._action + " has yet taken place...";
+                    _task.Information = "Read " + _count + " triples into memory so far, no " + _action + " has yet taken place...";
                 }
             }
-            return this._handler.HandleTriple(t);
         }
+
     }
 }

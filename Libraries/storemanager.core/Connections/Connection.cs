@@ -46,9 +46,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Namespace URI for the Store Manager namespace
         /// </summary>
-        public const String StoreManagerNamespace = "http://www.dotnetrdf.org/StoreManager#";
+        public const string StoreManagerNamespace = "http://www.dotnetrdf.org/StoreManager#";
 
-        private String _name;
+        private string _name;
 
         /// <summary>
         /// Creates a new connection as a copy of the existing connection
@@ -56,13 +56,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="connection">Connection</param>
         protected Connection(Connection connection)
         {
-            this.Definition = connection.Definition.Copy();
-            this.RootUri = CreateRootUri();
-            this.Created = DateTimeOffset.UtcNow;
-            this.LastModified = this.Created;
-            this.LastOpened = null;
-            this.IsReadOnly = connection.IsReadOnly;
-            this.Name = "Copy of " + connection.Name;
+            Definition = connection.Definition.Copy();
+            RootUri = CreateRootUri();
+            Created = DateTimeOffset.UtcNow;
+            LastModified = Created;
+            LastOpened = null;
+            IsReadOnly = connection.IsReadOnly;
+            Name = "Copy of " + connection.Name;
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public Connection(IGraph g, Uri rootUri)
         {
             if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
-            this.RootUri = rootUri;
-            this.LoadConfiguration(g);
+            RootUri = rootUri;
+            LoadConfiguration(g);
         }
 
         /// <summary>
@@ -95,13 +95,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             if (ReferenceEquals(definition, null)) throw new ArgumentNullException("definition");
             if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
-            this.Definition = definition;
-            this.RootUri = rootUri;
+            Definition = definition;
+            RootUri = rootUri;
 
-            this.Created = DateTimeOffset.UtcNow;
-            this.LastModified = this.Created;
-            this.LastOpened = null;
-            this.IsReadOnly = false;
+            Created = DateTimeOffset.UtcNow;
+            LastModified = Created;
+            LastOpened = null;
+            IsReadOnly = false;
         }
 
         /// <summary>
@@ -123,21 +123,21 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             if (ReferenceEquals(definition, null)) throw new ArgumentNullException("definition");
             if (ReferenceEquals(rootUri, null)) throw new ArgumentNullException("rootUri");
             if (ReferenceEquals(provider, null)) throw new ArgumentNullException("provider");
-            this.Definition = definition;
-            this.RootUri = rootUri;
-            this.StorageProvider = provider;
+            Definition = definition;
+            RootUri = rootUri;
+            StorageProvider = provider;
 
-            this.Created = DateTimeOffset.UtcNow;
-            this.LastModified = this.Created;
-            this.LastOpened = this.Created;
-            this.IsReadOnly = false;
+            Created = DateTimeOffset.UtcNow;
+            LastModified = Created;
+            LastOpened = Created;
+            IsReadOnly = false;
 
             // Because when created this way the definition may pertain not to this specific connection
             // we need to serialize and re-populate the definition to ensure we have the correct information
             IGraph g = new Graph();
-            this.SaveConfiguration(g);
-            INode rootNode = g.CreateUriNode(this.RootUri);
-            this.Definition.PopulateFrom(g, rootNode);
+            SaveConfiguration(g);
+            INode rootNode = g.CreateUriNode(RootUri);
+            Definition.PopulateFrom(g, rootNode);
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                if (!ReferenceEquals(this.StorageProvider, null)) return new ConnectionInfo(this.StorageProvider);
+                if (!ReferenceEquals(StorageProvider, null)) return new ConnectionInfo(StorageProvider);
                 throw new InvalidOperationException("Cannot access connection information for a closed connection");
             }
         }
@@ -190,18 +190,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <summary>
         /// Gets/Sets the friendly name associated with this connection
         /// </summary>
-        public String Name
+        public string Name
         {
             get
             {
-                if (!ReferenceEquals(this._name, null)) return this._name;
-                return !ReferenceEquals(this.StorageProvider, null) ? this.StorageProvider.ToString() : this.Definition.ToString();
+                if (!ReferenceEquals(_name, null)) return _name;
+                return !ReferenceEquals(StorageProvider, null) ? StorageProvider.ToString() : Definition.ToString();
             }
             set
             {
-                if (!ReferenceEquals(value, null) && !value.Equals(this.Name)) this.LastModified = DateTimeOffset.UtcNow;
-                this._name = value;
-                this.RaisePropertyChanged("Name");
+                if (!ReferenceEquals(value, null) && !value.Equals(Name)) LastModified = DateTimeOffset.UtcNow;
+                _name = value;
+                RaisePropertyChanged("Name");
             }
         }
 
@@ -210,11 +210,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public DateTimeOffset Created
         {
-            get { return this._created; }
+            get { return _created; }
             private set
             {
-                this._created = value;
-                this.RaisePropertyChanged("Created");
+                _created = value;
+                RaisePropertyChanged("Created");
             }
         }
 
@@ -223,11 +223,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public DateTimeOffset LastModified
         {
-            get { return this._modified; }
+            get { return _modified; }
             set
             {
-                this._modified = value;
-                this.RaisePropertyChanged("LastModified");
+                _modified = value;
+                RaisePropertyChanged("LastModified");
             }
         }
 
@@ -241,7 +241,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public bool IsOpen
         {
-            get { return !ReferenceEquals(this.StorageProvider, null); }
+            get { return !ReferenceEquals(StorageProvider, null); }
         }
 
         /// <summary>
@@ -257,12 +257,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </remarks>
         public bool IsReadOnly
         {
-            get { return this._readOnly; }
+            get { return _readOnly; }
             private set
             {
-                if (value == this._readOnly) return;
-                this._readOnly = value;
-                this.RaisePropertyChanged("IsReadOnly");
+                if (value == _readOnly) return;
+                _readOnly = value;
+                RaisePropertyChanged("IsReadOnly");
             }
         }
 
@@ -271,7 +271,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public void Open()
         {
-            this.Open(this.IsReadOnly);
+            Open(IsReadOnly);
         }
 
         /// <summary>
@@ -283,37 +283,37 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </remarks>
         public void Open(bool readOnly)
         {
-            if (!ReferenceEquals(this.StorageProvider, null))
+            if (!ReferenceEquals(StorageProvider, null))
             {
                 // Already open so increment active users
-                this.ActiveUsers++;
-                this.LastOpened = DateTimeOffset.UtcNow;
-                this.RaisePropertyChanged("ActiveUsers");
-                this.RaisePropertyChanged("LastOpened");
+                ActiveUsers++;
+                LastOpened = DateTimeOffset.UtcNow;
+                RaisePropertyChanged("ActiveUsers");
+                RaisePropertyChanged("LastOpened");
                 return;
             }
 
             // Need to open the connection
-            this.ActiveUsers++;
-            this.IsReadOnly = readOnly;
-            this.StorageProvider = this.Definition.OpenConnection();
+            ActiveUsers++;
+            IsReadOnly = readOnly;
+            StorageProvider = Definition.OpenConnection();
 
             // Make read-only if necessary
-            if (this.IsReadOnly && !this.StorageProvider.IsReadOnly)
+            if (IsReadOnly && !StorageProvider.IsReadOnly)
             {
-                if (this.StorageProvider is IQueryableStorage)
+                if (StorageProvider is IQueryableStorage)
                 {
-                    this.StorageProvider = new QueryableReadOnlyConnector((IQueryableStorage) this.StorageProvider);
+                    StorageProvider = new QueryableReadOnlyConnector((IQueryableStorage) StorageProvider);
                 }
                 else
                 {
-                    this.StorageProvider = new ReadOnlyConnector(this.StorageProvider);
+                    StorageProvider = new ReadOnlyConnector(StorageProvider);
                 }
             }
-            this.LastOpened = DateTimeOffset.UtcNow;
-            this.RaisePropertyChanged("ActiveUsers");
-            this.RaisePropertyChanged("LastOpened");
-            this.RaisePropertyChanged("IsOpen");
+            LastOpened = DateTimeOffset.UtcNow;
+            RaisePropertyChanged("ActiveUsers");
+            RaisePropertyChanged("LastOpened");
+            RaisePropertyChanged("IsOpen");
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         public void Close()
         {
-            this.Close(false);
+            Close(false);
         }
 
         /// <summary>
@@ -331,19 +331,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public void Close(bool forceClose)
         {
             // If not open do nothing
-            if (ReferenceEquals(this.StorageProvider, null)) return;
+            if (ReferenceEquals(StorageProvider, null)) return;
 
             // Decrement ative users
-            this.ActiveUsers--;
-            this.RaisePropertyChanged("ActiveUsers");
+            ActiveUsers--;
+            RaisePropertyChanged("ActiveUsers");
 
             // Still in use so leave open
-            if (this.ActiveUsers != 0 && !forceClose) return;
+            if (ActiveUsers != 0 && !forceClose) return;
 
             // Close the connection for real
-            this.StorageProvider.Dispose();
-            this.StorageProvider = null;
-            this.RaisePropertyChanged("IsOpen");
+            StorageProvider.Dispose();
+            StorageProvider = null;
+            RaisePropertyChanged("IsOpen");
         }
 
         /// <summary>
@@ -353,12 +353,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public void SaveConfiguration(IGraph g)
         {
             ConfigurationSerializationContext context = new ConfigurationSerializationContext(g);
-            INode rootNode = context.Graph.CreateUriNode(this.RootUri);
+            INode rootNode = context.Graph.CreateUriNode(RootUri);
 
             // Save the specific configuration for the connection only if it is currently open
-            if (!ReferenceEquals(this.StorageProvider, null))
+            if (!ReferenceEquals(StorageProvider, null))
             {
-                IConfigurationSerializable serializable = this.StorageProvider as IConfigurationSerializable;
+                IConfigurationSerializable serializable = StorageProvider as IConfigurationSerializable;
                 if (ReferenceEquals(serializable, null)) throw new InvalidOperationException("The underlying connection does not support serializing its configuration");
 
                 // Remove any previous saved configuration
@@ -376,24 +376,24 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             context.Graph.NamespaceMap.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
             INode rdfsLabel = context.Graph.CreateUriNode("rdfs:label");
             context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, rdfsLabel).ToList());
-            context.Graph.Assert(rootNode, rdfsLabel, context.Graph.CreateLiteralNode(this.Name));
+            context.Graph.Assert(rootNode, rdfsLabel, context.Graph.CreateLiteralNode(Name));
 
             // Store Manager tracked information
             context.Graph.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
             INode created = context.Graph.CreateUriNode("store:created");
             context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, created).ToList());
-            context.Graph.Assert(rootNode, created, this.Created.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, created, Created.ToLiteral(context.Graph));
             INode lastModified = context.Graph.CreateUriNode("store:lastModified");
             context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, lastModified).ToList());
-            context.Graph.Assert(rootNode, lastModified, this.LastModified.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, lastModified, LastModified.ToLiteral(context.Graph));
             INode lastOpened = context.Graph.CreateUriNode("store:lastOpened");
             context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, lastOpened).ToList());
-            if (this.LastOpened.HasValue) context.Graph.Assert(rootNode, lastOpened, this.LastOpened.Value.ToLiteral(context.Graph));
+            if (LastOpened.HasValue) context.Graph.Assert(rootNode, lastOpened, LastOpened.Value.ToLiteral(context.Graph));
             INode defType = context.Graph.CreateUriNode("store:definitionType");
             context.Graph.Retract(context.Graph.GetTriplesWithSubjectPredicate(rootNode, defType).ToList());
-            context.Graph.Assert(rootNode, defType, this.Definition.GetType().AssemblyQualifiedName.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, defType, Definition.GetType().AssemblyQualifiedName.ToLiteral(context.Graph));
             INode readOnly = context.Graph.CreateUriNode("store:readOnly");
-            context.Graph.Assert(rootNode, readOnly, this.IsReadOnly.ToLiteral(context.Graph));
+            context.Graph.Assert(rootNode, readOnly, IsReadOnly.ToLiteral(context.Graph));
         }
 
         /// <summary>
@@ -404,43 +404,43 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             g.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
             g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
-            INode rootNode = g.CreateUriNode(this.RootUri);
+            INode rootNode = g.CreateUriNode(RootUri);
 
             // First off need to find the definition type (if any)
             Triple t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:definitionType")).FirstOrDefault();
             if (t != null && t.Object.NodeType == NodeType.Literal)
             {
-                String typeString = ((ILiteralNode) t.Object).Value;
+                string typeString = ((ILiteralNode) t.Object).Value;
                 Type defType = TryGetType(typeString, new string[] {"StoreManager.Core", "dotNetRDF", "dotNetRDF.Data.Virtuoso"});
                 if (defType != null)
                 {
-                    this.Definition = (IConnectionDefinition) Activator.CreateInstance(defType);
+                    Definition = (IConnectionDefinition) Activator.CreateInstance(defType);
                 } 
                 
             }
-            if (ReferenceEquals(this.Definition, null))
+            if (ReferenceEquals(Definition, null))
             {
                 // Have to figure out the definition type another way
                 t = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("dnr:type")).FirstOrDefault();
                 if (t != null && t.Object.NodeType == NodeType.Literal)
                 {
-                    String typeString = ((ILiteralNode)t.Object).Value;
+                    string typeString = ((ILiteralNode)t.Object).Value;
                     Type providerType = TryGetType(typeString, new string[] { "StoreManager.Core", "dotNetRDF", "dotNetRDF.Data.Virtuoso" });
                     if (providerType != null)
                     {
                         IConnectionDefinition temp = ConnectionDefinitionManager.GetDefinitionByTargetType(providerType);
                         if (temp != null)
                         {
-                            this.Definition = (IConnectionDefinition) Activator.CreateInstance(temp.GetType());
+                            Definition = (IConnectionDefinition) Activator.CreateInstance(temp.GetType());
                         }
                     }
                 }
             }
-            if (ReferenceEquals(this.Definition, null)) throw new ArgumentException("Unable to locate the necessary configuration information to load this connection from the given Graph");
+            if (ReferenceEquals(Definition, null)) throw new ArgumentException("Unable to locate the necessary configuration information to load this connection from the given Graph");
 
             // Populate information
-            this.Definition.PopulateFrom(g, rootNode);
-            this.LoadInformation(g);
+            Definition.PopulateFrom(g, rootNode);
+            LoadInformation(g);
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <param name="typeString">Type String</param>
         /// <param name="assemblies">Assemblies to search</param>
         /// <returns>Type if found, null otherwise</returns>
-        private static Type TryGetType(String typeString, IEnumerable<string> assemblies)
+        private static Type TryGetType(string typeString, IEnumerable<string> assemblies)
         {
             // Try type name as given
             try
@@ -476,7 +476,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             if (typeString.Contains(",")) return null;
 
             // Search assemblies
-            foreach (String assembly in assemblies)
+            foreach (string assembly in assemblies)
             {
                 try
                 {
@@ -502,7 +502,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             g.NamespaceMap.AddNamespace("store", UriFactory.Create(StoreManagerNamespace));
             g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
-            INode rootNode = g.CreateUriNode(this.RootUri);
+            INode rootNode = g.CreateUriNode(RootUri);
 
             // Created, Last Modified and Last Opened
             Triple created = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:created")).FirstOrDefault();
@@ -510,19 +510,19 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             Triple lastOpened = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("store:lastOpened")).FirstOrDefault();
 // ReSharper disable PossibleInvalidOperationException
             // Resharper warnings are incorrect since logic of the GetDate() method guarantees we'll always produce a value
-            this.Created = GetDate(created, DateTimeOffset.UtcNow).Value;
-            this.LastModified = GetDate(lastModified, this.Created).Value;
+            Created = GetDate(created, DateTimeOffset.UtcNow).Value;
+            LastModified = GetDate(lastModified, Created).Value;
 // ReSharper restore PossibleInvalidOperationException
-            this.LastOpened = GetDate(lastOpened, null);
+            LastOpened = GetDate(lastOpened, null);
 
             // Read-Only?
-            this.IsReadOnly = ConfigurationLoader.GetConfigurationBoolean(g, rootNode, g.CreateUriNode("store:readOnly"), false);
+            IsReadOnly = ConfigurationLoader.GetConfigurationBoolean(g, rootNode, g.CreateUriNode("store:readOnly"), false);
 
             // Friendly Name
             Triple nameTriple = g.GetTriplesWithSubjectPredicate(rootNode, g.CreateUriNode("rdfs:label")).FirstOrDefault();
             if (nameTriple == null) return;
             if (nameTriple.Object.NodeType != NodeType.Literal) return;
-            this.Name = ((ILiteralNode) nameTriple.Object).Value;
+            Name = ((ILiteralNode) nameTriple.Object).Value;
         }
 
         /// <summary>
@@ -567,7 +567,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj)) return true;
-            return obj is Connection && this.Equals((Connection) obj);
+            return obj is Connection && Equals((Connection) obj);
         }
 
         /// <summary>
@@ -576,7 +576,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns>Hash Code</returns>
         public override int GetHashCode()
         {
-            return this.RootUri.GetEnhancedHashCode();
+            return RootUri.GetEnhancedHashCode();
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns></returns>
         public override string ToString()
         {
-            return this.Name;
+            return Name;
         }
 
         /// <summary>
@@ -595,7 +595,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// <returns>True if equals, false otherwise</returns>
         public bool Equals(Connection other)
         {
-            return EqualityHelper.AreUrisEqual(this.RootUri, other.RootUri);
+            return EqualityHelper.AreUrisEqual(RootUri, other.RootUri);
         }
 
         /// <summary>

@@ -25,6 +25,6 @@ jobs:
         echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
         echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
     - name: Restore Packages
-      run: dotnet restore dotNetRDF.Toolkit.sln
+      run: nuget restore
     - name: Build
-      run: dotnet build dotNetRDF.Toolkit.sln
+      run: msbuild dotNetRDF.Toolkit.sln
